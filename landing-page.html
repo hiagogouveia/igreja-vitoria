@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Igreja Vitória</title>
+    <link rel="icon" type="image/png" href="logo-black.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-black: #ffffff;
+            --primary-white: #111111;
+            --secondary-gray: #1a1a1a;
+            --accent-gold: #D4AF37;
+            --text-color: #f4f4f4;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-white);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--dark-bg);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: transparent;
+            color: var(--dark-bg);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border-color: var(--light-text);
+            color: var(--light-text);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--light-text);
+            color: var(--dark-bg);
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            padding: 20px 50px;
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            color: var(--dark-bg);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--dark-bg);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        /* HERO */
+        .hero {
+            height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--light-text);
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        /* SERVICES */
+        .services {
+            padding: 100px 5%;
+            background-color: var(--gray-light);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .section-title span {
+            display: block;
+            width: 50px;
+            height: 4px;
+            background-color: var(--dark-bg);
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--secondary-gray);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .card h3 {
+            margin: 20px 0 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .icon-placeholder {
+            width: 60px;
+            height: 60px;
+            background-color: var(--dark-bg);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* GALLERY */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .gallery-item {
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay h4 {
+            color: var(--light-text);
+            text-transform: uppercase;
+            font-weight: 700;
+            border: 2px solid var(--light-text);
+            padding: 10px 20px;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 80px 5% 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            color: #999;
+            transition: var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: var(--light-text);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 900px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 70px;
+                /* Header height */
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-color);
+                flex-direction: column;
+                align-items: center;
+                padding: 40px 0;
+                gap: 20px;
+                transform: translateY(-150%);
+                transition: var(--transition);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            }
+
+            nav ul.active {
+                transform: translateY(0);
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-item {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <img id="header-logo-img" src="raw-logo.png" alt="Igreja Vitória" style="height: 70px; width: auto;">
+        </div>
+        <div class="mobile-toggle" onclick="toggleMenu()">☰</div>
+        <nav>
+            <ul id="nav-list">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#cav">CAV</a></li>
+                <li><a href="#instituto">Instituto Vitória</a></li>
+                <li><a href="#culto">Culto Online</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1>Welcome to<br>The Victory</h1>
+            <p>Uma igreja apaixonada por Jesus e pelas pessoas. Junte-se a nós nesta jornada de fé e propósito.</p>
+            <a href="#servicos" class="btn btn-outline">Saiba Mais</a>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="servicos">
+        <div class="section-title">
+            <h2>Nossos Ministérios</h2>
+            <span></span>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Card 1 -->
+            <div class="card" id="cav">
+                <div class="icon-placeholder">CAV</div>
+                <h3>CASAS DE VITÓRIA</h3>
+                <p style="font-size: 1rem; color: #666; margin: 10px 0;">Pequenos grupos, grandes conexões.</p>
+                <p>Nossos pequenos grupos que se reúnem semanalmente para comunhão, oração e estudo da palavra.</p>
+                <a href="cav.html" class="btn btn-black" style="margin-top: auto;">Conhecer</a>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card" id="programacoes">
+                <div class="icon-placeholder">IV</div>
+                <h3>Instituto Vitória</h3>
+                <p>Escola de treinamento ministerial e teológico para equipar os santos para a obra do ministério.</p>
+                <a href="#" class="btn">Inscreva-se</a>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card" id="culto">
+                <div class="icon-placeholder">ON</div>
+                <h3>Culto Online</h3>
+                <p>Acompanhe nossas transmissões ao vivo e seja edificado onde você estiver. Domingos às 18h.</p>
+                <a href="#" class="btn">Assistir</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="gallery" id="galeria">
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1510590337019-5ef2d39aa7b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                alt="Worship">
+            <div class="gallery-overlay">
+                <h4>Adoração</h4>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                alt="Community">
+            <div class="gallery-overlay">
+                <h4>Comunhão</h4>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1478147427282-58a87a120781?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                alt="Service">
+            <div class="gallery-overlay">
+                <h4>Ensino</h4>
+            </div>
+        </div>
+        <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                alt="Events">
+            <div class="gallery-overlay">
+                <h4>Eventos</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 20px;">
+                    <img id="footer-logo-img" src="raw-logo.png" alt="Igreja Vitória"
+                        style="height: 50px; width: auto; opacity: 0; transition: opacity 0.5s;">
+                </div>
+                <h4>Links Rápidos</h4>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#cav">Sobre Nós</a></li>
+                    <li><a href="#servicos">Ministérios</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contato</h4>
+                <ul>
+                    <li style="color:#999">Rua da Vitória, 123</li>
+                    <li style="color:#999">contato@igrejavitoria.com</li>
+                    <li style="color:#999">(11) 99999-9999</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2024 Igreja Vitória. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('nav-list');
+            nav.classList.toggle('active');
+        }
+
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav-list').classList.remove('active');
+            });
+        });
+
+        // Logo Processing Script
+        window.addEventListener('load', function () {
+            const rawImg = new Image();
+            rawImg.src = 'raw-logo.png';
+            rawImg.crossOrigin = "Anonymous";
+
+            rawImg.onload = function () {
+                processLogo(rawImg, 'black', 'header-logo-img', true);
+                processLogo(rawImg, 'white', 'footer-logo-img', false);
+            };
+
+            function processLogo(img, colorType, targetId, updateFavicon) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                ctx.drawImage(img, 0, 0);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                // V color is beige ~230-240, 230-240, 210-220
+                // Background white 255
+                // Circle black ~0
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    // Logic to isolate V:
+                    // It is NOT dark (Black Circle) AND it is NOT pure white (Background)
+                    // Simple luminance or threshold check
+                    const brightness = (r + g + b) / 3;
+
+                    // If it's black circle (< 50) or white bg (> 245) -> Transparent
+                    // The Beige V is roughly mid-high brightness but not pure white.
+
+                    // Adjust these thresholds if needed based on the actual beige color
+                    // Assuming V is significantly lighter than black but distinct from white
+
+                    if (brightness < 80 || brightness > 240) {
+                        data[i + 3] = 0; // Transparent
+                    } else {
+                        // It is the V
+                        data[i + 3] = 255; // Solid alpha
+                        if (colorType === 'black') {
+                            data[i] = 255; data[i + 1] = 255; data[i + 2] = 255; // Force white for HEADER in Dark Mode
+                        } else {
+                            data[i] = 255; data[i + 1] = 255; data[i + 2] = 255; // Force white for FOOTER in Dark Mode
+                        }
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+                const dataUrl = canvas.toDataURL('image/png');
+
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.src = dataUrl;
+                    targetEl.style.opacity = '1';
+                }
+
+                if (updateFavicon) {
+                    let link = document.querySelector("link[rel~='icon']");
+                    if (!link) {
+                        link = document.createElement('link');
+                        link.rel = 'icon';
+                        document.head.appendChild(link);
+                    }
+                    link.href = dataUrl;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
