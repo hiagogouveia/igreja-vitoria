@@ -3,7 +3,7 @@ import { Calendar, Clock, Play } from 'lucide-react';
 import Button from './ui/Button';
 
 const LiveSection = () => {
-    const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
     // Simulate countdown to next Sunday 10am or similar
     // Countdown Logic
@@ -84,7 +84,11 @@ const LiveSection = () => {
                             <h3 className="text-2xl font-bold text-white mb-2">Próximo Culto</h3>
                             <p className="text-gray-400 mb-6">Domingo às 18:00 (Culto da Família)</p>
 
-                            <div className="grid grid-cols-3 gap-2 text-center mb-8">
+                            <div className="grid grid-cols-4 gap-2 text-center mb-8">
+                                <div className="bg-black/50 p-2 rounded-lg border border-white/10">
+                                    <span className="text-2xl font-mono text-neon-blue font-bold">{timeLeft.days}</span>
+                                    <p className="text-[10px] text-gray-500 uppercase">Dias</p>
+                                </div>
                                 <div className="bg-black/50 p-2 rounded-lg border border-white/10">
                                     <span className="text-2xl font-mono text-neon-blue font-bold">{timeLeft.hours}</span>
                                     <p className="text-[10px] text-gray-500 uppercase">Horas</p>

@@ -53,7 +53,7 @@ const CavSection = () => {
                                 </div>
                                 <div>
                                     <h4 className="text-white font-bold text-lg">Bairro Universitário</h4>
-                                    <p className="text-gray-400 text-sm">Terça • 20:00</p>
+                                    <p className="text-gray-400 text-sm">Sexta • 19:30</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 border-b border-white/10 pb-4 mb-4">

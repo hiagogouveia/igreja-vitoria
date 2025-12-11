@@ -52,7 +52,7 @@ const CavPage = () => {
                         <h2 className="text-2xl font-bold mb-2">CAV - Bairro Universitário</h2>
                         <p className="text-gray-400 flex items-center">
                             <MapPin size={18} className="mr-2 text-neon-blue" />
-                            Av. Vitor Meireles, 163 - Casa 03
+                            Av. Vitor Meireles, 163 - Casa 03 (Sexta às 19:30)
                         </p>
                     </div>
                     <div className="w-full h-[400px] bg-gray-800 relative">
