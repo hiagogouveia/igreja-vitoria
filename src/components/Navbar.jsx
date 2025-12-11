@@ -16,11 +16,11 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '#home' },
-        { name: 'Ao Vivo', href: '#live' },
-        { name: 'Casa de Vitória', href: '#ministries' },
-        { name: 'Eventos', href: '#events' },
-        { name: 'Contribua', href: '#donate' },
+        { name: 'Home', href: '/#home' },
+        { name: 'Ao Vivo', href: '/#live' },
+        { name: 'Casa de Vitória', href: '/#cav-home' }, // Updated to point to the new section
+        { name: 'Eventos', href: '/#events' },
+        { name: 'Contribua', href: '/contribua' }, // Changed to direct link if it's a page, or /#donate if section
     ];
 
     const scrollToTop = (e) => {
@@ -43,10 +43,10 @@ const Navbar = () => {
                     {/* Desktop Menu */}
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-8">
-                            <a href="/" onClick={scrollToTop} className="text-white hover:text-neon-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(31,107,255,0.5)]">Home</a>
-                            <a href="#live" className="text-gray-300 hover:text-neon-purple px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(139,47,255,0.5)]">Ao Vivo</a>
-                            <a href="#ministries" className="text-gray-300 hover:text-neon-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Casa de Vitória</a>
-                            <a href="#events" className="text-gray-300 hover:text-neon-purple px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Eventos</a>
+                            <a href="/#home" className="text-white hover:text-neon-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(31,107,255,0.5)]">Home</a>
+                            <a href="/#live" className="text-gray-300 hover:text-neon-purple px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(139,47,255,0.5)]">Ao Vivo</a>
+                            <a href="/#cav-home" className="text-gray-300 hover:text-neon-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Casa de Vitória</a>
+                            <a href="/#events" className="text-gray-300 hover:text-neon-purple px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Eventos</a>
                             <Link to="/contribua" className="bg-neon-blue/10 text-neon-blue border border-neon-blue/50 hover:bg-neon-blue hover:text-white px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 shadow-[0_0_10px_rgba(31,107,255,0.2)] hover:shadow-[0_0_20px_rgba(31,107,255,0.6)]">
                                 Contribua
                             </Link>
