@@ -6,7 +6,7 @@ import Button from './ui/Button';
 const Donate = () => {
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        // In a real app we'd show a toast here
+        alert('Chave PIX copiada para a área de transferência!');
     };
 
     return (
