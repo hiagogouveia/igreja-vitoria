@@ -16,8 +16,8 @@ const Donate = () => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-                        Faça Parte da <span className="text-neon-blue">Missão</span>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                        Faça Parte da <br className="sm:hidden" /><span className="text-neon-blue">Missão</span>
                     </h2>
                     <p className="max-w-xl mx-auto text-gray-400">
                         Sua generosidade mantém nossos projetos sociais e leva a mensagem a mais lugares.

@@ -10,10 +10,12 @@ import Contribua from './pages/Contribua';
 import MinistryDetail from './pages/MinistryDetail';
 import ContribuaPagamento from './pages/ContribuaPagamento';
 import CavPage from './pages/CavPage';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-black text-white selection:bg-white selection:text-black">
         <Navbar />
         <main className="flex-grow">

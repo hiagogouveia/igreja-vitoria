@@ -97,7 +97,7 @@ const Ministries = () => {
                                     {React.cloneElement(min.icon, { size: 40 })}
                                 </div>
 
-                                <h3 className="text-3xl font-bold text-white mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 break-words w-full px-2">
                                     {min.name}
                                 </h3>
 
