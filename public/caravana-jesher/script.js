@@ -60,6 +60,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // SAFE INTEGRATION: Fetch live data in background
     setTimeout(fetchLiveStatus, 100);
+
+    // --- INPUT MASKS (Event Delegation) ---
+    if (dynamicFieldsContainer) {
+        dynamicFieldsContainer.addEventListener('input', function (e) {
+            const target = e.target;
+
+            // CPF Mask
+            if (target.name.includes('_cpf')) {
+                target.value = maskCPF(target.value);
+            }
+
+            // WhatsApp Mask (Only numbers logic + Formatting)
+            if (target.name.includes('_phone')) {
+                target.value = maskPhone(target.value);
+            }
+        });
+    }
 });
 
 async function fetchLiveStatus() {
@@ -287,6 +304,33 @@ if (registrationForm) {
 
         // Collect Data
         const formData = new FormData(registrationForm);
+
+        // --- VALIDATION STEP ---
+        let hasError = false;
+        let p = 0; // Guest counter
+
+        // Check all CPFs
+        for (let [key, value] of formData.entries()) {
+            if (key.includes('_cpf')) {
+                if (!validateCPF(value)) {
+                    hasError = true;
+                    // Highlight the input if possible, or just general error
+                    const input = registrationForm.querySelector(`[name="${key}"]`);
+                    if (input) input.style.borderColor = 'red';
+                } else {
+                    const input = registrationForm.querySelector(`[name="${key}"]`);
+                    if (input) input.style.borderColor = '#cbd5e1'; // Reset
+                }
+            }
+        }
+
+        if (hasError) {
+            formFeedback.innerHTML = '<div style="color:#b91c1c; background:#fee2e2; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>CPF Inválido!</strong><br>Por favor, verifique os números de CPF digitados.</div>';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Corrigir Dados';
+            return; // STOP SUBMISSION
+        }
+
         const data = {};
         formData.forEach((value, key) => data[key] = value);
         data.timestamp = new Date().toISOString();
@@ -322,4 +366,53 @@ if (registrationForm) {
                 });
         }
     });
+}
+
+// --- MASKS & VALIDATORS ---
+function maskCPF(v) {
+    v = v.replace(/\D/g, "");                    // Remove all non-digits
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");       // Dot after 3rd
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");       // Dot after 6th
+    v = v.replace(/(\d{3})(\d{1,2})$/, "-$1");   // Dash after 9th
+    return v.substring(0, 14); // Limit length
+}
+
+function maskPhone(v) {
+    v = v.replace(/\D/g, "");             // Remove all non-digits
+    v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); // Parenthesis for area code
+    v = v.replace(/(\d)(\d{4})$/, "$1-$2");    // Dash before last 4
+    return v.substring(0, 15); // Limit length
+}
+
+function validateCPF(cpf) {
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (cpf == '') return false;
+    // Eliminate invalid known CPFs
+    if (cpf.length != 11 ||
+        cpf == "00000000000" ||
+        cpf == "11111111111" ||
+        cpf == "22222222222" ||
+        cpf == "33333333333" ||
+        cpf == "44444444444" ||
+        cpf == "55555555555" ||
+        cpf == "66666666666" ||
+        cpf == "77777777777" ||
+        cpf == "88888888888" ||
+        cpf == "99999999999")
+        return false;
+    // Validate 1st digit
+    let add = 0;
+    for (let i = 0; i < 9; i++)
+        add += parseInt(cpf.charAt(i)) * (10 - i);
+    let rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11) rev = 0;
+    if (rev != parseInt(cpf.charAt(9))) return false;
+    // Validate 2nd digit
+    add = 0;
+    for (let i = 0; i < 10; i++)
+        add += parseInt(cpf.charAt(i)) * (11 - i);
+    rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11) rev = 0;
+    if (rev != parseInt(cpf.charAt(10))) return false;
+    return true;
 }
