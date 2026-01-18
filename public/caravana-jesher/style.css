@@ -750,4 +750,17 @@ footer {
     .hero-actions {
         flex-direction: column;
     }
+
+    /* Fix overlap on mobile */
+    .progress-section {
+        margin-top: 0;
+        padding-top: 2rem;
+    }
+
+    .hero {
+        padding-bottom: 2rem;
+        height: auto;
+        /* Allow growth */
+        min-height: 100vh;
+    }
 }
