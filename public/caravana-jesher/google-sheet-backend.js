@@ -32,7 +32,7 @@ function doGet(e) {
         var sheetBusConfig = ss.getSheetByName("CONFIG_ONIBUS");
         var sheetRoomConfig = ss.getSheetByName("CONFIG_QUARTOS");
 
-        // --- 1. BUS LOGIC ---
+        // --- 1. BUS LOGIC (COUNT PEOPLE, NOT ROWS) ---
         var capacidadeBus = 50;
         if (sheetBusConfig) {
             var val = sheetBusConfig.getRange("A2").getValue();
@@ -41,10 +41,24 @@ function doGet(e) {
 
         var ocupadasBus = 0;
         if (sheetInscricoes && sheetInscricoes.getLastRow() > 1) {
-            var dados = sheetInscricoes.getRange(2, 13, sheetInscricoes.getLastRow() - 1, 1).getValues();
+            // Read Columns: Name(D), P2Name(H), P3Name(J), Pago(M)
+            // Indices (0-based from separate getValues checks? No, let's get whole range)
+            // Range: A2:M(End) -> Index 0=A ... M=12
+            // D(Resp_Nome)=3, H(P2_Nome)=7, J(P3_Nome)=9, M(Pago)=12
+            var dados = sheetInscricoes.getRange(2, 1, sheetInscricoes.getLastRow() - 1, 13).getValues();
+
             for (var i = 0; i < dados.length; i++) {
-                if (dados[i][0] && dados[i][0].toString().toUpperCase().trim() === "SIM") {
+                var pago = dados[i][12] ? dados[i][12].toString().toUpperCase().trim() : "";
+
+                if (pago === "SIM") {
+                    // Count Responsible (Always exists if row exists)
                     ocupadasBus++;
+
+                    // Count P2
+                    if (dados[i][7] && dados[i][7].toString().trim() !== "") ocupadasBus++;
+
+                    // Count P3
+                    if (dados[i][9] && dados[i][9].toString().trim() !== "") ocupadasBus++;
                 }
             }
         }
@@ -52,29 +66,65 @@ function doGet(e) {
         var restantesBus = capacidadeBus - ocupadasBus;
         if (restantesBus < 0) restantesBus = 0;
 
-        // --- 2. ROOM LOGIC ---
-        var quartos = {};
+        // --- 2. ROOM LOGIC (SHARED INVENTORY) ---
+        // Expected Sheet Structure for CONFIG_QUARTOS:
+        // A: Tipo (Casal_Twin, Triplo), B: Capacidade, C: Disponível, D: Ativo
+
+        var inventory = {
+            "casal_twin": { restantes: 0, ativo: false },
+            "triplo": { restantes: 0, ativo: false },
+            "semover": { restantes: 999, ativo: true }
+        };
+
         if (sheetRoomConfig) {
-            // Ler linhas 2 até onde tiver dados
             var lastRow = sheetRoomConfig.getLastRow();
             if (lastRow > 1) {
-                // Modified to read 4 columns: A(Tipo), B(Total), C(Disponível), D(Ativo)
                 var dadosQuartos = sheetRoomConfig.getRange(2, 1, lastRow - 1, 4).getValues();
 
                 for (var j = 0; j < dadosQuartos.length; j++) {
-                    var tipo = dadosQuartos[j][0].toString().toLowerCase().trim(); // A: Tipo
-                    var vagas = dadosQuartos[j][2]; // C: Disponível (Calculated by Formula)
-                    var ativo = dadosQuartos[j][3].toString().toUpperCase().trim() === "SIM"; // D: Ativo
+                    var tipoRaw = dadosQuartos[j][0].toString().toLowerCase().trim();
+                    var vagas = dadosQuartos[j][2]; // C: Disponível
+                    var ativo = dadosQuartos[j][3].toString().toUpperCase().trim() === "SIM";
 
-                    if (tipo) {
-                        quartos[tipo] = {
-                            restantes: parseInt(vagas) || 0,
-                            ativo: ativo
-                        };
+                    if (inventory[tipoRaw]) {
+                        inventory[tipoRaw].restantes = parseInt(vagas) || 0;
+                        inventory[tipoRaw].ativo = ativo;
+                    }
+                    // Handle legacy "individual/duplo" if user hasn't updated sheet yet, 
+                    // mapping them to casal_twin logic internally if found? 
+                    // No, stick to strict "Casal_Twin" requirement per Doc.
+                    // But if user keeps 'individual' in sheet, it wont match 'casal_twin'.
+                    // I will calculate both to be safe, but map frontend keys to inventory keys.
+                    if (tipoRaw === 'individual' || tipoRaw === 'duplo') {
+                        if (!inventory['casal_twin'].ativo) { // fallback
+                            inventory['casal_twin'].restantes = parseInt(vagas) || 0;
+                            inventory['casal_twin'].ativo = ativo;
+                        }
                     }
                 }
             }
         }
+
+        // --- 3. MAPPING TO FRONTEND KEYS ---
+        // Frontend expects: individual, duplo, triplo, semover
+        var quartos = {
+            "individual": {
+                restantes: inventory["casal_twin"].restantes,
+                ativo: inventory["casal_twin"].ativo
+            },
+            "duplo": {
+                restantes: inventory["casal_twin"].restantes,
+                ativo: inventory["casal_twin"].ativo
+            },
+            "triplo": {
+                restantes: inventory["triplo"].restantes,
+                ativo: inventory["triplo"].ativo
+            },
+            "semover": {
+                restantes: inventory["semover"].restantes,
+                ativo: inventory["semover"].ativo
+            }
+        };
 
         var result = {
             bus: {
