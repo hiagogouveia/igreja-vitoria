@@ -371,10 +371,15 @@ if (registrationForm) {
 // --- MASKS & VALIDATORS ---
 function maskCPF(v) {
     v = v.replace(/\D/g, "");                    // Remove all non-digits
+
+    // Limit to 11 digits
+    if (v.length > 11) v = v.substring(0, 11);
+
     v = v.replace(/(\d{3})(\d)/, "$1.$2");       // Dot after 3rd
     v = v.replace(/(\d{3})(\d)/, "$1.$2");       // Dot after 6th
-    v = v.replace(/(\d{3})(\d{1,2})$/, "-$1");   // Dash after 9th
-    return v.substring(0, 14); // Limit length
+    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Dash before last 2 digits
+
+    return v;
 }
 
 function maskPhone(v) {
