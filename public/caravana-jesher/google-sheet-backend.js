@@ -174,43 +174,50 @@ function doPost(e) {
         var newRow = [];
         var rowData = {}; // Temp object to fill based on headers
 
-        // --- SMART MAPPING LOGIC ---
-        // Iterate headers and find matching param
+        // --- SMART MAPPING LOGIC (Updated for Abbreviated Headers) ---
         for (var i = 0; i < headers.length; i++) {
             var header = headers[i].toString().toLowerCase().trim();
             var value = "";
 
-            // 1. DIRECT MATCH
+            // 1. DIRECT MATCH (If form field name matches header exactly)
             if (params[headers[i]]) value = params[headers[i]];
 
             // 2. FUZZY / SMART MATCH
-            else if (header.includes("data") || header === "timestamp") value = new Date();
 
-            else if (header.includes("responsavel") || header === "nome" || header === "nome completo") {
+            // Date/Timestamp
+            else if (header === "data" || header === "timestamp" || header.includes("data_inscricao")) value = new Date();
+
+            // RESPONSAVEL (Resp_Nome, Resp_CPF, Resp_Zap, etc.)
+            else if (header.startsWith("resp") || header.includes("responsavel")) {
                 if (header.includes("cpf")) value = params["guest_1_cpf"];
                 else if (header.includes("email")) value = params["guest_1_email"];
-                else if (header.includes("tel") || header.includes("whats")) value = params["guest_1_phone"];
-                else value = params["guest_1_name"]; // Default to Name
+                else if (header.includes("tel") || header.includes("whats") || header.includes("zap")) value = params["guest_1_phone"];
+                else if (header.includes("nome")) value = params["guest_1_name"];
             }
 
-            else if (header.includes("acompanhante")) {
-                // Extract number? "Acompanhante 2" -> 2
-                var num = header.replace(/\D/g, '');
-                if (!num) num = "2"; // Default if just "Acompanhante"
-
-                if (header.includes("cpf")) value = params["guest_" + num + "_cpf"];
-                else value = params["guest_" + num + "_name"];
+            // PESSOA 2 (P2_Nome, P2_CPF, Acompanhante2, Nome 2)
+            else if (header.startsWith("p2") || header.includes("acompanhante2") || header === "nome 2") {
+                if (header.includes("cpf")) value = params["guest_2_cpf"];
+                else value = params["guest_2_name"];
             }
 
-            // P2 Name fallback (if header is just "Nome 2" etc)
-            else if (header === "nome 2" || header === "segundo nome") value = params["guest_2_name"];
-            else if (header === "cpf 2") value = params["guest_2_cpf"];
+            // PESSOA 3 (P3_Nome, P3_CPF, Acompanhante3, Nome 3)
+            else if (header.startsWith("p3") || header.includes("acompanhante3") || header === "nome 3") {
+                if (header.includes("cpf")) value = params["guest_3_cpf"];
+                else value = params["guest_3_name"];
+            }
 
-            else if (header.includes("quarto") || header.includes("tipo")) value = params["roomType"] || params["roomTypeSelection"];
+            // ROOM & PAYMENT
+            else if (header === "quarto" || header.includes("tipo")) value = params["roomType"] || params["roomTypeSelection"];
+            else if (header === "valor" || header.includes("total") || header.includes("preco")) value = params["total_price"];
             else if (header.includes("pagamento") || header.includes("metodo")) value = params["payment_method"];
-            else if (header.includes("valor") || header.includes("preco") || header.includes("total")) value = params["total_price"];
-            else if (header.includes("obs")) value = params["observations"];
+
+            // OTHERS
+            else if (header === "obs" || header.includes("observacoes")) value = params["observations"];
             else if (header === "pago") value = "NAO"; // Default status
+
+            // Ensure we don't return "undefined" string
+            if (value === undefined || value === null) value = "";
 
             newRow.push(value);
         }
