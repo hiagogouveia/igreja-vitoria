@@ -332,25 +332,21 @@ if (registrationForm) {
             return;
         }
 
-        // Use URLSearchParams for reliable 'e.parameter' parsing in GAS
-        const params = new URLSearchParams();
+        // Create simple data object for JSON submission (Previous Working Method)
+        const data = {};
+        formData.forEach((value, key) => data[key] = value);
+        data.timestamp = new Date().toISOString();
 
-        // Append all Form Data
-        for (const [key, value] of formData.entries()) {
-            params.append(key, value);
-        }
-
-        // Add calculated fields
+        // Calculate fields
         const totalText = document.getElementById('totalCost').textContent.replace('R$', '').trim();
         const groupTotalText = document.getElementById('groupTotalValue').textContent.replace('R$', '').trim();
         const groupCount = document.getElementById('groupCount').textContent;
-
-        // Use group total if > 1 person, else individual
         const finalPrice = parseInt(groupCount) > 1 ? groupTotalText : totalText;
+        const roomType = formRoomTypeSelect.value.toLowerCase();
 
-        params.append('total_price', finalPrice);
-        params.append('payment_method', 'PIX'); // Default/Instruction
-        params.append('timestamp', new Date().toISOString());
+        data.total_price = finalPrice;
+        data.roomTypeSelection = roomType;
+        data.payment_method = 'PIX';
 
         // Mock or Send
         if (GOOGLE_SCRIPT_URL.includes('YOUR_GOOGLE')) {
@@ -363,9 +359,9 @@ if (registrationForm) {
         } else {
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                body: params, // Send URLSearchParams (application/x-www-form-urlencoded)
+                body: JSON.stringify(data),
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                headers: { 'Content-Type': 'application/json' }
             })
                 .then(() => {
                     formFeedback.innerHTML = '<div style="color:#15803d; background:#dcfce7; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>Inscrição Realizada com Sucesso!</strong><br>Entraremos em contato via WhatsApp para confirmar o pagamento.</div>';

@@ -156,75 +156,45 @@ function doPost(e) {
         var doc = SpreadsheetApp.getActiveSpreadsheet();
         var sheet = doc.getSheetByName("INSCRICOES");
 
-        // DATA PARSING (Supports both JSON and POST Parameters)
-        var params = e.parameter; // Default from FormData
-        if (!params || Object.keys(params).length === 0) {
-            if (e.postData && e.postData.contents) {
-                try {
-                    params = JSON.parse(e.postData.contents);
-                } catch (ex) {
-                    // If parsing fails, maybe it's raw text?
-                    params = {};
-                }
-            }
-        }
+        // Parse JSON Body
+        // NOTE: This relies on the previous 'working method' where e.postData.contents was populated.
+        // If sent as 'no-cors', sometimes contents is empty for complex requests, but simple JSON text/plain usually works.
+        var data = JSON.parse(e.postData.contents);
 
-        var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-        var nextRow = sheet.getLastRow() + 1;
-        var newRow = [];
-        var rowData = {}; // Temp object to fill based on headers
+        // Prepare Row Data based on user's screenshot order:
+        // A: Data
+        // B: Quarto
+        // C: Valor
+        // D: Resp_Nome
+        // E: Resp_CPF
+        // F: Resp_Zap
+        // G: Resp_Email
+        // H: P2_Nome
+        // I: P2_CPF
+        // J: P3_Nome
+        // K: P3_CPF
+        // L: Obs
+        // M: Pago
 
-        // --- SMART MAPPING LOGIC (Updated for Abbreviated Headers) ---
-        for (var i = 0; i < headers.length; i++) {
-            var header = headers[i].toString().toLowerCase().trim();
-            var value = "";
+        var row = [
+            new Date(),                         // A: Data
+            data.roomTypeSelection || "",       // B: Quarto
+            data.total_price || "",             // C: Valor
+            data.guest_1_name || "",            // D: Resp_Nome
+            data.guest_1_cpf || "",             // E: Resp_CPF
+            data.guest_1_phone || "",           // F: Resp_Zap
+            data.guest_1_email || "",           // G: Resp_Email
+            data.guest_2_name || "",            // H: P2_Nome
+            data.guest_2_cpf || "",             // I: P2_CPF
+            data.guest_3_name || "",            // J: P3_Nome
+            data.guest_3_cpf || "",             // K: P3_CPF
+            data.observations || "",            // L: Obs
+            "NAO"                               // M: Pago (Default)
+        ];
 
-            // 1. DIRECT MATCH (If form field name matches header exactly)
-            if (params[headers[i]]) value = params[headers[i]];
+        sheet.appendRow(row);
 
-            // 2. FUZZY / SMART MATCH
-
-            // Date/Timestamp
-            else if (header === "data" || header === "timestamp" || header.includes("data_inscricao")) value = new Date();
-
-            // RESPONSAVEL (Resp_Nome, Resp_CPF, Resp_Zap, etc.)
-            else if (header.startsWith("resp") || header.includes("responsavel")) {
-                if (header.includes("cpf")) value = params["guest_1_cpf"];
-                else if (header.includes("email")) value = params["guest_1_email"];
-                else if (header.includes("tel") || header.includes("whats") || header.includes("zap")) value = params["guest_1_phone"];
-                else if (header.includes("nome")) value = params["guest_1_name"];
-            }
-
-            // PESSOA 2 (P2_Nome, P2_CPF, Acompanhante2, Nome 2)
-            else if (header.startsWith("p2") || header.includes("acompanhante2") || header === "nome 2") {
-                if (header.includes("cpf")) value = params["guest_2_cpf"];
-                else value = params["guest_2_name"];
-            }
-
-            // PESSOA 3 (P3_Nome, P3_CPF, Acompanhante3, Nome 3)
-            else if (header.startsWith("p3") || header.includes("acompanhante3") || header === "nome 3") {
-                if (header.includes("cpf")) value = params["guest_3_cpf"];
-                else value = params["guest_3_name"];
-            }
-
-            // ROOM & PAYMENT
-            else if (header === "quarto" || header.includes("tipo")) value = params["roomType"] || params["roomTypeSelection"];
-            else if (header === "valor" || header.includes("total") || header.includes("preco")) value = params["total_price"];
-            else if (header.includes("pagamento") || header.includes("metodo")) value = params["payment_method"];
-
-            // OTHERS
-            else if (header === "obs" || header.includes("observacoes")) value = params["observations"];
-            else if (header === "pago") value = "NAO"; // Default status
-
-            // Ensure we don't return "undefined" string
-            if (value === undefined || value === null) value = "";
-
-            newRow.push(value);
-        }
-
-        sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow]);
-
-        return ContentService.createTextOutput(JSON.stringify({ "result": "success", "row": nextRow }))
+        return ContentService.createTextOutput(JSON.stringify({ "result": "success" }))
             .setMimeType(ContentService.MimeType.JSON);
 
     } catch (e) {
