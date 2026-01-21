@@ -78,8 +78,24 @@
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
                 </div>
-                <div class="progress-stats">
-                    <span id="seatsTaken">0</span> inscritos / <span>50</span> vagas
+                <div class="progress-stats"
+                    style="display: flex; justify-content: space-between; margin-top: 1rem; text-align: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <div
+                        style="background: #f1f5f9; padding: 0.5rem 1rem; border-radius: 8px; flex: 1; min-width: 100px;">
+                        <strong id="statTotal" style="display: block; font-size: 1.2rem; color: #334155;">0</strong>
+                        <span style="font-size: 0.8rem; color: #64748b;">Inscritos Total</span>
+                    </div>
+                    <div
+                        style="background: #dcfce7; padding: 0.5rem 1rem; border-radius: 8px; flex: 1; min-width: 100px;">
+                        <strong id="seatsTaken" style="display: block; font-size: 1.2rem; color: #166534;">0</strong>
+                        <span style="font-size: 0.8rem; color: #15803d;">Pagos</span>
+                    </div>
+                    <div
+                        style="background: #eff6ff; padding: 0.5rem 1rem; border-radius: 8px; flex: 1; min-width: 100px;">
+                        <strong id="seatsRemaining"
+                            style="display: block; font-size: 1.2rem; color: #1e40af;">50</strong>
+                        <span style="font-size: 0.8rem; color: #1e3a8a;">Vagas</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,7 +416,7 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="script.js?v=9"></script>
+    <script src="script.js?v=10"></script>
 </body>
 
 </html>

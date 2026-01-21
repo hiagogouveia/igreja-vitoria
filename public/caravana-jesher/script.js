@@ -2,7 +2,8 @@
 const CONFIG = {
     busPrice: 400.00,
     busSeatsTotal: 50,
-    busSeatsTaken: 0, // CONTROLADO MANUALMENTE AQUI
+    busSeatsTaken: 0,
+    busTotalRegistered: 0, // NEW: Total inscritos (pagos + pendentes)
     taxRate: 0.05, // 5%
     roomPrices: { // Valor da DIÁRIA por QUARTO
         individual: 312.00,
@@ -95,6 +96,8 @@ async function fetchLiveStatus() {
             // Update CONFIG with live data
             CONFIG.busSeatsTaken = data.bus.ocupadas;
             CONFIG.busSeatsTotal = data.bus.capacidade;
+            CONFIG.busTotalRegistered = data.bus.total || 0; // Capture total
+
             // Update UI
             initProgressBar();
         }
@@ -104,17 +107,9 @@ async function fetchLiveStatus() {
             console.log("Atualizando status dos quartos:", data.quartos);
             Object.keys(data.quartos).forEach(key => {
                 if (CONFIG.availability[key]) {
-                    CONFIG.availability[key].total = data.quartos[key].restantes + CONFIG.availability[key].taken; // Estimate total or just trust 'restantes'
-                    // Actually, let's just trust 'restantes' logic from backend
-                    // But our current frontend logic uses (taken >= total).
-                    // Let's adapt: If backend says 5 remaining, we set taken=0, total=5.
+                    CONFIG.availability[key].total = data.quartos[key].restantes + CONFIG.availability[key].taken;
                     CONFIG.availability[key].taken = 0;
                     CONFIG.availability[key].total = data.quartos[key].restantes;
-
-                    // Fail-open: Only deactivate if explicitly false or invalid
-                    // If the sheet has "SIM" -> true. If "NAO" -> false.
-                    // If empty or undefined, better to show it than hide everything.
-                    // Backend returns boolean.
                     CONFIG.availability[key].active = data.quartos[key].ativo;
                 }
             });
@@ -155,11 +150,21 @@ function updateAvailabilityUI() {
 
 function initProgressBar() {
     const progressBar = document.getElementById('progressBar');
-    const seatsTakenDisplay = document.getElementById('seatsTaken');
 
-    if (progressBar && seatsTakenDisplay) {
+    // New Elements
+    const statTotal = document.getElementById('statTotal');
+    const seatsTakenDisplay = document.getElementById('seatsTaken');
+    const seatsRemainingDisplay = document.getElementById('seatsRemaining');
+
+    if (progressBar) {
         const percentage = (CONFIG.busSeatsTaken / CONFIG.busSeatsTotal) * 100;
-        seatsTakenDisplay.textContent = CONFIG.busSeatsTaken;
+
+        // Update Stats
+        if (statTotal) statTotal.textContent = CONFIG.busTotalRegistered;
+        if (seatsTakenDisplay) seatsTakenDisplay.textContent = CONFIG.busSeatsTaken;
+        if (seatsRemainingDisplay) seatsRemainingDisplay.textContent = CONFIG.busSeatsTotal - CONFIG.busSeatsTaken;
+
+        // Animate Bar
         setTimeout(() => {
             progressBar.style.width = percentage + '%';
         }, 500);

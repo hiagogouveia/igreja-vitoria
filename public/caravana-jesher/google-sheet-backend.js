@@ -39,26 +39,29 @@ function doGet(e) {
             if (val && !isNaN(val)) capacidadeBus = parseInt(val);
         }
 
-        var ocupadasBus = 0;
+        var ocupadasBus = 0; // Pagos strictly
+        var totalPeople = 0; // Total Registered (Paid + Unpaid)
+
         if (sheetInscricoes && sheetInscricoes.getLastRow() > 1) {
             // Read Columns: Name(D), P2Name(H), P3Name(J), Pago(M)
             // Indices (0-based from separate getValues checks? No, let's get whole range)
-            // Range: A2:M(End) -> Index 0=A ... M=12
             // D(Resp_Nome)=3, H(P2_Nome)=7, J(P3_Nome)=9, M(Pago)=12
             var dados = sheetInscricoes.getRange(2, 1, sheetInscricoes.getLastRow() - 1, 13).getValues();
 
             for (var i = 0; i < dados.length; i++) {
                 var pago = dados[i][12] ? dados[i][12].toString().toUpperCase().trim() : "";
 
+                // Count People in this row (Resp + P2 + P3)
+                var rowCount = 1; // Resp always exists
+                if (dados[i][7] && dados[i][7].toString().trim() !== "") rowCount++;
+                if (dados[i][9] && dados[i][9].toString().trim() !== "") rowCount++;
+
+                // Add to Total Registered
+                totalPeople += rowCount;
+
+                // Add to Paid Count only if Pago=SIM
                 if (pago === "SIM") {
-                    // Count Responsible (Always exists if row exists)
-                    ocupadasBus++;
-
-                    // Count P2
-                    if (dados[i][7] && dados[i][7].toString().trim() !== "") ocupadasBus++;
-
-                    // Count P3
-                    if (dados[i][9] && dados[i][9].toString().trim() !== "") ocupadasBus++;
+                    ocupadasBus += rowCount;
                 }
             }
         }
@@ -129,7 +132,8 @@ function doGet(e) {
         var result = {
             bus: {
                 capacidade: capacidadeBus,
-                ocupadas: ocupadasBus,
+                ocupadas: ocupadasBus, // "Pagas"
+                total: totalPeople,    // "Inscritos Totais"
                 restantes: restantesBus
             },
             quartos: quartos

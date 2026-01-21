@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?   // Hashed
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  registrations Registration[]
+}
+
+model Ministry {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  leaderName  String?
+  imageUrl    String?
+  iconName    String?  // e.g. "Music", "Baby"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Cav {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  neighborhood String?
+  city        String   @default("Campo Grande")
+  state       String   @default("MS")
+  dayOfWeek   String   // e.g. "Terça"
+  time        String   // e.g. "20:00"
+  leaderName  String?
+  latitude    Float?
+  longitude   Float?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  price       Decimal  @default(0)
+  imageUrl    String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  registrations Registration[]
+}
+
+model Registration {
+  id        String   @id @default(cuid())
+  status    String   @default("PENDING") // PENDING, PAID, CANCELLED
+  amount    Decimal
+  paymentId String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
