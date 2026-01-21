@@ -310,21 +310,17 @@ if (registrationForm) {
         // Collect Data
         const formData = new FormData(registrationForm);
 
-        // --- VALIDATION STEP ---
+        // --- VALIDATION STEP --- (Optimized to reuse loop)
         let hasError = false;
-        let p = 0; // Guest counter
-
-        // Check all CPFs
         for (let [key, value] of formData.entries()) {
             if (key.includes('_cpf')) {
                 if (!validateCPF(value)) {
                     hasError = true;
-                    // Highlight the input if possible, or just general error
                     const input = registrationForm.querySelector(`[name="${key}"]`);
                     if (input) input.style.borderColor = 'red';
                 } else {
                     const input = registrationForm.querySelector(`[name="${key}"]`);
-                    if (input) input.style.borderColor = '#cbd5e1'; // Reset
+                    if (input) input.style.borderColor = '#cbd5e1';
                 }
             }
         }
@@ -333,19 +329,24 @@ if (registrationForm) {
             formFeedback.innerHTML = '<div style="color:#b91c1c; background:#fee2e2; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>CPF Inválido!</strong><br>Por favor, verifique os números de CPF digitados.</div>';
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Corrigir Dados';
-            return; // STOP SUBMISSION
+            return;
         }
 
-        const data = {};
-        formData.forEach((value, key) => data[key] = value);
-        data.timestamp = new Date().toISOString();
+        // Add calculated fields to FormData
+        const totalText = document.getElementById('totalCost').textContent.replace('R$', '').trim();
+        const groupTotalText = document.getElementById('groupTotalValue').textContent.replace('R$', '').trim();
+        const groupCount = document.getElementById('groupCount').textContent;
 
-        // Calculate price again to send to backend (security)
-        const roomType = formRoomTypeSelect.value.toLowerCase();
-        data.roomTypeSelection = roomType;
+        // Use group total if > 1 person, else individual
+        const finalPrice = parseInt(groupCount) > 1 ? groupTotalText : totalText;
+
+        formData.append('total_price', finalPrice);
+        formData.append('payment_method', 'PIX'); // Default/Instruction
+        formData.append('timestamp', new Date().toISOString());
 
         // Mock or Send
         if (GOOGLE_SCRIPT_URL.includes('YOUR_GOOGLE')) {
+            // ... existing mock logic ...
             setTimeout(() => {
                 formFeedback.innerHTML = '<div style="color:#15803d; background:#dcfce7; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>Simulação de Sucesso!</strong><br>Os dados foram validados. Configure a URL do Google Script para funcionar de verdade.</div>';
                 submitBtn.disabled = false;
@@ -354,9 +355,9 @@ if (registrationForm) {
         } else {
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify(data),
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' }
+                body: formData, // Send FormData directly
+                mode: 'no-cors'
+                // Content-Type header removed (Browser sets it for multipart)
             })
                 .then(() => {
                     formFeedback.innerHTML = '<div style="color:#15803d; background:#dcfce7; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>Inscrição Realizada com Sucesso!</strong><br>Entraremos em contato via WhatsApp para confirmar o pagamento.</div>';
