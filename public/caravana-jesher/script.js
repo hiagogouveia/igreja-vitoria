@@ -6,9 +6,9 @@ const CONFIG = {
     busTotalRegistered: 0, // NEW: Total inscritos (pagos + pendentes)
     taxRate: 0.05, // 5%
     roomPrices: { // Valor da DIÁRIA por QUARTO
-        individual: 312.00,
-        duplo: 342.00,
-        triplo: 492.00,
+        individual: 302.00,
+        duplo: 332.00,
+        triplo: 432.00,
         semover: 0
     },
     availability: {
@@ -174,7 +174,7 @@ function initProgressBar() {
 // --- CALCULATOR LOGIC ---
 function calculateTotal() {
     const roomType = roomTypeSelect.value;
-    const days = 2; // FIXED RULE: 2 DAYS
+    const days = 3; // FIXED RULE: 3 DIÁRIAS (04-06 Jun + Late Check-out)
 
     // 1. Handle Bus Only
     if (roomType === 'semover') {
