@@ -174,7 +174,7 @@ function initProgressBar() {
 // --- CALCULATOR LOGIC ---
 function calculateTotal() {
     const roomType = roomTypeSelect.value;
-    const days = 3; // FIXED RULE: 3 DIÁRIAS (04-06 Jun + Late Check-out)
+    const days = 2; // FIXED RULE: 2 DIÁRIAS (04-06 Jun - Check-out Padrão)
 
     // 1. Handle Bus Only
     if (roomType === 'semover') {
