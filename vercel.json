@@ -1,8 +1,8 @@
 {
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
-    ]
+    "version": 2,
+    "buildCommand": "cd web-platform && npm install && npm run build",
+    "devCommand": "cd web-platform && npm run dev",
+    "installCommand": "cd web-platform && npm install",
+    "framework": null,
+    "outputDirectory": "web-platform/.next"
 }
