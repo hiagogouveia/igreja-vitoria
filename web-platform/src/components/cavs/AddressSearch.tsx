@@ -31,15 +31,22 @@ export default function AddressSearch({ onAddressSelect }: AddressSearchProps) {
 
             setIsLoading(true);
             try {
+                // Campo Grande, MS bounding box (southwest to northeast)
+                // Southwest: -20.6, -54.8
+                // Northeast: -20.3, -54.4
+                const viewbox = '-54.8,-20.6,-54.4,-20.3'; // left,bottom,right,top
+
                 // Using Nominatim API (OpenStreetMap geocoding)
                 const response = await fetch(
                     `https://nominatim.openstreetmap.org/search?` +
                     new URLSearchParams({
-                        q: query,
+                        q: `${query}, Campo Grande, MS`, // Add city to query
                         format: 'json',
                         addressdetails: '1',
                         limit: '5',
                         countrycodes: 'br', // Restrict to Brazil
+                        viewbox: viewbox, // Prioritize Campo Grande area
+                        bounded: '1', // Restrict results to viewbox
                     }),
                     {
                         headers: {
