@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caravana 2026 - Imersão Ap. Jesher Cardoso | Igreja Vitória</title>
+    <meta name="description"
+        content="Participe da Caravana 2026 para a Imersão com Ap. Jesher Cardoso em Guarulhos. Transporte, hospedagem e muita comunhão. Vagas limitadas!">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Header / Nav -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <!-- Using a text placeholder if image fails, but path relative to public is usually /logo-v-final.png -->
+                <img src="/logo-v-final.png" alt="Igreja Vitória"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <span style="display:none; font-weight:700; font-size:1.5rem;">IGREJA VITÓRIA</span>
+            </div>
+            <nav class="desktop-nav">
+                <a href="#sobre">O Evento</a>
+                <a href="#hospedagem">Hospedagem</a>
+                <a href="#pacotes">Pacotes</a>
+                <a href="#inscricao" class="btn-nav">Inscreva-se</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <span class="tag">Igreja Nasci Pra Deus - Guarulhos/SP</span>
+                <h1>CARAVANA 2026 <br> <span class="highlight">IMERSÃO COM AP. JESHER CARDOSO</span></h1>
+                <div class="event-details">
+                    <div class="detail-item">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>04 a 06 de Junho de 2026</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>3 Dias / 2 Noites</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Saída de Campo Grande/MS (Igreja Vitória)</span>
+                    </div>
+                </div>
+                <p class="hero-text">Uma oportunidade única de crescimento espiritual e comunhão. Garanta seu lugar no
+                    ônibus!</p>
+                <div class="hero-actions">
+                    <a href="#inscricao" class="btn-primary">Quero participar da caravana</a>
+                    <a href="#pacotes" class="btn-secondary">Ver valores</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Bar Section -->
+    <section class="progress-section">
+        <div class="container">
+            <div class="progress-card">
+                <h3>Vagas no Ônibus</h3>
+                <p>A caravana só acontecerá se fecharmos o ônibus (50 lugares).</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-stats"
+                    style="display: flex; justify-content: space-between; margin-top: 1rem; text-align: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <div
+                        style="background: #f1f5f9; padding: 0.5rem 1rem; border-radius: 8px; flex: 1; min-width: 100px;">
+                        <strong id="statTotal" style="display: block; font-size: 1.2rem; color: #334155;">0</strong>
+                        <span style="font-size: 0.8rem; color: #64748b;">Inscritos Total</span>
+                    </div>
+                    <div
+                        style="background: #dcfce7; padding: 0.5rem 1rem; border-radius: 8px; flex: 1; min-width: 100px;">
+                        <strong id="seatsTaken" style="display: block; font-size: 1.2rem; color: #166534;">0</strong>
+                        <span style="font-size: 0.8rem; color: #15803d;">Pagos</span>
+                    </div>
+                    <div
+                        style="background: #eff6ff; padding: 0.5rem 1rem; border-radius: 8px; flex: 1; min-width: 100px;">
+                        <strong id="seatsRemaining"
+                            style="display: block; font-size: 1.2rem; color: #1e40af;">50</strong>
+                        <span style="font-size: 0.8rem; color: #1e3a8a;">Vagas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section id="sobre" class="info-section">
+        <div class="container grid-2">
+            <div class="info-text">
+                <h2>Sobre o Evento</h2>
+                <div class="underscore"></div>
+                <p><strong>A Imersão com o Apóstolo Jesher Cardoso</strong> é um tempo separado para mergulhar em águas
+                    profundas do conhecimento de Deus e renovação espiritual. A Igreja Vitória está organizando uma
+                    caravana exclusiva para estarmos juntos nesses dias.</p>
+
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Data:</strong> 04, 05 e 06 de Junho de 2026 (Feriado
+                        de Corpus Christi)</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Local:</strong> Igreja Nasci Pra Deus - Av. Monteiro
+                        Lobato, 1522 - Guarulhos/SP</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Transporte:</strong> Ônibus executivo saindo da Igreja
+                        Vitória</li>
+                </ul>
+            </div>
+            <div class="info-image">
+                <img src="ap-jesher.png" alt="Apóstolo Jesher Cardoso"
+                    style="width: 100%; height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+            </div>
+        </div>
+    </section>
+
+    <!-- Accommodation Section -->
+    <section id="hospedagem" class="accommodation-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Hospedagem Exclusiva</h2>
+                <p>Hotel Sables - Guarulhos</p>
+                <div class="alert-box"
+                    style="margin-top: 1rem; color: #b45309; background: #fffbeb; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span><strong>Atenção:</strong> As vagas no hotel são limitadas e a distribuição dos quartos será
+                        feita por ordem de inscrição.</span>
+                </div>
+            </div>
+
+            <div class="hotel-grid">
+                <div class="hotel-info">
+                    <h3>Conforto e Proximidade</h3>
+                    <p>Negociamos tarifas especiais para o nosso grupo. O Hotel Sables oferece excelente estrutura e
+                        está localizado estrategicamente para facilitar nosso deslocamento até o local do evento.</p>
+                    <ul class="amenities">
+                        <li><i class="fa-solid fa-wifi"></i> Wi-Fi Grátis</li>
+                        <li><i class="fa-solid fa-mug-hot"></i> Café da Manhã Incluso</li>
+                        <li><i class="fa-solid fa-bed"></i> Conforto Superior</li>
+                    </ul>
+                </div>
+                <div class="hotel-pricing">
+                    <div class="price-card">
+                        <h4>Individual</h4>
+                        <div class="price">R$ 302,00<span>/dia + 5%</span></div>
+                        <p>1 Pessoa<br><small>Cama de Casal</small></p>
+                    </div>
+                    <div class="price-card">
+                        <h4>Duplo</h4>
+                        <div class="price">R$ 332,00<span>/dia + 5%</span></div>
+                        <p>2 Pessoas<br><small>Casal ou 2 Solteiro</small></p>
+                    </div>
+                    <div class="price-card">
+                        <h4>Triplo</h4>
+                        <div class="price">R$ 432,00<span>/dia + 5%</span></div>
+                        <p>Até 3 Pessoas<br><small>Casal + 2 Solteiro + Sofá</small></p>
+                    </div>
+                </div>
+                <div class="alert-box"
+                    style="margin-top: 2rem; color: #1e3a8a; background: #eff6ff; padding: 1rem; border-radius: 8px; border-left: 4px solid #3b82f6; text-align: center;">
+                    <i class="fa-solid fa-bed"></i>
+                    <span><strong>Nota Importante:</strong> A configuração final das camas (casal ou solteiro) é
+                        definida pelo hotel no momento do check-in.</span>
+                </div>
+                <p class="tax-note"
+                    style="grid-column: 1 / -1; text-align: center; font-size: 0.9rem; color: #64748b; margin-top: 1rem;">
+                    * A taxa de 5% é cobrada pelo Hotel Sables como taxa de serviço (ISS) e é repassada integralmente a
+                    eles.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator & Packages Section -->
+    <section id="pacotes" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Transparência Total</h2>
+                <p>Confira abaixo o detalhamento dos custos. A igreja não obtém lucro com este evento.</p>
+            </div>
+
+            <div class="calculator-box">
+                <div class="calc-inputs" style="grid-template-columns: 1fr;"> <!-- Removed days selector -->
+                    <div class="input-group">
+                        <label>Selecione sua opção:</label>
+                        <select id="roomType">
+                            <option value="individual">Quarto Individual (1 pessoa)</option>
+                            <option value="duplo" selected>Quarto Duplo (2 pessoas)</option>
+                            <option value="triplo">Quarto Triplo (3 pessoas)</option>
+                            <option value="semover">Somente Ônibus (Sem Hotel)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-breakdown"
+                    style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+                    <h4 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: #334155;"><i
+                            class="fa-solid fa-calculator"></i> Memória de Cálculo (Por Pessoa)</h4>
+
+                    <div class="breakdown-item"
+                        style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                        <div class="concept">
+                            <strong style="display: block; color: var(--primary-color);">Ônibus</strong>
+                            <small style="color: var(--text-light); font-size: 0.9rem;">R$ 20.000,00 (Fretamento) ÷ 50
+                                Vagas</small>
+                        </div>
+                        <div class="value" style="font-weight: 600; font-size: 1.1rem; color: var(--primary-color);">R$
+                            400,00</div>
+                    </div>
+
+                    <div class="breakdown-item" id="hotelBreakdown"
+                        style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                        <div class="concept">
+                            <strong style="display: block; color: var(--primary-color);">Hotel (2 Diárias)</strong>
+                            <small id="hotelMath" style="color: var(--text-light); font-size: 0.9rem;">(Valor ÷ Pessoas)
+                                x 2 diárias</small>
+                        </div>
+                        <div class="value" id="hotelBaseValue"
+                            style="font-weight: 600; font-size: 1.1rem; color: var(--primary-color);">R$ 342,00</div>
+                    </div>
+
+                    <div class="breakdown-item" id="taxBreakdown"
+                        style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                        <div class="concept">
+                            <strong style="display: block; color: var(--primary-color);">Taxa de Serviço Hotel
+                                (5%)</strong>
+                            <small style="color: var(--text-light); font-size: 0.9rem;">Repassado integralmente ao
+                                hotel</small>
+                        </div>
+                        <div class="value" id="taxValue"
+                            style="font-weight: 600; font-size: 1.1rem; color: var(--primary-color);">R$ 17,10</div>
+                    </div>
+
+                </div>
+
+                <div class="calc-result">
+                    <div class="total-row">
+                        <span>Valor Individual (Por Pessoa)</span>
+                        <span class="total-value" id="totalCost">R$ 759,10</span>
+                    </div>
+
+                    <!-- Group Total Container (Hidden by default) -->
+                    <div id="groupTotalContainer"
+                        style="display:none; margin-top: 1.5rem; background: #eff6ff; padding: 1rem; border-radius: 8px; border: 1px solid #bfdbfe;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; color: #1e3a8a;">
+                            <span style="font-weight: 600; font-size: 0.95rem;">Valor Total do Grupo (<span
+                                    id="groupCount">2</span> pessoas)</span>
+                            <span style="font-weight: 700; font-size: 1.2rem;" id="groupTotalValue">R$ 1.518,20</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #60a5fa; margin-top: 0.5rem; text-align: right;">(Inclui
+                            Quarto + Passagens de todos)</p>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section id="inscricao" class="form-section">
+        <div class="container">
+            <div class="form-wrapper">
+                <div class="form-header">
+                    <h2>Garanta sua Vaga</h2>
+                    <p>Preencha o formulário abaixo para iniciar sua inscrição.</p>
+                </div>
+
+                <div class="alert-box"
+                    style="margin-bottom: 2rem; color: #064e3b; background: #ecfdf5; padding: 1.5rem; border-radius: 12px; border: 1px solid #6ee7b7; text-align: left;">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <i class="fa-solid fa-circle-exclamation"
+                            style="font-size: 1.5rem; color: #059669; margin-top: 4px;"></i>
+                        <div>
+                            <h4 style="margin-bottom: 0.8rem; color: #064e3b; font-size: 1.1rem; font-weight: 700;">
+                                Instruções de Pagamento:</h4>
+                            <ol
+                                style="margin: 0; padding-left: 1.2rem; font-size: 1rem; line-height: 1.6; color: #065f46;">
+                                <li style="margin-bottom: 0.5rem;">
+                                    <strong>Faça sua Inscrição:</strong><br>
+                                    Preencha o formulário aqui no site primeiro.
+                                </li>
+                                <li style="margin-bottom: 0.5rem;">
+                                    <strong>Faça o PIX para a IGREJA:</strong><br>
+                                    Use a chave CNPJ: <span
+                                        style="background: white; padding: 2px 6px; border-radius: 4px; font-family: monospace; border: 1px solid #a7f3d0; font-weight: 700;">60.753.546/0001-45</span>
+                                </li>
+                                <li style="margin-bottom: 0.5rem;">
+                                    <strong>Identifique:</strong> Escreva "Imersão" na descrição.
+                                </li>
+                                <li>
+                                    <strong>Envie o Comprovante:</strong><br>
+                                    Mande para o WhatsApp do <strong>Pr. Hiago: (67) 99137-6065</strong>. <br>
+                                    <small style="color: #ef4444; font-weight: 600;">(Não faça PIX para este número
+                                        celular!)</small>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="registrationForm">
+                    <!-- Dynamic Room Selection -->
+                    <div class="form-group"
+                        style="background: #e0f2fe; padding: 1.5rem; border-radius: 8px; border: 1px solid #bae6fd; margin-bottom: 2rem;">
+                        <label for="formRoomType"
+                            style="color: #0369a1; font-size: 1.1rem; margin-bottom: 0.5rem; display: block;">Qual opção
+                            você deseja reservar?</label>
+                        <select id="formRoomType" name="roomType" style="border-color: #7dd3fc; font-weight: 600;">
+                            <option value="individual">Quarto Individual (1 pessoa)</option>
+                            <option value="duplo" selected>Quarto Duplo (2 pessoas)</option>
+                            <option value="triplo">Quarto Triplo (3 pessoas)</option>
+                            <option value="semover">Somente Ônibus (Sem Hotel)</option>
+                        </select>
+                        <p style="font-size: 0.85rem; color: #0284c7; margin-top: 0.5rem;"><i
+                                class="fa-solid fa-circle-info"></i> Os campos abaixo mudarão conforme sua escolha.</p>
+                    </div>
+
+                    <!-- Dynamic Fields Container -->
+                    <div id="dynamicFieldsContainer">
+                        <!-- Fields injected by JS -->
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observations">Observações Adicionais</label>
+                        <textarea id="observations" name="observations" rows="3"
+                            placeholder="Informações de saúde, restrições alimentares ou outros detalhes importantes."></textarea>
+                    </div>
+
+                    <div class="legal-text"
+                        style="font-size: 0.8rem; color: #64748b; margin: 1.5rem 0; padding: 1rem; background: #f8fafc; border-radius: 6px;">
+                        <p style="margin-bottom: 0.5rem;"><strong>Termos de Responsabilidade:</strong></p>
+                        <p style="margin-bottom: 0.5rem;">1. Todos os nomes informados correspondem às pessoas que irão
+                            no ônibus e ficarão hospedadas conforme o pacote escolhido. Não será possível alterar os
+                            nomes após a inscrição.</p>
+                        <p>2. A Igreja Vitória organizará o transporte e a hospedagem conforme a opção escolhida. No
+                            retorno, TODOS deverão estar no local combinado no horário informado.</p>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        Confirmar Inscrição e Ir para Pagamento <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <p class="form-feedback" id="formFeedback"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Info -->
+    <section class="payment-section">
+        <div class="container">
+            <h2>Formas de Pagamento</h2>
+            <div class="payment-grid">
+                <div class="payment-card">
+                    <i class="fa-brands fa-pix"></i>
+                    <h3>PIX</h3>
+                    <p>Chave CNPJ</p>
+                    <div class="pix-key">60.753.546/0001-45</div>
+                    <p class="small">Igreja Vitória</p>
+                </div>
+                <!-- Optional: Credit Card Info -->
+                <div class="payment-card">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <h3>Cartão de Crédito</h3>
+                    <p>Parcelamento disponível</p>
+                    <p class="small">Consultar taxas da maquininha</p>
+                </div>
+            </div>
+
+            <!-- Important Payment Note -->
+            <div class="alert-box"
+                style="margin-top: 3rem; color: #064e3b; background: #ecfdf5; padding: 1.5rem; border-radius: 12px; border: 1px solid #6ee7b7; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <div style="display: flex; align-items: start; gap: 1rem;">
+                    <i class="fa-solid fa-circle-exclamation"
+                        style="font-size: 1.5rem; color: #059669; margin-top: 4px;"></i>
+                    <div>
+                        <h4 style="margin-bottom: 0.8rem; color: #064e3b; font-size: 1.1rem; font-weight: 700;">
+                            Instruções de Pagamento:</h4>
+                        <ol style="margin: 0; padding-left: 1.2rem; font-size: 1rem; line-height: 1.6; color: #065f46;">
+                            <li style="margin-bottom: 0.5rem;">
+                                <strong>Faça o PIX para a IGREJA:</strong><br>
+                                Use a chave CNPJ: <span
+                                    style="background: white; padding: 2px 6px; border-radius: 4px; font-family: monospace; border: 1px solid #a7f3d0; font-weight: 700;">60.753.546/0001-45</span>
+                            </li>
+                            <li style="margin-bottom: 0.5rem;">
+                                <strong>Identifique:</strong> Escreva "Imersão" na descrição.
+                            </li>
+                            <li>
+                                <strong>Envie o Comprovante:</strong><br>
+                                Mande para o WhatsApp do <strong>Pr. Hiago: (67) 99137-6065</strong>. <br>
+                                <small style="color: #ef4444; font-weight: 600;">(Não faça PIX para este número
+                                    celular!)</small>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Igreja Vitória - Todos os direitos reservados.</p>
+            <p class="dev-credits">Desenvolvido com carinho para o Reino.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js?v=13"></script>
+</body>
+
+</html>

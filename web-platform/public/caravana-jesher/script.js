@@ -1,0 +1,433 @@
+// --- CONFIGURATION ---
+const CONFIG = {
+    busPrice: 400.00,
+    busSeatsTotal: 50,
+    busSeatsTaken: 0,
+    busTotalRegistered: 0, // NEW: Total inscritos (pagos + pendentes)
+    taxRate: 0.05, // 5%
+    roomPrices: { // Valor da DIÁRIA por QUARTO
+        individual: 302.00,
+        duplo: 332.00,
+        triplo: 432.00,
+        semover: 0
+    },
+    availability: {
+        individual: { total: 5, taken: 0, active: true },
+        duplo: { total: 20, taken: 0, active: true },
+        triplo: { total: 10, taken: 0, active: true },
+        semover: { total: 999, taken: 0, active: true }
+    }
+};
+
+// --- DOM ELEMENTS ---
+const roomTypeSelect = document.getElementById('roomType');
+const formRoomTypeSelect = document.getElementById('formRoomType');
+const peopleCountInput = document.getElementById('peopleCount');
+const dynamicFieldsContainer = document.getElementById('dynamicFieldsContainer');
+const totalCostDisplay = document.getElementById('totalCost');
+
+// Group Total Elements
+const groupTotalContainer = document.getElementById('groupTotalContainer');
+const groupCountSpan = document.getElementById('groupCount');
+const groupTotalValueSpan = document.getElementById('groupTotalValue');
+
+// Breakdown Elements
+const hotelBreakdownRow = document.getElementById('hotelBreakdown');
+const taxBreakdownRow = document.getElementById('taxBreakdown');
+const hotelMath = document.getElementById('hotelMath');
+const hotelBaseValue = document.getElementById('hotelBaseValue');
+const taxValue = document.getElementById('taxValue');
+
+// Form Elements
+const registrationForm = document.getElementById('registrationForm');
+const submitBtn = document.getElementById('submitBtn');
+const formFeedback = document.getElementById('formFeedback');
+
+// INSTRUÇÃO: Mantenha a URL que o usuário já colocou ou use placeholder se for novo
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgyCzixA1eYCjfBD2vzq9pfAQq5u21akKnq4DVSJVk8SWSKnQsuCSWJ1uATnM6wYF7Eg/exec';
+
+// --- INIT ---
+document.addEventListener('DOMContentLoaded', () => {
+    initProgressBar();
+    updateAvailabilityUI();
+
+    // Listeners
+    if (roomTypeSelect) roomTypeSelect.addEventListener('change', calculateTotal);
+    if (formRoomTypeSelect) formRoomTypeSelect.addEventListener('change', updateFormFields);
+
+    // Initial Run
+    calculateTotal();
+    updateFormFields(); // Initialize form state
+
+    // SAFE INTEGRATION: Fetch live data in background
+    setTimeout(fetchLiveStatus, 100);
+
+    // --- INPUT MASKS (Event Delegation) ---
+    if (dynamicFieldsContainer) {
+        dynamicFieldsContainer.addEventListener('input', function (e) {
+            const target = e.target;
+
+            // CPF Mask
+            if (target.name.includes('_cpf')) {
+                target.value = maskCPF(target.value);
+            }
+
+            // WhatsApp Mask (Only numbers logic + Formatting)
+            if (target.name.includes('_phone')) {
+                target.value = maskPhone(target.value);
+            }
+        });
+    }
+});
+
+async function fetchLiveStatus() {
+    if (GOOGLE_SCRIPT_URL.includes('YOUR_GOOGLE')) {
+        console.warn("URL do Google Script não configurada.");
+        return;
+    }
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL);
+        const data = await response.json();
+
+        // 1. Update Bus Data safely
+        if (data.bus && typeof data.bus.restantes !== 'undefined') {
+            console.log("Atualizando status do ônibus:", data.bus);
+            // Update CONFIG with live data
+            CONFIG.busSeatsTaken = data.bus.ocupadas;
+            CONFIG.busSeatsTotal = data.bus.capacidade;
+            CONFIG.busTotalRegistered = data.bus.total || 0; // Capture total
+
+            // Update UI
+            initProgressBar();
+        }
+
+        // 2. Update Room Data safely
+        if (data.quartos) {
+            console.log("Atualizando status dos quartos:", data.quartos);
+            Object.keys(data.quartos).forEach(key => {
+                if (CONFIG.availability[key]) {
+                    CONFIG.availability[key].total = data.quartos[key].restantes + CONFIG.availability[key].taken;
+                    CONFIG.availability[key].taken = 0;
+                    CONFIG.availability[key].total = data.quartos[key].restantes;
+                    CONFIG.availability[key].active = data.quartos[key].ativo;
+                }
+            });
+            // Update UI
+            updateAvailabilityUI();
+        }
+
+    } catch (e) {
+        console.error("Erro ao buscar dados da planilha (O site continuará funcionando offline):", e);
+    }
+}
+
+// --- AVAILABILITY LOGIC ---
+function updateAvailabilityUI() {
+    const selects = [roomTypeSelect, formRoomTypeSelect];
+
+    selects.forEach(select => {
+        if (!select) return;
+
+        Array.from(select.options).forEach(option => {
+            const key = option.value.toLowerCase();
+            const config = CONFIG.availability[key];
+
+            if (!config) return;
+
+            // Check if sold out or inactive
+            const isSoldOut = config.taken >= config.total;
+
+            if (!config.active) {
+                option.style.display = 'none'; // Hide completely if inactive
+            } else if (isSoldOut) {
+                option.disabled = true;
+                option.textContent += ' (ESGOTADO)';
+            }
+        });
+    });
+}
+
+function initProgressBar() {
+    const progressBar = document.getElementById('progressBar');
+
+    // New Elements
+    const statTotal = document.getElementById('statTotal');
+    const seatsTakenDisplay = document.getElementById('seatsTaken');
+    const seatsRemainingDisplay = document.getElementById('seatsRemaining');
+
+    if (progressBar) {
+        const percentage = (CONFIG.busSeatsTaken / CONFIG.busSeatsTotal) * 100;
+
+        // Update Stats
+        if (statTotal) statTotal.textContent = CONFIG.busTotalRegistered;
+        if (seatsTakenDisplay) seatsTakenDisplay.textContent = CONFIG.busSeatsTaken;
+        if (seatsRemainingDisplay) seatsRemainingDisplay.textContent = CONFIG.busSeatsTotal - CONFIG.busSeatsTaken;
+
+        // Animate Bar
+        setTimeout(() => {
+            progressBar.style.width = percentage + '%';
+        }, 500);
+    }
+}
+
+// --- CALCULATOR LOGIC ---
+function calculateTotal() {
+    const roomType = roomTypeSelect.value;
+    const days = 2; // FIXED RULE: 2 DIÁRIAS (04-06 Jun - Check-out Padrão)
+
+    // 1. Handle Bus Only
+    if (roomType === 'semover') {
+        if (hotelBreakdownRow) hotelBreakdownRow.style.display = 'none';
+        if (taxBreakdownRow) taxBreakdownRow.style.display = 'none';
+        if (groupTotalContainer) groupTotalContainer.style.display = 'none'; // Ensure hidden
+        totalCostDisplay.textContent = formatCurrency(CONFIG.busPrice);
+        return;
+    }
+
+    // Show breakdown
+    if (hotelBreakdownRow) hotelBreakdownRow.style.display = 'flex';
+    if (taxBreakdownRow) taxBreakdownRow.style.display = 'flex';
+
+    // 2. Get Prices
+    let dailyRoomPrice = CONFIG.roomPrices[roomType] || 0;
+
+    // 3. Determine Occupancy Divisor
+    let divisor = 1;
+    if (roomType === 'duplo') divisor = 2;
+    if (roomType === 'triplo') divisor = 3;
+
+    // 4. Calculate Hotel Cost (Per Person)
+    // (Valor Diária / Pessoas) * 2 Dias
+    let hotelMs = (dailyRoomPrice / divisor) * days;
+
+    // 5. Calculate Tax (5% of Hotel Cost)
+    let taxMs = hotelMs * CONFIG.taxRate;
+
+    // 6. Total (Per Person)
+    let totalPerPerson = CONFIG.busPrice + hotelMs + taxMs;
+
+    // 7. Update UI (Per Person)
+    // Using string concatenation to prevent potential template literal syntax issues
+    if (hotelMath) hotelMath.textContent = '(R$ ' + dailyRoomPrice.toFixed(2).replace('.', ',') + ' ÷ ' + divisor + ') x ' + days + ' diárias';
+    if (hotelBaseValue) hotelBaseValue.textContent = formatCurrency(hotelMs);
+    if (taxValue) taxValue.textContent = formatCurrency(taxMs);
+    if (totalCostDisplay) totalCostDisplay.textContent = formatCurrency(totalPerPerson);
+
+    // 8. Group Total Logic
+    // Re-query elements here to ensure they are found even if DOM init had issues
+    const groupContainer = document.getElementById('groupTotalContainer');
+    const groupCount = document.getElementById('groupCount');
+    const groupValue = document.getElementById('groupTotalValue');
+
+    if (groupContainer) {
+        if (divisor > 1) { // Only for Double (2) or Triple (3)
+            groupContainer.style.display = 'block';
+            if (groupCount) groupCount.textContent = divisor;
+
+            // Group Total = Total Per Person * People Count
+            let groupTotal = totalPerPerson * divisor;
+
+            if (groupValue) groupValue.textContent = formatCurrency(groupTotal);
+        } else {
+            groupContainer.style.display = 'none';
+        }
+    }
+}
+
+// --- DYNAMIC FORM LOGIC ---
+function updateFormFields() {
+    if (!formRoomTypeSelect) return;
+
+    const roomType = formRoomTypeSelect.value.toLowerCase();
+    let people = 1;
+
+    if (roomType === 'duplo') people = 2;
+    if (roomType === 'triplo') people = 3;
+
+    // Update hidden people count input if it exists, or just track logically
+    if (peopleCountInput) {
+        peopleCountInput.value = people;
+    }
+
+    renderGuestFields(people);
+}
+
+function renderGuestFields(count) {
+    if (!dynamicFieldsContainer) return;
+    dynamicFieldsContainer.innerHTML = ''; // Clear
+
+    for (let i = 1; i <= count; i++) {
+        const title = i === 1 ? 'Pessoa 1 (Responsável)' : 'Pessoa ' + i;
+        const isResponsible = i === 1;
+
+        const html = '<div class="guest-block" style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">' +
+            '<h4 style="margin-bottom: 1rem; color: #0f172a; font-size: 1.1rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem; display:flex; align-items:center; gap:0.5rem;">' +
+            '<i class="fa-solid fa-user"></i> ' + title +
+            '</h4>' +
+            '<div class="form-grid">' +
+            '<div class="form-group">' +
+            '<label>Nome Completo *</label>' +
+            '<input type="text" name="guest_' + i + '_name" required placeholder="Nome completo">' +
+            '</div>' +
+            '<div class="form-group">' +
+            '<label>CPF *</label>' +
+            '<input type="text" name="guest_' + i + '_cpf" required placeholder="000.000.000-00">' +
+            '</div>' +
+            '</div>' +
+            (isResponsible ?
+                '<div class="form-grid">' +
+                '<div class="form-group">' +
+                '<label>WhatsApp *</label>' +
+                '<input type="tel" name="guest_1_phone" required placeholder="(11) 99999-9999">' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label>E-mail *</label>' +
+                '<input type="email" name="guest_1_email" required placeholder="email@exemplo.com">' +
+                '</div>' +
+                '</div>' : '') +
+            '</div>';
+
+        dynamicFieldsContainer.insertAdjacentHTML('beforeend', html);
+    }
+}
+
+// --- UTILS ---
+function formatCurrency(val) {
+    return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// --- FORM SUBMISSION ---
+if (registrationForm) {
+    registrationForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Disable UI
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+        formFeedback.textContent = '';
+
+        // Collect Data
+        const formData = new FormData(registrationForm);
+
+        // --- VALIDATION STEP --- (Optimized to reuse loop)
+        let hasError = false;
+        for (let [key, value] of formData.entries()) {
+            if (key.includes('_cpf')) {
+                if (!validateCPF(value)) {
+                    hasError = true;
+                    const input = registrationForm.querySelector(`[name="${key}"]`);
+                    if (input) input.style.borderColor = 'red';
+                } else {
+                    const input = registrationForm.querySelector(`[name="${key}"]`);
+                    if (input) input.style.borderColor = '#cbd5e1';
+                }
+            }
+        }
+
+        if (hasError) {
+            formFeedback.innerHTML = '<div style="color:#b91c1c; background:#fee2e2; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>CPF Inválido!</strong><br>Por favor, verifique os números de CPF digitados.</div>';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Corrigir Dados';
+            return;
+        }
+
+        // Create simple data object for JSON submission (Previous Working Method)
+        const data = {};
+        formData.forEach((value, key) => data[key] = value);
+        data.timestamp = new Date().toISOString();
+
+        // Calculate fields
+        const totalText = document.getElementById('totalCost').textContent.replace('R$', '').trim();
+        const groupTotalText = document.getElementById('groupTotalValue').textContent.replace('R$', '').trim();
+        const groupCount = document.getElementById('groupCount').textContent;
+        const finalPrice = parseInt(groupCount) > 1 ? groupTotalText : totalText;
+        const roomType = formRoomTypeSelect.value.toLowerCase();
+
+        data.total_price = finalPrice;
+        data.roomTypeSelection = roomType;
+        data.payment_method = 'PIX';
+
+        // Mock or Send
+        if (GOOGLE_SCRIPT_URL.includes('YOUR_GOOGLE')) {
+            // ... existing mock logic ...
+            setTimeout(() => {
+                formFeedback.innerHTML = '<div style="color:#15803d; background:#dcfce7; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>Simulação de Sucesso!</strong><br>Os dados foram validados. Configure a URL do Google Script para funcionar de verdade.</div>';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Confirmar Inscrição';
+            }, 1000);
+        } else {
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(() => {
+                    formFeedback.innerHTML = '<div style="color:#15803d; background:#dcfce7; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>Inscrição Realizada com Sucesso!</strong><br>Entraremos em contato via WhatsApp para confirmar o pagamento.</div>';
+                    registrationForm.reset();
+                    updateFormFields(); // Reset logic
+                    submitBtn.innerHTML = 'Enviado <i class="fa-solid fa-check"></i>';
+                })
+                .catch(err => {
+                    formFeedback.innerHTML = '<div style="color:#b91c1c; background:#fee2e2; padding:1rem; border-radius:8px; margin-top:1rem;"><strong>Erro ao enviar.</strong><br>Tente novamente ou chame no WhatsApp.</div>';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Tentar Novamente';
+                });
+        }
+    });
+}
+
+// --- MASKS & VALIDATORS ---
+function maskCPF(v) {
+    v = v.replace(/\D/g, "");                    // Remove all non-digits
+
+    // Limit to 11 digits
+    if (v.length > 11) v = v.substring(0, 11);
+
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");       // Dot after 3rd
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");       // Dot after 6th
+    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Dash before last 2 digits
+
+    return v;
+}
+
+function maskPhone(v) {
+    v = v.replace(/\D/g, "");             // Remove all non-digits
+    v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); // Parenthesis for area code
+    v = v.replace(/(\d)(\d{4})$/, "$1-$2");    // Dash before last 4
+    return v.substring(0, 15); // Limit length
+}
+
+function validateCPF(cpf) {
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (cpf == '') return false;
+    // Eliminate invalid known CPFs
+    if (cpf.length != 11 ||
+        cpf == "00000000000" ||
+        cpf == "11111111111" ||
+        cpf == "22222222222" ||
+        cpf == "33333333333" ||
+        cpf == "44444444444" ||
+        cpf == "55555555555" ||
+        cpf == "66666666666" ||
+        cpf == "77777777777" ||
+        cpf == "88888888888" ||
+        cpf == "99999999999")
+        return false;
+    // Validate 1st digit
+    let add = 0;
+    for (let i = 0; i < 9; i++)
+        add += parseInt(cpf.charAt(i)) * (10 - i);
+    let rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11) rev = 0;
+    if (rev != parseInt(cpf.charAt(9))) return false;
+    // Validate 2nd digit
+    add = 0;
+    for (let i = 0; i < 10; i++)
+        add += parseInt(cpf.charAt(i)) * (11 - i);
+    rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11) rev = 0;
+    if (rev != parseInt(cpf.charAt(10))) return false;
+    return true;
+}
