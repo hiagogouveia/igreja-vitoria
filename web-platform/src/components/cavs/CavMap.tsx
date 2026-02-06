@@ -1,8 +1,18 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Map, AdvancedMarker, Pin, useMap } from '@vis.gl/react-google-maps'
+import React, { useEffect } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import { CavData } from '@/app/actions/cav-actions'
+
+// Fix for default marker icons in Next.js
+delete (L.Icon.Default.prototype as any)._getIconUrl
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+})
 
 interface CavMapProps {
     cavs: (CavData & { id: string })[]
@@ -10,71 +20,86 @@ interface CavMapProps {
     onSelectCav: (cav: CavData & { id: string }) => void
 }
 
-const CAMPO_GRANDE_CENTER = { lat: -20.4697, lng: -54.6201 }
+const CAMPO_GRANDE_CENTER: [number, number] = [-20.4697, -54.6201]
 
-export default function CavMap({ cavs, selectedCavId, onSelectCav }: CavMapProps) {
+// Custom marker icons
+const defaultIcon = new L.Icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+})
+
+const selectedIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+})
+
+// Component to handle map centering
+function MapController({ selectedCavId, cavs }: { selectedCavId: string | null, cavs: (CavData & { id: string })[] }) {
     const map = useMap()
-    const [hoveredId, setHoveredId] = useState<string | null>(null)
 
-    // Effect to center map on selected CAV
     useEffect(() => {
-        if (selectedCavId && map) {
+        if (selectedCavId) {
             const selectedCav = cavs.find(c => c.id === selectedCavId)
             if (selectedCav && selectedCav.latitude && selectedCav.longitude) {
-                map.panTo({ lat: selectedCav.latitude, lng: selectedCav.longitude })
-                map.setZoom(15)
+                map.flyTo([selectedCav.latitude, selectedCav.longitude], 15, {
+                    duration: 1.5
+                })
             }
         }
-    }, [selectedCavId, map, cavs])
+    }, [selectedCavId, cavs, map])
 
+    return null
+}
+
+export default function CavMap({ cavs, selectedCavId, onSelectCav }: CavMapProps) {
     return (
-        <div className="w-full h-full min-h-[500px] bg-gray-900 rounded-xl overflow-hidden shadow-2xl relative">
-            <Map
-                mapId={'bf51a910020fa25a'} // Map ID required for Advanced Markers, using a generic one or allowing placeholder
-                defaultCenter={CAMPO_GRANDE_CENTER}
-                defaultZoom={12}
-                gestureHandling={'greedy'}
-                disableDefaultUI={false}
-                className="w-full h-full"
-                options={{
-                    styles: [
-                        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-                        { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-                        { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                        {
-                            featureType: "administrative.locality",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#d59563" }],
-                        },
-                    ]
-                }}
+        <div className="w-full h-full min-h-[500px] rounded-xl overflow-hidden shadow-2xl">
+            <MapContainer
+                center={CAMPO_GRANDE_CENTER}
+                zoom={12}
+                style={{ height: '100%', width: '100%' }}
+                className="z-0"
             >
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                <MapController selectedCavId={selectedCavId} cavs={cavs} />
+
                 {cavs.map((cav) => (
-                    (cav.latitude && cav.longitude) && (
-                        <AdvancedMarker
+                    cav.latitude && cav.longitude && (
+                        <Marker
                             key={cav.id}
-                            position={{ lat: cav.latitude, lng: cav.longitude }}
-                            onClick={() => onSelectCav(cav)}
-                            onMouseEnter={() => setHoveredId(cav.id)}
-                            onMouseLeave={() => setHoveredId(null)}
-                            title={cav.name}
+                            position={[cav.latitude, cav.longitude]}
+                            icon={selectedCavId === cav.id ? selectedIcon : defaultIcon}
+                            eventHandlers={{
+                                click: () => onSelectCav(cav)
+                            }}
                         >
-                            <Pin
-                                background={selectedCavId === cav.id ? '#00E5FF' : '#FF0055'}
-                                borderColor={'#000'}
-                                glyphColor={'#FFF'}
-                                scale={selectedCavId === cav.id ? 1.2 : 1}
-                            />
-                            {/* Tooltip on hover if not selected/showing in sidebar */}
-                            {hoveredId === cav.id && (
-                                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-black/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50 pointer-events-none">
-                                    {cav.name}
+                            <Popup>
+                                <div className="text-sm">
+                                    <h3 className="font-bold text-base mb-1">{cav.name}</h3>
+                                    <p className="text-gray-600">{cav.dayOfWeek} às {cav.time}</p>
+                                    {cav.leaderName && (
+                                        <p className="text-gray-600">Líder: {cav.leaderName}</p>
+                                    )}
+                                    <p className="text-xs text-gray-500 mt-1">{cav.address}</p>
                                 </div>
-                            )}
-                        </AdvancedMarker>
+                            </Popup>
+                        </Marker>
                     )
                 ))}
-            </Map>
+            </MapContainer>
         </div>
     )
 }

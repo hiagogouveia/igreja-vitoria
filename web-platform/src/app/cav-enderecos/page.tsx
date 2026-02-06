@@ -1,8 +1,7 @@
 import React from 'react';
 import { getCavs } from '@/app/actions/cav-actions';
 import CavInterface from '@/components/cavs/CavInterface';
-import { GoogleMapsProvider } from '@/components/cavs/GoogleMapsProvider';
-import Navbar from '@/components/Navbar'; // Reuse existing Navbar if possible
+import Navbar from '@/components/Navbar';
 
 // Ensure fresh data
 export const dynamic = 'force-dynamic';
@@ -20,11 +19,8 @@ export default async function CavEnderecosPage() {
 
     return (
         <main className="min-h-screen bg-black text-white flex flex-col">
-            <Navbar /> {/* Optional: Remove if standalone page is desired without nav */}
-
-            <GoogleMapsProvider>
-                <CavInterface initialCavs={cavs as any} />
-            </GoogleMapsProvider>
+            <Navbar />
+            <CavInterface initialCavs={cavs as any} />
         </main>
     );
 }

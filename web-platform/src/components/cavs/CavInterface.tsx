@@ -2,11 +2,21 @@
 
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import CavForm from './CavForm';
-import CavMap from './CavMap';
 import AddressSearch from './AddressSearch';
 import { CavData, createCav } from '@/app/actions/cav-actions';
 import Button from '@/components/ui/Button';
+
+// Import CavMap dynamically to avoid SSR issues with Leaflet
+const CavMap = dynamic(() => import('./CavMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-full flex items-center justify-center bg-gray-900 rounded-xl">
+            <div className="text-white">Carregando mapa...</div>
+        </div>
+    )
+});
 
 interface CavInterfaceProps {
     initialCavs: (CavData & { id: string })[];
@@ -60,14 +70,14 @@ export default function CavInterface({ initialCavs }: CavInterfaceProps) {
             />
 
             {/* Search Bar - Floating on top */}
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 w-full max-w-md px-4">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-full max-w-md px-4">
                 <div className="bg-black/90 backdrop-blur-sm rounded-lg shadow-2xl p-3 border border-white/20">
                     <AddressSearch onAddressSelect={handleFindNearest} />
                 </div>
             </div>
 
             {/* Add Button - Bottom Right */}
-            <div className="absolute bottom-6 right-6 z-10">
+            <div className="absolute bottom-6 right-6 z-[1000]">
                 <Button
                     onClick={() => setShowForm(true)}
                     className="flex items-center gap-2 shadow-2xl"
@@ -79,7 +89,7 @@ export default function CavInterface({ initialCavs }: CavInterfaceProps) {
 
             {/* Form Modal */}
             {showForm && (
-                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-20 flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-[1001] flex items-center justify-center p-4">
                     <div className="bg-dark-surface border border-white/10 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                         <CavForm
                             onSave={handleSave}
@@ -91,7 +101,7 @@ export default function CavInterface({ initialCavs }: CavInterfaceProps) {
 
             {/* Selected CAV Info - Bottom Left */}
             {selectedCavId && (
-                <div className="absolute bottom-6 left-6 z-10 bg-black/90 backdrop-blur-sm rounded-lg p-4 border border-neon-blue max-w-xs">
+                <div className="absolute bottom-6 left-6 z-[1000] bg-black/90 backdrop-blur-sm rounded-lg p-4 border border-neon-blue max-w-xs">
                     {(() => {
                         const selected = cavs.find(c => c.id === selectedCavId);
                         if (!selected) return null;
