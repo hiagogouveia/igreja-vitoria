@@ -8,7 +8,7 @@ export default async function AdminCavsPage() {
         <div>
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">Gerenciar Células (CAVs)</h1>
-                <Button>Nova Célula</Button>
+                <Button>Nova CAV</Button>
             </div>
 
             <div className="bg-dark-surface rounded-xl border border-white/10 overflow-hidden">

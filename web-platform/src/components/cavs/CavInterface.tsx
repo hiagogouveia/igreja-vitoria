@@ -83,7 +83,7 @@ export default function CavInterface({ initialCavs }: CavInterfaceProps) {
                     className="flex items-center gap-2 shadow-2xl"
                 >
                     <Plus size={20} />
-                    Nova Célula
+                    Nova CAV
                 </Button>
             </div>
 
