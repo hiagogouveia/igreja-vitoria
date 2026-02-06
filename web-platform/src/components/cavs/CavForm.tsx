@@ -52,7 +52,7 @@ export default function CavForm({ onSave, onCancel }: CavFormProps) {
             <h3 className="text-xl font-bold text-white mb-4">Nova CAV</h3>
 
             <div>
-                <label className="block text-sm text-gray-400 mb-1">Nome da Célula *</label>
+                <label className="block text-sm text-gray-400 mb-1">Nome da CAV *</label>
                 <input
                     required
                     type="text"

@@ -91,7 +91,7 @@ export default function AddressSearch({ onAddressSelect }: AddressSearchProps) {
             </div>
             <input
                 type="text"
-                placeholder="Digite seu endereço para encontrar a célula mais próxima..."
+                placeholder="Digite seu endereço para encontrar a CAV mais próxima..."
                 className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-neon-blue focus:border-transparent transition-all"
                 value={inputValue}
                 onChange={handleInputChange}
