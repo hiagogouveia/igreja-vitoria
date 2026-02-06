@@ -1,29 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Save, X } from 'lucide-react';
+import { Save } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { CavData } from '@/app/actions/cav-actions';
-import AddressSearch from './AddressSearch'; // Reuse search for address filling
+import AddressSearch from './AddressSearch';
 
 interface CavFormProps {
-    initialData?: (CavData & { id: string }) | null;
     onSave: (data: CavData) => Promise<void>;
     onCancel: () => void;
 }
 
-export default function CavForm({ initialData, onSave, onCancel }: CavFormProps) {
+export default function CavForm({ onSave, onCancel }: CavFormProps) {
     const [formData, setFormData] = useState<CavData>({
-        name: initialData?.name || '',
-        leaderName: initialData?.leaderName || '',
-        address: initialData?.address || '',
-        dayOfWeek: initialData?.dayOfWeek || 'Quarta',
-        time: initialData?.time || '20:00',
-        latitude: initialData?.latitude || null,
-        longitude: initialData?.longitude || null,
-        neighborhood: initialData?.neighborhood || '',
-        city: initialData?.city || 'Campo Grande',
-        state: initialData?.state || 'MS',
+        name: '',
+        leaderName: '',
+        address: '',
+        dayOfWeek: 'Quarta',
+        time: '20:00',
+        latitude: null,
+        longitude: null,
+        neighborhood: '',
+        city: 'Campo Grande',
+        state: 'MS',
         active: true,
     });
 
@@ -50,23 +49,17 @@ export default function CavForm({ initialData, onSave, onCancel }: CavFormProps)
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold text-white">
-                    {initialData ? 'Editar Célula' : 'Nova Célula'}
-                </h3>
-                <button type="button" onClick={onCancel} className="text-gray-400 hover:text-white">
-                    <X size={24} />
-                </button>
-            </div>
+            <h3 className="text-xl font-bold text-white mb-4">Nova Célula</h3>
 
             <div>
-                <label className="block text-sm text-gray-400 mb-1">Nome da Célula</label>
+                <label className="block text-sm text-gray-400 mb-1">Nome da Célula *</label>
                 <input
                     required
                     type="text"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white focus:ring-2 focus:ring-neon-blue outline-none"
+                    placeholder="Ex: Célula Centro"
                 />
             </div>
 
@@ -77,31 +70,21 @@ export default function CavForm({ initialData, onSave, onCancel }: CavFormProps)
                     value={formData.leaderName || ''}
                     onChange={e => setFormData({ ...formData, leaderName: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white focus:ring-2 focus:ring-neon-blue outline-none"
+                    placeholder="Nome do líder"
                 />
             </div>
 
             <div>
-                <label className="block text-sm text-gray-400 mb-1">Endereço (Busca Automática)</label>
+                <label className="block text-sm text-gray-400 mb-1">Buscar Endereço *</label>
                 <AddressSearch onAddressSelect={handleAddressSelect} />
-                <div className="mt-2 text-xs text-gray-500">
-                    Lat: {formData.latitude?.toFixed(5) || '-'}, Lng: {formData.longitude?.toFixed(5) || '-'}
-                </div>
-            </div>
-
-            {/* Manual Address Fallback just in case */}
-            <div>
-                <label className="block text-sm text-gray-400 mb-1">Endereço Completo</label>
-                <input
-                    required
-                    value={formData.address}
-                    onChange={e => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm"
-                />
+                {formData.latitude && formData.longitude && (
+                    <p className="text-xs text-green-400 mt-1">✓ Localização definida</p>
+                )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">Dia</label>
+                    <label className="block text-sm text-gray-400 mb-1">Dia *</label>
                     <select
                         value={formData.dayOfWeek}
                         onChange={e => setFormData({ ...formData, dayOfWeek: e.target.value })}
@@ -113,8 +96,9 @@ export default function CavForm({ initialData, onSave, onCancel }: CavFormProps)
                     </select>
                 </div>
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">Horário</label>
+                    <label className="block text-sm text-gray-400 mb-1">Horário *</label>
                     <input
+                        required
                         type="time"
                         value={formData.time}
                         onChange={e => setFormData({ ...formData, time: e.target.value })}
@@ -135,7 +119,7 @@ export default function CavForm({ initialData, onSave, onCancel }: CavFormProps)
                 <Button
                     type="submit"
                     className="flex-1 flex items-center justify-center gap-2"
-                    disabled={loading}
+                    disabled={loading || !formData.latitude || !formData.longitude}
                 >
                     <Save size={18} />
                     {loading ? 'Salvando...' : 'Salvar'}
