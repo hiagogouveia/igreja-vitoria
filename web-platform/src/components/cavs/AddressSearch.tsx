@@ -45,8 +45,7 @@ export default function AddressSearch({ onAddressSelect }: AddressSearchProps) {
                         addressdetails: '1',
                         limit: '5',
                         countrycodes: 'br', // Restrict to Brazil
-                        viewbox: viewbox, // Prioritize Campo Grande area
-                        bounded: '1', // Restrict results to viewbox
+                        viewbox: viewbox, // Prioritize Campo Grande area (not bounded)
                     }),
                     {
                         headers: {
