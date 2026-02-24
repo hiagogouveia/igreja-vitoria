@@ -27,7 +27,7 @@ export async function getCavs() {
         return { success: true, data: cavs }
     } catch (error) {
         console.error('Error fetching CAVs:', error)
-        return { success: false, error: 'Failed to fetch CAVs' }
+        return { success: false, error: error instanceof Error ? error.message : String(error) }
     }
 }
 

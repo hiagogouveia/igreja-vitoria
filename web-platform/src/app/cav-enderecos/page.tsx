@@ -7,12 +7,14 @@ import Navbar from '@/components/Navbar';
 export const dynamic = 'force-dynamic';
 
 export default async function CavEnderecosPage() {
-    const { data: cavs, success } = await getCavs();
+    const { data: cavs, success, error } = await getCavs();
 
     if (!success) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-red-500">
-                Erro ao carregar dados. Tente novamente mais tarde.
+            <div className="min-h-screen flex items-center justify-center text-red-500 flex-col gap-4 p-8">
+                <h1 className="text-2xl font-bold">Erro ao carregar dados</h1>
+                <p className="bg-red-950/50 p-4 rounded text-sm font-mono whitespace-pre-wrap text-left max-w-4xl break-words">{error}</p>
+                <p>Tente novamente mais tarde.</p>
             </div>
         )
     }
