@@ -1,7 +1,7 @@
 // --- CONFIGURATION ---
 const CONFIG = {
-    busPrice: 400.00,
-    busSeatsTotal: 50,
+    busPrice: 694.44,
+    busSeatsTotal: 18,
     busSeatsTaken: 0,
     busTotalRegistered: 0, // NEW: Total inscritos (pagos + pendentes)
     taxRate: 0.05, // 5%
@@ -95,7 +95,6 @@ async function fetchLiveStatus() {
             console.log("Atualizando status do ônibus:", data.bus);
             // Update CONFIG with live data
             CONFIG.busSeatsTaken = data.bus.ocupadas;
-            CONFIG.busSeatsTotal = data.bus.capacidade;
             CONFIG.busTotalRegistered = data.bus.total || 0; // Capture total
 
             // Update UI
