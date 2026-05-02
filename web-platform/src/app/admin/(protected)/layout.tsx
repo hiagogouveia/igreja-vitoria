@@ -1,6 +1,6 @@
 import { auth, signOut } from "@/auth";
 import Link from 'next/link';
-import { LayoutDashboard, Users, Calendar, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Settings, LogOut, KeyRound } from 'lucide-react';
 
 export default async function AdminLayout({
     children,
@@ -30,6 +30,10 @@ export default async function AdminLayout({
                     <Link href="/admin/events" className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
                         <Calendar size={20} />
                         <span>Eventos</span>
+                    </Link>
+                    <Link href="/admin/account" className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
+                        <KeyRound size={20} />
+                        <span>Minha Conta</span>
                     </Link>
                     {/* Stub settings */}
                     <Link href="/admin/settings" className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
