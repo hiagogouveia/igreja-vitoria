@@ -25,7 +25,7 @@ export default async function AdminLayout({
                     </Link>
                     <Link href="/admin/cavs" className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
                         <Users size={20} />
-                        <span>Células (CAVs)</span>
+                        <span>CAVs</span>
                     </Link>
                     <Link href="/admin/events" className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors">
                         <Calendar size={20} />

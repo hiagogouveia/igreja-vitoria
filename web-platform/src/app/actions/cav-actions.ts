@@ -3,7 +3,6 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
-// Define types for CAV creation/update to ensure type safety
 export type CavData = {
     name: string
     address: string
@@ -16,6 +15,11 @@ export type CavData = {
     latitude?: number | null
     longitude?: number | null
     active?: boolean
+}
+
+function revalidateAll() {
+    revalidatePath('/cav-enderecos')
+    revalidatePath('/admin/cavs')
 }
 
 export async function getCavs() {
@@ -31,6 +35,18 @@ export async function getCavs() {
     }
 }
 
+export async function getAllCavs() {
+    try {
+        const cavs = await prisma.cav.findMany({
+            orderBy: [{ active: 'desc' }, { name: 'asc' }],
+        })
+        return { success: true, data: cavs }
+    } catch (error) {
+        console.error('Error fetching all CAVs:', error)
+        return { success: false, error: error instanceof Error ? error.message : String(error) }
+    }
+}
+
 export async function createCav(data: CavData) {
     try {
         const cav = await prisma.cav.create({
@@ -38,10 +54,10 @@ export async function createCav(data: CavData) {
                 ...data,
                 city: data.city || 'Campo Grande',
                 state: data.state || 'MS',
-                active: true,
+                active: data.active ?? true,
             },
         })
-        revalidatePath('/cav-enderecos')
+        revalidateAll()
         return { success: true, data: cav }
     } catch (error) {
         console.error('Error creating CAV:', error)
@@ -55,7 +71,7 @@ export async function updateCav(id: string, data: Partial<CavData>) {
             where: { id },
             data,
         })
-        revalidatePath('/cav-enderecos')
+        revalidateAll()
         return { success: true, data: cav }
     } catch (error) {
         console.error('Error updating CAV:', error)
@@ -63,18 +79,43 @@ export async function updateCav(id: string, data: Partial<CavData>) {
     }
 }
 
+export async function toggleCavActive(id: string) {
+    try {
+        const current = await prisma.cav.findUnique({ where: { id } })
+        if (!current) return { success: false, error: 'CAV not found' }
+        const cav = await prisma.cav.update({
+            where: { id },
+            data: { active: !current.active },
+        })
+        revalidateAll()
+        return { success: true, data: cav }
+    } catch (error) {
+        console.error('Error toggling CAV:', error)
+        return { success: false, error: 'Failed to toggle CAV' }
+    }
+}
+
 export async function deleteCav(id: string) {
     try {
-        // Soft delete usually per requirement, but schema has active boolean.
-        // Let's toggle active to false instead of hard delete for safety
         const cav = await prisma.cav.update({
             where: { id },
             data: { active: false },
         })
-        revalidatePath('/cav-enderecos')
+        revalidateAll()
         return { success: true, data: cav }
     } catch (error) {
         console.error('Error deleting CAV:', error)
+        return { success: false, error: 'Failed to deactivate CAV' }
+    }
+}
+
+export async function hardDeleteCav(id: string) {
+    try {
+        await prisma.cav.delete({ where: { id } })
+        revalidateAll()
+        return { success: true }
+    } catch (error) {
+        console.error('Error hard-deleting CAV:', error)
         return { success: false, error: 'Failed to delete CAV' }
     }
 }
