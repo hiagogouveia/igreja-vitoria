@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Hero from '../components/Hero';
+import ConferenceTeaser from '../components/ConferenceTeaser';
 import Beliefs from '../components/Beliefs';
 import Ministries from '../components/Ministries';
 import LiveSection from '../components/LiveSection';
@@ -14,6 +15,7 @@ const Home = () => {
     return (
         <div className="bg-black min-h-screen">
             <Hero />
+            <ConferenceTeaser />
             <Beliefs />
             <Ministries />
             <CavSection />
