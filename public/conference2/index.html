@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESTORE · Vitória Conference 2026 — Tempo de Restauração (V2)</title>
+<meta name="description" content="Vitória Conference 2026 · RESTORE. 28, 29 e 30 de Agosto. Três dias de adoração, palavra e restauração. Deus está restaurando histórias — garanta sua vaga.">
+<!-- Página de comparação A/B (hero em sequência de imagens). Não indexar enquanto for staging. -->
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#040303">
+<meta name="author" content="Igreja Vitória">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="RESTORE · Vitória Conference 2026">
+<meta property="og:description" content="Tempo de Restauração. 28–30 Agosto 2026. Deus está restaurando histórias.">
+<meta property="og:image" content="assets/kv-3.jpg">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Igreja Vitória">
+<meta property="og:url" content="/conference2/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RESTORE · Vitória Conference 2026">
+<meta name="twitter:description" content="Tempo de Restauração. 28–30 Agosto 2026. Deus está restaurando histórias.">
+<meta name="twitter:image" content="assets/kv-3.jpg">
+<!-- SEO: ao publicar, troque os caminhos relativos (canonical/og:url/og:image/twitter:image) pelo domínio absoluto de produção, ex.: https://seu-dominio/conference/ -->
+<link rel="canonical" href="/conference2/">
+<link rel="icon" href="assets/vitoria-logo.png">
+<!-- Hero V2: primeiro frame da sequência pré-carregado (fallback instantâneo, sem tela branca) -->
+<link rel="preload" as="image" href="frames/frame-001.jpg" fetchpriority="high">
+<!-- Fontes auto-hospedadas (sem dependência do Google Fonts) -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/hankengrotesk-300-latin.woff2" crossorigin>
+<link rel="preload" as="style" href="fonts.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="fonts.css"></noscript>
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Event","name":"Vitória Conference 2026 · RESTORE","startDate":"2026-08-28T19:00-03:00","endDate":"2026-08-30T22:00-03:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Igreja Vitória"},"description":"Tempo de Restauração. Três dias de adoração, palavra e celebração dos 6 anos da Igreja Vitória.","offers":{"@type":"Offer","name":"Founders","price":"149","priceCurrency":"BRL","availability":"https://schema.org/InStock"}}
+</script>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Vitória Conferência 26 — início">
+    <img src="assets/vitoria-logo.png" alt="Igreja Vitória">
+    <span class="lk"><b>Vitória</b><b>Conferência <span>26</span></b></span>
+  </a>
+  <div class="nav-links">
+    <a href="#experiencia">Experiência</a>
+    <a href="#lineup">Line-up</a>
+    <a href="#programacao">Programação</a>
+    <a href="#ingressos">Ingressos</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="btn btn-primary nav-cta" data-checkout data-tier="Founders" data-price="R$149">Garantir minha vaga</button>
+  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="drawer" id="drawer">
+  <button class="x" id="drawerClose" aria-label="Fechar">&times;</button>
+  <a href="#experiencia">Experiência</a><a href="#lineup">Line-up</a><a href="#programacao">Programação</a>
+  <a href="#ingressos">Ingressos</a><a href="#faq">FAQ</a>
+  <a class="btn btn-primary cta" href="#ingressos">Garantir minha vaga</a>
+</div>
+
+<!-- ============ 01 · HERO (BROKEN → restores) ============ -->
+<header class="hero" id="top" data-screen-label="Hero">
+  <div class="hero-bg">
+    <div class="poster poster-seq"></div>
+    <canvas id="heroSeq" class="hero-seq" aria-hidden="true"></canvas>
+  </div>
+  <div class="hero-scrim"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-fire"></div>
+  <svg class="glass-shatter" id="shatter" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M50 0 L47 26 L52 40 L44 58 L50 78 L46 100"/>
+    <path d="M47 26 L24 20 M52 40 L78 32 M44 58 L20 66 M52 40 L60 60 L50 78 M44 58 L62 74 M47 26 L58 12"/>
+    <path d="M24 20 L8 30 M78 32 L94 24 M20 66 L6 78 M62 74 L80 88"/>
+  </svg>
+
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="eyebrow hero-eyebrow">Igreja Vitória · 6 anos · 2026</div>
+      <div class="phase-chip pc-broken" style="margin-top:2px"><span class="dot"></span>Fase · Broken</div>
+    </div>
+    <div>
+      <h1 class="hero-restore" data-anim aria-label="Restore">REST<span class="o" aria-hidden="true"></span>RE</h1>
+      <div class="hero-sub">Tempo de <em>Restauração.</em></div>
+      <p class="hero-tagline">Deus está restaurando histórias. E esta pode ser a sua.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" data-checkout data-tier="Founders" data-price="R$149">
+          Garantir minha vaga
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <a class="btn btn-outline" href="#programacao">Ver programação</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-dates">
+      <span class="d">28</span><span class="sep"></span><span class="d">29</span><span class="sep"></span><span class="d">30</span>
+      <span class="mo">Agosto 2026</span>
+    </div>
+    <div class="countdown" id="countdown" aria-label="Contagem regressiva">
+      <div class="cd-unit"><span class="num" data-cd="days">00</span><span class="lab">Dias</span></div>
+      <div class="cd-unit"><span class="num" data-cd="hours">00</span><span class="lab">Horas</span></div>
+      <div class="cd-unit"><span class="num" data-cd="mins">00</span><span class="lab">Min</span></div>
+      <div class="cd-unit"><span class="num" data-cd="secs">00</span><span class="lab">Seg</span></div>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span>Role</span><span class="ln"></span></div>
+</header>
+
+<!-- ============ 02 · MANIFESTO (BROKEN) ============ -->
+<section class="manifesto shell" id="manifesto" data-screen-label="Manifesto">
+  <div class="crack-line"></div>
+  <div class="manifesto-inner">
+    <div class="phase-chip pc-broken reveal" style="margin-bottom:40px"><span class="dot"></span>Fase · Broken</div>
+    <h2>
+      <span class="line" data-lit>Existem histórias que parecem <span class="dim">perdidas.</span></span>
+      <span class="line" data-lit>Existem sonhos que parecem <span class="dim">quebrados.</span></span>
+      <span class="line" data-lit>Existem temporadas que parecem <span class="dim">terminar.</span></span>
+      <span class="line" data-lit style="margin-top:.4em">Mas Deus ainda <span class="turn">restaura.</span></span>
+    </h2>
+    <div class="mafter reveal">Broken → Restoration → Restore</div>
+  </div>
+</section>
+
+<!-- ============ 03 · EXPERIENCE (RESTORATION) ============ -->
+<section class="experience shell" id="experiencia" data-screen-label="Experiência">
+  <span class="beam" style="left:78%"></span>
+  <div class="orb" style="top:-10%;left:-8%;width:40vw;height:55vh"></div>
+  <div class="xp-head">
+    <div class="reveal">
+      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+        <span class="sec-num">01</span><span class="phase-chip pc-restoration"><span class="dot"></span>Fase · Restoration</span>
+      </div>
+      <h2 class="title">Três dias.<br>Um mover<br>de Deus.</h2>
+    </div>
+    <p class="lead reveal rd1">Louvor que rompe. Palavra que reposiciona. Comunhão que cura. A Vitória Conference é o lugar onde a luz começa a refazer o que parecia perdido — e prepara você para o novo.</p>
+  </div>
+
+  <div class="xp-editorial">
+    <div class="xp-tile t-wide reveal" data-parallax="0.04">
+      <div class="img-fixed" style="background-image:url('assets/kv-1.jpg');background-size:188%;background-position:84% 26%"></div>
+      <div class="ov"></div>
+      <div class="cap"><div class="k">Adoração</div><h3>Louvor que rompe o céu</h3><p>Vitória Worship conduzindo noites de presença e entrega.</p></div>
+    </div>
+    <div class="xp-tile t-tall reveal rd1" data-parallax="0.07">
+      <div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div>
+      <div class="ov"></div>
+      <div class="cap"><div class="k">Palavra</div><h3>Uma nova estação</h3><p>Ministrações proféticas para reposicionar a sua vida.</p></div>
+    </div>
+    <div class="xp-tile t-third reveal" data-parallax="0.05">
+      <div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div>
+      <div class="ov"></div>
+      <div class="cap"><div class="k">Comunhão</div><h3>Conexões</h3></div>
+    </div>
+    <div class="xp-tile t-third reveal rd1" data-parallax="0.05">
+      <div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div>
+      <div class="ov"></div>
+      <div class="cap"><div class="k">Criatividade</div><h3>Experiências</h3></div>
+    </div>
+    <div class="xp-tile t-third reveal rd2" data-parallax="0.05">
+      <div class="img-fixed" style="background-image:url('assets/kv-4.jpg');background-size:215%;background-position:50% 12%"></div>
+      <div class="ov"></div>
+      <div class="cap"><div class="k">Transformação</div><h3>Restauração</h3></div>
+    </div>
+  </div>
+
+  <div class="xp-stats reveal">
+    <div class="s"><div class="n">3</div><div class="l">dias de imersão</div></div>
+    <div class="s"><div class="n">6</div><div class="l">anos de Igreja Vitória</div></div>
+    <div class="s"><div class="n">500</div><div class="l">vidas reunidas</div></div>
+    <div class="s"><div class="n">8</div><div class="l">vozes convidadas</div></div>
+  </div>
+</section>
+
+<!-- ============ 04 · LINE-UP ============ -->
+<section class="lineup shell" id="lineup" data-screen-label="Line-up">
+  <div class="sec-row reveal">
+    <div>
+      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+        <span class="sec-num">02</span><span class="phase-chip pc-restoration"><span class="dot"></span>Convidados</span>
+      </div>
+      <h2 class="title">Line-up</h2>
+    </div>
+    <p class="lead">Vozes que carregam uma palavra para esta nova estação. Ministério, louvor e talks.</p>
+  </div>
+  <div class="lineup-grid">
+    <div class="speaker reveal" data-parallax="0.05"><span class="idx">01</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstolo</div><div class="nm">Samuel</div></div></div>
+    <div class="speaker reveal rd1" data-parallax="0.08"><span class="idx">02</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstola</div><div class="nm">Neila</div></div></div>
+    <div class="speaker reveal rd2" data-parallax="0.05"><span class="idx">03</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstolo</div><div class="nm">Heber Son</div></div></div>
+    <div class="speaker reveal rd3" data-parallax="0.08"><span class="idx">04</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstola</div><div class="nm">Rayssa</div></div></div>
+    <div class="speaker reveal" data-parallax="0.06"><span class="idx">05</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Talks</div><div class="nm">Gabriel Júnior</div></div></div>
+    <div class="speaker reveal rd1" data-parallax="0.08"><span class="idx">06</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Gran Finale</div><div class="nm">Marcelo Marques</div></div></div>
+    <div class="speaker reveal rd2" data-parallax="0.05"><span class="idx">07</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Worship</div><div class="nm">Vitória Worship</div></div></div>
+    <div class="speaker reveal rd3" data-parallax="0.08"><span class="idx">08</span><div class="media-fill" aria-hidden="true"><img class="dove" src="assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Preletor</div><div class="nm">Geisson Augusto</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 · SCHEDULE ============ -->
+<section class="schedule shell" id="programacao" data-screen-label="Programação">
+  <div class="sec-row reveal">
+    <div>
+      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+        <span class="sec-num">03</span><span class="phase-chip pc-restoration"><span class="dot"></span>Fase · Restoration</span>
+      </div>
+      <h2 class="title">Programação</h2>
+    </div>
+    <p class="lead">Três dias desenhados para te levar de uma estação a outra. Sujeito a ajustes.</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-day reveal">
+      <div class="tl-when"><div class="day">Sexta</div><div class="date">28 AGO · NOITE</div></div>
+      <div class="tl-items"><div class="tl-card"><div class="hd"><h4>Revival Night</h4><span class="badge">Abertura</span></div><p>Uma noite de avivamento e quebra. Louvor profético <span class="who">com Gabriel Júnior</span>.</p></div></div>
+    </div>
+    <div class="tl-day reveal">
+      <div class="tl-when"><div class="day">Sábado</div><div class="date">29 AGO · DIA INTEIRO</div></div>
+      <div class="tl-items">
+        <div class="tl-card"><div class="hd"><h4>Louvor · Palavra · Talks</h4></div><p>Manhã e tarde de adoração intensa e ministração da Palavra para uma nova estação.</p></div>
+        <div class="tl-card"><div class="hd"><h4>Business Talk</h4><span class="badge">Talk</span></div><p>Negócios e Investimentos — fé aplicada ao mercado e ao chamado empreendedor.</p></div>
+        <div class="tl-card"><div class="hd"><h4>Sociedade &amp; Influência Cristã</h4><span class="badge">Talk</span></div><p>Como ser sal e luz nos espaços que Deus nos deu para ocupar.</p></div>
+      </div>
+    </div>
+    <div class="tl-day reveal">
+      <div class="tl-when"><div class="day">Domingo<br>Manhã</div><div class="date">30 AGO · MANHÃ</div></div>
+      <div class="tl-items"><div class="tl-card"><div class="hd"><h4>Culto de Liderança</h4></div><p>Batismos, consagração e envio. Um marco para quem decide servir.</p></div></div>
+    </div>
+    <div class="tl-day reveal">
+      <div class="tl-when"><div class="day">Domingo<br>Noite</div><div class="date">30 AGO · NOITE</div></div>
+      <div class="tl-items"><div class="tl-card"><div class="hd"><h4>Gran Finale</h4><span class="badge">Encerramento</span></div><p>Retrospectiva, apresentações e a celebração dos 6 anos <span class="who">com Marcelo Marques</span>.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · CINEMATIC ============ -->
+<section class="cinematic" id="cinematic" data-screen-label="Cinematográfico">
+  <div class="cinematic-bg"></div>
+  <div class="cinematic-scrim"></div>
+  <div class="rays"><span></span><span></span><span></span></div>
+  <div class="cinematic-inner">
+    <h2 class="reveal">Mais que uma conferência.<br>Um <em>mover</em> de Deus.</h2>
+    <p class="csub reveal rd1">Aquilo que estava partido voltando inteiro — e mais belo do que antes. Esta é a história que estamos prestes a viver juntos.</p>
+    <a class="play reveal rd2" href="#top" aria-label="Assistir teaser">
+      <span class="circle"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+      <span class="pl">Assistir o teaser</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 07 · TICKETS (RESTORE) ============ -->
+<section class="tickets shell" id="ingressos" data-screen-label="Ingressos">
+  <div class="orb" style="top:-6%;right:-6%;width:42vw;height:60vh"></div>
+  <div class="sec-row reveal" style="position:relative;z-index:2">
+    <div>
+      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+        <span class="sec-num">04</span><span class="phase-chip pc-restore"><span class="dot"></span>Fase · Restore</span>
+      </div>
+      <h2 class="title">Ingressos</h2>
+    </div>
+    <p class="lead">Escolha o seu lote. O Founders é limitado aos 100 primeiros — depois ele não volta.</p>
+  </div>
+  <div class="tk-grid">
+    <div class="tk featured reveal">
+      <div class="tk-flag">100 primeiros</div>
+      <div class="tk-name">Founders</div><div class="tk-tier">Lote fundador</div>
+      <div class="tk-price">R$149</div>
+      <div class="tk-note">Os primeiros a crer. Acesso completo aos 3 dias.</div>
+      <ul class="tk-feat"><li>Acesso a todos os dias</li><li>Brinde exclusivo Founders</li><li>Área prioritária</li></ul>
+      <button class="btn btn-primary" data-checkout data-tier="Founders" data-price="R$149">Quero este</button>
+    </div>
+    <div class="tk reveal rd1">
+      <div class="tk-name">Legacy</div><div class="tk-tier">Inteira</div>
+      <div class="tk-price">R$169</div>
+      <div class="tk-note">Acesso completo aos três dias de conferência.</div>
+      <ul class="tk-feat"><li>Acesso a todos os dias</li><li>Credencial oficial</li></ul>
+      <button class="btn" data-checkout data-tier="Legacy" data-price="R$169">Comprar</button>
+    </div>
+    <div class="tk reveal rd2">
+      <div class="tk-name">Youngs</div><div class="tk-tier">12–18 anos</div>
+      <div class="tk-price">R$89</div>
+      <div class="tk-note">Lote para a próxima geração.</div>
+      <ul class="tk-feat"><li>Acesso a todos os dias</li><li>Documento na entrada</li></ul>
+      <button class="btn" data-checkout data-tier="Youngs" data-price="R$89">Comprar</button>
+    </div>
+    <div class="tk reveal rd3">
+      <div class="tk-name">Family</div><div class="tk-tier">Pacote familiar</div>
+      <div class="tk-price">R$129<small>,90 /pessoa</small></div>
+      <div class="tk-note">Valor especial para vir em família.</div>
+      <ul class="tk-feat"><li>Por participante</li><li>A partir de 4 pessoas</li></ul>
+      <button class="btn" data-checkout data-tier="Family" data-price="R$129,90/pessoa">Comprar</button>
+    </div>
+    <div class="tk reveal rd4">
+      <div class="tk-name">Kids</div><div class="tk-tier">Até 12 anos</div>
+      <div class="tk-price">Grátis</div>
+      <div class="tk-note">As crianças são bem-vindas. Espaço Kids dedicado.</div>
+      <ul class="tk-feat"><li>Acompanhado de adulto</li><li>Programação Kids</li></ul>
+      <button class="btn" data-checkout data-tier="Kids" data-price="Gratuito">Reservar</button>
+    </div>
+  </div>
+  <div class="tickets-cta reveal">
+    <button class="btn btn-primary btn-lg" data-checkout data-tier="Founders" data-price="R$149">
+      Quero garantir minha vaga
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============ 08 · WHY (pills) ============ -->
+<section class="why shell" id="porque" data-screen-label="Por que participar">
+  <div class="reveal">
+    <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+      <span class="sec-num" style="color:rgba(244,241,236,.8)">05</span>
+    </div>
+    <h2 class="title">Por que<br>estar lá?</h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal"><svg class="ic" viewBox="0 0 24 24"><path d="M12 21C5 14 4 9 7 6c2-2 5-1 5 2 0-3 3-4 5-2 3 3 2 8-5 15z"/></svg><h4>Deus restaura<br>histórias</h4></div>
+    <div class="why-card reveal rd1"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5 5 9a5 5 0 11-10 0c0-2 1-3 2-4 1 2 2 1 3-5z"/></svg><h4>Ele transforma<br>o impossível</h4></div>
+    <div class="why-card reveal rd2"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3c4 5 6 8 6 11a6 6 0 11-12 0c0-3 2-6 6-11z"/></svg><h4>Prepare o<br>seu coração</h4></div>
+    <div class="why-card reveal"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M14 20c0-2 2-3.5 4-3.5"/></svg><h4>Conexões que<br>transformam</h4></div>
+    <div class="why-card reveal rd1"><svg class="ic" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><h4>Adoração<br>intensa</h4></div>
+    <div class="why-card reveal rd2"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.4 5 5.6.8-4 4 1 5.6L12 16l-5 2.4 1-5.6-4-4 5.6-.8z"/></svg><h4>Experiências<br>inesquecíveis</h4></div>
+  </div>
+</section>
+
+<!-- ============ 09 · FAQ ============ -->
+<section class="faq shell" id="faq" data-screen-label="FAQ">
+  <div class="faq-wrap">
+    <div class="reveal">
+      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+        <span class="sec-num">06</span><span class="phase-chip pc-broken"><span class="dot"></span>Dúvidas</span>
+      </div>
+      <h2 class="title">Perguntas<br>frequentes</h2>
+      <p class="lead" style="margin-top:22px">Não achou sua resposta? Fale com a organização pelo WhatsApp.</p>
+    </div>
+    <div class="faq-list reveal rd1">
+      <div class="faq-item"><div class="faq-q">Posso parcelar?<span class="faq-icon"></span></div><div class="faq-a"><p>Sim. O checkout permite parcelamento no cartão de crédito. As condições aparecem na etapa de pagamento.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Crianças pagam?<span class="faq-icon"></span></div><div class="faq-a"><p>Crianças de até 12 anos têm entrada gratuita (lote Kids), sempre acompanhadas de um adulto responsável. Haverá espaço Kids dedicado.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Como funciona o combo família?<span class="faq-icon"></span></div><div class="faq-a"><p>O lote Family oferece valor por pessoa a partir de 4 participantes da mesma família. Selecione "Family" no checkout e informe a quantidade.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Posso transferir meu ingresso?<span class="faq-icon"></span></div><div class="faq-a"><p>Sim, ingressos são transferíveis até 48h antes do evento. A titularidade pode ser atualizada pela organização.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Haverá estacionamento?<span class="faq-icon"></span></div><div class="faq-a"><p>Sim, haverá estacionamento no entorno da Igreja Vitória. Recomendamos chegar com antecedência nos dias de maior fluxo.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Como falar com a organização?<span class="faq-icon"></span></div><div class="faq-a"><p>Pelo WhatsApp oficial ou pelo Instagram @vitoriaconference. Respondemos de segunda a sexta, das 9h às 18h.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · FINAL CTA (RESTORE) ============ -->
+<section class="final" id="final" data-screen-label="Chamada final">
+  <div class="final-bg"></div>
+  <div class="final-scrim"></div>
+  <div class="rays"><span></span><span></span><span></span></div>
+  <div class="final-inner reveal">
+    <div class="phase-chip pc-restore" style="margin-bottom:30px"><span class="dot"></span>Fase · Restore</div>
+    <h2>É tempo<br>de<br>restauração.</h2>
+    <p>Talvez Deus tenha marcado estes três dias para mudar a sua história.</p>
+    <button class="btn btn-primary btn-lg" data-checkout data-tier="Founders" data-price="R$149">
+      Garantir minha vaga
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="footer-top">
+    <div class="footer-col">
+      <a class="brand" href="#top"><img src="assets/vitoria-logo.png" alt="Igreja Vitória"><span class="lk"><b>Vitória</b><b>Conferência <span>26</span></b></span></a>
+      <p class="footer-blurb">RESTORE — Tempo de Restauração. Três dias de adoração, palavra e celebração dos 6 anos da Igreja Vitória.</p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.5"/><circle cx="17" cy="7" r="1"/></svg></a>
+        <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.5-4A7 7 0 1112 19a7 7 0 01-3.5-1L4 20z"/></svg></a>
+        <a href="#" aria-label="Localização"><svg viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col"><h5>Navegação</h5><a href="#experiencia">Experiência</a><a href="#lineup">Line-up</a><a href="#programacao">Programação</a><a href="#ingressos">Ingressos</a><a href="#faq">FAQ</a></div>
+    <div class="footer-col"><h5>Evento</h5><p>28 · 29 · 30 Agosto 2026</p><p>Igreja Vitória</p><p>6 anos · RESTORE</p></div>
+    <div class="footer-col"><h5>Contato</h5><a href="#">@vitoriaconference</a><a href="#">WhatsApp oficial</a><a href="#">Como chegar</a></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Vitória Conference · Igreja Vitória</p>
+    <p>Deus está restaurando histórias.</p>
+  </div>
+  <div class="footer-word">Restore</div>
+</footer>
+
+<!-- ============ CHECKOUT MODAL ============ -->
+<div class="scrim" id="checkoutModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Garantir ingresso">
+    <button class="x" id="modalClose" aria-label="Fechar">&times;</button>
+    <div id="modalForm">
+      <div class="eyebrow">Garantir ingresso</div>
+      <h3>Sua vaga</h3>
+      <p class="selected">Lote <b id="mTier">Founders</b> · <b id="mPrice">R$149</b></p>
+      <div class="fld"><label>Nome completo</label><input class="inp" id="mName" placeholder="Seu nome"><span class="errmsg" id="eName"></span></div>
+      <div class="fld"><label>E-mail</label><input class="inp" id="mEmail" placeholder="voce@email.com"><span class="errmsg" id="eEmail"></span></div>
+      <div class="fld"><label>WhatsApp</label><input class="inp" id="mPhone" placeholder="(00) 00000-0000"><span class="errmsg" id="ePhone"></span></div>
+      <button class="btn btn-primary" id="mSubmit">Confirmar reserva</button>
+    </div>
+    <div class="modal-success" id="modalSuccess" style="display:none">
+      <div class="check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+      <h3>Vaga reservada!</h3>
+      <p>Enviamos os próximos passos para o seu e-mail. Prepare seu coração — Deus está restaurando histórias.</p>
+      <button class="btn btn-outline" id="mDone" style="margin-top:24px">Fechar</button>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
