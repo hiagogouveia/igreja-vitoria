@@ -11,20 +11,21 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="RESTORE · Vitória Conference 2026">
 <meta property="og:description" content="Tempo de Restauração. 28–30 Agosto 2026. Deus está restaurando histórias.">
-<meta property="og:image" content="assets/kv-3.png">
+<meta property="og:image" content="assets/kv-3.jpg">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Igreja Vitória">
 <meta property="og:url" content="/conference/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RESTORE · Vitória Conference 2026">
 <meta name="twitter:description" content="Tempo de Restauração. 28–30 Agosto 2026. Deus está restaurando histórias.">
-<meta name="twitter:image" content="assets/kv-3.png">
+<meta name="twitter:image" content="assets/kv-3.jpg">
 <!-- SEO: ao publicar, troque os caminhos relativos (canonical/og:url/og:image/twitter:image) pelo domínio absoluto de produção, ex.: https://seu-dominio/conference/ -->
 <link rel="canonical" href="/conference/">
 <link rel="icon" href="assets/vitoria-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Fontes auto-hospedadas (sem dependência do Google Fonts) -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/hankengrotesk-300-latin.woff2" crossorigin>
+<link rel="preload" as="style" href="fonts.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="fonts.css"></noscript>
 <link rel="stylesheet" href="styles.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Event","name":"Vitória Conference 2026 · RESTORE","startDate":"2026-08-28T19:00-03:00","endDate":"2026-08-30T22:00-03:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Igreja Vitória"},"description":"Tempo de Restauração. Três dias de adoração, palavra e celebração dos 6 anos da Igreja Vitória.","offers":{"@type":"Offer","name":"Founders","price":"149","priceCurrency":"BRL","availability":"https://schema.org/InStock"}}
@@ -34,7 +35,7 @@
 
 <!-- ============ NAV ============ -->
 <nav class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="Vitória Conference">
+  <a class="brand" href="#top" aria-label="Vitória Conferência 26 — início">
     <img src="assets/vitoria-logo.png" alt="Igreja Vitória">
     <span class="lk"><b>Vitória</b><b>Conferência <span>26</span></b></span>
   </a>
@@ -53,6 +54,7 @@
   <button class="x" id="drawerClose" aria-label="Fechar">&times;</button>
   <a href="#experiencia">Experiência</a><a href="#lineup">Line-up</a><a href="#programacao">Programação</a>
   <a href="#ingressos">Ingressos</a><a href="#faq">FAQ</a>
+  <a class="btn btn-primary cta" href="#ingressos">Garantir minha vaga</a>
 </div>
 
 <!-- ============ 01 · HERO (BROKEN → restores) ============ -->
@@ -75,7 +77,7 @@
       <div class="phase-chip pc-broken" style="margin-top:2px"><span class="dot"></span>Fase · Broken</div>
     </div>
     <div>
-      <h1 class="hero-restore" data-anim>REST<span class="o"></span>RE</h1>
+      <h1 class="hero-restore" data-anim aria-label="Restore">REST<span class="o" aria-hidden="true"></span>RE</h1>
       <div class="hero-sub">Tempo de <em>Restauração.</em></div>
       <p class="hero-tagline">Deus está restaurando histórias. E esta pode ser a sua.</p>
       <div class="hero-actions">
@@ -135,7 +137,7 @@
 
   <div class="xp-editorial">
     <div class="xp-tile t-wide reveal" data-parallax="0.04">
-      <div class="img-fixed" style="background-image:url('assets/kv-1.png');background-size:188%;background-position:84% 26%"></div>
+      <div class="img-fixed" style="background-image:url('assets/kv-1.jpg');background-size:188%;background-position:84% 26%"></div>
       <div class="ov"></div>
       <div class="cap"><div class="k">Adoração</div><h3>Louvor que rompe o céu</h3><p>Vitória Worship conduzindo noites de presença e entrega.</p></div>
     </div>
@@ -155,7 +157,7 @@
       <div class="cap"><div class="k">Criatividade</div><h3>Experiências</h3></div>
     </div>
     <div class="xp-tile t-third reveal rd2" data-parallax="0.05">
-      <div class="img-fixed" style="background-image:url('assets/kv-4.png');background-size:215%;background-position:50% 12%"></div>
+      <div class="img-fixed" style="background-image:url('assets/kv-4.jpg');background-size:215%;background-position:50% 12%"></div>
       <div class="ov"></div>
       <div class="cap"><div class="k">Transformação</div><h3>Restauração</h3></div>
     </div>

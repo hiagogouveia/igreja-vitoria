@@ -19,7 +19,7 @@
   --glass-restored:rgba(244,241,236,.07);
   --glass-border:rgba(244,241,236,.16);
   /* text */
-  --t-pri:#F4F1EC; --t-sec:#AFA59B; --t-mut:#6A6058; --t-red:#FF5A2A; --t-on-red:#CFCFCE;
+  --t-pri:#F4F1EC; --t-sec:#B8AEA3; --t-mut:#938A7E; --t-red:#FF6A3D; --t-on-red:#CFCFCE;
   /* radius */
   --r-xs:4px; --r-sm:8px; --r-md:14px; --r-lg:22px; --r-xl:34px; --r-2xl:48px; --r-full:999px;
   /* shadow */
@@ -132,7 +132,7 @@ h2.title{font-weight:700;font-size:clamp(38px,6vw,86px);letter-spacing:-.04em;li
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 7vw 40px;position:relative;overflow:hidden;background:var(--void)}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-bg image-slot{width:100%;height:100%}
-.hero-bg .poster{position:absolute;inset:0;background:url("assets/kv-3.png") 99% 40% / cover no-repeat;
+.hero-bg .poster{position:absolute;inset:0;background:url("assets/kv-3.jpg") 99% 40% / cover no-repeat;
   animation:heroKenburns 24s ease-in-out infinite alternate}
 @keyframes heroKenburns{from{transform:scale(1.28)}to{transform:scale(1.4)}}
 .hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -274,7 +274,7 @@ h2.title{font-weight:700;font-size:clamp(38px,6vw,86px);letter-spacing:-.04em;li
    06 · CINEMATIC  (Nike-style)
    ============================================================ */
 .cinematic{min-height:96vh;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--void);padding:90px 7vw}
-.cinematic-bg{position:absolute;inset:0;z-index:0;background:url("assets/kv-1.png") 95% 34% / cover no-repeat;
+.cinematic-bg{position:absolute;inset:0;z-index:0;background:url("assets/kv-1.jpg") 95% 34% / cover no-repeat;
   transform-origin:90% 38%;animation:heroKenburns 26s ease-in-out infinite alternate}
 .cinematic-scrim{position:absolute;inset:0;z-index:1;background:
   linear-gradient(90deg,rgba(4,3,3,.95) 0%,rgba(4,3,3,.82) 40%,rgba(122,18,8,.28) 70%,rgba(4,3,3,.5) 100%)}
@@ -365,7 +365,7 @@ h2.title{font-weight:700;font-size:clamp(38px,6vw,86px);letter-spacing:-.04em;li
    10 · FINAL CTA  (Phase: RESTORE)
    ============================================================ */
 .final{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 7vw}
-.final-bg{position:absolute;inset:0;z-index:0;background:url("assets/kv-3.png") 99% 40% / cover no-repeat;animation:heroKenburns 24s ease-in-out infinite alternate}
+.final-bg{position:absolute;inset:0;z-index:0;background:url("assets/kv-3.jpg") 99% 40% / cover no-repeat;animation:heroKenburns 24s ease-in-out infinite alternate}
 .final-scrim{position:absolute;inset:0;z-index:1;background:
   linear-gradient(90deg,rgba(4,3,3,.96) 0%,rgba(4,3,3,.9) 48%,rgba(4,3,3,.5) 74%,rgba(4,3,3,.54) 100%),
   radial-gradient(82% 92% at 56% 50%,transparent 0%,rgba(4,3,3,.5) 66%,rgba(4,3,3,.92) 100%)}
@@ -457,3 +457,28 @@ html.js-anim .reveal.in{opacity:1;transform:none;filter:none}
   background:radial-gradient(circle,rgba(255,90,31,.22),transparent 62%);filter:blur(28px)}
 .media-fill .dove{position:relative;width:48%;max-width:150px;height:auto;opacity:.42;
   filter:brightness(0) invert(1) drop-shadow(0 0 18px rgba(255,90,31,.55))}
+
+/* ============================================================
+   POLIMENTO DE PRODUÇÃO · responsividade (auditoria final)
+   ============================================================ */
+/* Nav: o CTA grande some no mobile — o burger abre o drawer (que tem
+   seu próprio CTA) e o hero já traz o botão principal. Evita o brand
+   espremido e o botão gigante na barra. */
+@media(max-width:940px){
+  .nav-cta{display:none}
+  .nav{padding:18px 6vw}
+  .nav.scrolled{padding:12px 6vw}
+}
+/* CTA dentro do drawer mobile (caminho de conversão no menu) */
+.drawer .cta{margin-top:34px;align-self:flex-start;border-bottom:none!important;
+  font-size:15px!important;padding:16px 30px!important}
+/* Countdown: em telas estreitas as 4 unidades dividem a largura e nunca
+   são cortadas (antes o bloco "Seg" vazava em <=360px). */
+@media(max-width:430px){
+  .hero-bottom{gap:22px 20px}
+  .hero-dates{width:100%}
+  .countdown{width:100%;gap:8px}
+  .cd-unit{flex:1;min-width:0;padding:13px 4px}
+  .cd-unit .num{font-size:clamp(22px,7.4vw,32px)}
+  .cd-unit .lab{font-size:9px;letter-spacing:.1em}
+}

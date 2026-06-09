@@ -21,7 +21,7 @@ const ConferenceTeaser = () => {
                 {/* Pomba / key visual */}
                 <div
                     className="absolute inset-0 bg-cover bg-center md:bg-right opacity-70"
-                    style={{ backgroundImage: `url('${CONFERENCE_URL}assets/kv-3.png')` }}
+                    style={{ backgroundImage: `url('${CONFERENCE_URL}assets/kv-3.jpg')` }}
                 />
                 {/* Scrims para legibilidade */}
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/30" />
