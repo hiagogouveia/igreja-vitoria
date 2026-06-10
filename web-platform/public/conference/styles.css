@@ -103,16 +103,35 @@ h2.title{font-weight:700;font-size:clamp(38px,6vw,86px);letter-spacing:-.04em;li
 /* ============================================================
    NAVBAR
    ============================================================ */
-.nav{position:fixed;top:0;left:0;right:0;z-index:5000;display:flex;align-items:center;justify-content:space-between;
-  padding:22px 7vw;transition:padding .4s var(--ease),background .4s,backdrop-filter .4s,border-color .4s;border-bottom:1px solid transparent}
-.nav.scrolled{padding:13px 7vw;background:rgba(6,4,3,.78);backdrop-filter:blur(20px);border-bottom:1px solid rgba(244,241,236,.08)}
+/* Nav flutuante · liquid glass (Apple-style) */
+.nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);
+  width:min(1180px,calc(100% - 28px));z-index:5000;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:11px 14px 11px 22px;border-radius:var(--r-full);
+  isolation:isolate;overflow:hidden;color:var(--spirit-white);
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+  box-shadow:0 8px 28px rgba(0,0,0,.38),
+    inset 2px 2px 1px 0 rgba(255,255,255,.45),
+    inset -1px -1px 1px 1px rgba(255,255,255,.18);
+  transition:padding .4s var(--ease),box-shadow .4s var(--ease),background .4s,top .4s var(--ease)}
+/* camada líquida: distorce + desfoca o que está atrás (Chrome); Safari cai p/ blur */
+.nav::before{content:"";position:absolute;inset:0;z-index:-2;border-radius:inherit;
+  backdrop-filter:blur(7px) saturate(160%) url(#glass-distortion);
+  -webkit-backdrop-filter:blur(7px) saturate(160%)}
+/* tinta translúcida suave por cima do blur */
+.nav::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03))}
+.nav.scrolled{top:10px;box-shadow:0 12px 34px rgba(0,0,0,.48),
+    inset 2px 2px 1px 0 rgba(255,255,255,.5),
+    inset -1px -1px 1px 1px rgba(255,255,255,.22)}
 .nav .brand{display:flex;align-items:center;gap:11px}
 .nav .brand img{height:30px;width:auto}
 .nav .brand .lk{line-height:.86;font-weight:600;font-size:13px;letter-spacing:-.01em}
 .nav .brand .lk b{display:block;font-weight:600}
 .nav .brand .lk span{color:var(--t-red)}
 .nav-links{display:flex;align-items:center;gap:28px}
-.nav-links a{font-size:13px;font-weight:500;color:var(--t-sec);transition:color .25s}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(244,241,236,.85);transition:color .25s;text-shadow:0 1px 6px rgba(0,0,0,.35)}
 .nav-links a:hover{color:var(--t-pri)}
 .nav-cta{padding:11px 22px;font-size:12.5px}
 .burger{display:none;flex-direction:column;gap:5px;padding:6px}
