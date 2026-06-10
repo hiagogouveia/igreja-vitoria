@@ -1,77 +1,76 @@
-import React from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import { MapPin, Calendar, Users } from 'lucide-react';
+import useReveal from '../lib/useReveal';
+import { useModal } from '../context/ModalContext';
+import MapEmbed from '../components/MapEmbed';
+import { display, sectionTitle, wrap } from '../lib/ui';
 
-const CavPage = () => {
-    return (
-        <div className="min-h-screen bg-black text-white font-sans selection:bg-neon-blue selection:text-white">
-            <Navbar />
+const infoCards = [
+  { icon: '◷', tint: 'beam', title: 'Dias de Encontro', text: 'Nossas casas se reúnem durante a semana — terças, quintas e sextas. Escolha o dia e o bairro mais perto de você.' },
+  { icon: '♡', tint: 'glow', title: 'Comunhão', text: 'Mais que um grupo: uma família. Oração, palavra, comida e amizade que sustentam você o ano inteiro.' },
+  { icon: '⌖', tint: 'glow', title: 'Perto de Você', text: 'Espalhadas por Campo Grande, há sempre uma casa pertinho da sua. Encontre a sua e seja bem-vindo.' },
+];
 
-            <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4">
-                        Casa de <span className="text-neon-blue">Vitória</span>
-                    </h1>
-                    <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                        A igreja nos lares. Um tempo de comunhão, palavra e oração perto de você.
-                    </p>
-                </div>
+const openHouses = [
+  { bairro: 'Bairro Universitário', when: 'Sexta · 19:30', text: 'Av. Vitor Meireles, 163 · Casa 03. Um grupo acolhedor para todas as idades, com louvor e palavra toda sexta.' },
+  { bairro: 'Centro', when: 'Quinta · 19:30', text: 'Próximo à sede. Grupo aberto a novos membros, com foco em discipulado e amizade verdadeira.' },
+];
 
-                {/* Info Cards */}
-                <div className="grid md:grid-cols-3 gap-8 mb-16">
-                    <div className="bg-white/5 border border-white/10 p-8 rounded-2xl text-center hover:border-neon-blue/50 transition-colors group">
-                        <div className="w-16 h-16 bg-neon-blue/20 rounded-full flex items-center justify-center mx-auto mb-6 text-neon-blue group-hover:scale-110 transition-transform">
-                            <Calendar size={32} />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2">Dias de Encontro</h3>
-                        <p className="text-gray-400">Terça, Quinta e Sexta-feira</p>
-                    </div>
+export default function CavPage() {
+  useReveal();
+  const { openHost } = useModal();
 
-                    <div className="bg-white/5 border border-white/10 p-8 rounded-2xl text-center hover:border-neon-purple/50 transition-colors group">
-                        <div className="w-16 h-16 bg-neon-purple/20 rounded-full flex items-center justify-center mx-auto mb-6 text-neon-purple group-hover:scale-110 transition-transform">
-                            <Users size={32} />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2">Comunhão</h3>
-                        <p className="text-gray-400">Tempo de qualidade, partilhar o pão e fortalecer vínculos.</p>
-                    </div>
-
-                    <div className="bg-white/5 border border-white/10 p-8 rounded-2xl text-center hover:border-neon-blue/50 transition-colors group">
-                        <div className="w-16 h-16 bg-neon-blue/20 rounded-full flex items-center justify-center mx-auto mb-6 text-neon-blue group-hover:scale-110 transition-transform">
-                            <MapPin size={32} />
-                        </div>
-                        <h3 className="text-xl font-bold mb-2">Perto de Você</h3>
-                        <p className="text-gray-400">Encontre uma CAV no seu bairro e participe.</p>
-                    </div>
-                </div>
-
-                {/* Map Section */}
-                <div className="bg-dark-surface border border-white/10 rounded-2xl overflow-hidden">
-                    <div className="p-8 border-b border-white/10">
-                        <h2 className="text-2xl font-bold mb-2">CAV - Bairro Universitário</h2>
-                        <p className="text-gray-400 flex items-center">
-                            <MapPin size={18} className="mr-2 text-neon-blue" />
-                            Av. Vitor Meireles, 163 - Casa 03 (Sexta às 19:30)
-                        </p>
-                    </div>
-                    <div className="w-full h-[400px] bg-gray-800 relative">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3737.5686036814467!2d-54.60627592475659!3d-20.49303358097956!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9486e8851493108b%3A0x6b49080985c5b597!2sAv.%20Vitor%20Meireles%2C%20163%20-%20Universit%C3%A1rio%2C%20Campo%20Grande%20-%20MS%2C%2079060-490!5e0!3m2!1spt-BR!2sbr!4v1715456128452!5m2!1spt-BR!2sbr"
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            allowFullScreen=""
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                        ></iframe>
-                    </div>
-                </div>
-            </div>
-
-            <Footer />
+  return (
+    <div>
+      <header style={{ position: 'relative', minHeight: '56vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', padding: '0 0 50px' }}>
+        <img src="/assets/community-prayer.jpg" alt="Casa de Vitória" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', animation: 'kenburns 22s var(--ease) infinite alternate' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.8) 0%,rgba(5,5,5,.3) 45%,rgba(5,5,5,.96) 100%)' }} />
+        <div style={{ position: 'relative', zIndex: 2, ...wrap, padding: '0 28px', width: '100%' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--beam)', background: 'rgba(91,141,239,.12)', border: '1px solid rgba(91,141,239,.28)', padding: '7px 14px', borderRadius: 99, marginBottom: 18, marginTop: 90 }}>Perto de você</div>
+          <h1 style={{ ...display, fontSize: 'clamp(38px,7vw,90px)' }}>Casa de Vitória</h1>
         </div>
-    );
-};
+      </header>
 
-export default CavPage;
+      <section className="reveal" style={{ padding: '80px 28px' }}>
+        <div data-grid3 style={{ ...wrap, display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+          {infoCards.map((c) => (
+            <div key={c.title} style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 16, padding: 32 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: c.tint === 'beam' ? 'rgba(91,141,239,.12)' : 'rgba(240,168,72,.12)', border: `1px solid ${c.tint === 'beam' ? 'rgba(91,141,239,.25)' : 'rgba(240,168,72,.25)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.tint === 'beam' ? 'var(--beam)' : 'var(--glow)', fontSize: 20, marginBottom: 18 }}>{c.icon}</div>
+              <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 20, marginBottom: 10 }}>{c.title}</h3>
+              <p style={{ fontSize: 15, color: 'var(--dim)', lineHeight: 1.6 }}>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="reveal" style={{ padding: '0 28px 80px' }}>
+        <div style={wrap}>
+          <h2 style={{ ...sectionTitle, fontSize: 'clamp(24px,3.4vw,38px)', marginBottom: 26 }}>Casas abertas agora</h2>
+          <div data-split style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+            {openHouses.map((h) => (
+              <div key={h.bairro} className="hov-beam" style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 16, padding: 28 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+                  <h4 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 20 }}>{h.bairro}</h4>
+                  <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--beam)', whiteSpace: 'nowrap', background: 'rgba(91,141,239,.1)', border: '1px solid rgba(91,141,239,.25)', padding: '6px 12px', borderRadius: 99 }}>{h.when}</span>
+                </div>
+                <p style={{ fontSize: 14, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 18 }}>{h.text}</p>
+                <span onClick={openHost} className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.06em', color: 'var(--glow)', cursor: 'pointer' }}>Quero participar →</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ border: '1px solid var(--border)', borderRadius: 18, overflow: 'hidden', position: 'relative', minHeight: 280, background: 'var(--s2)' }}>
+            <MapEmbed query="Av.+Vitor+Meireles,+163+-+Campo+Grande+-+MS" title="Mapa CAV" />
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal" style={{ padding: '0 28px 100px' }}>
+        <div style={{ ...wrap, background: 'linear-gradient(135deg,var(--s1),var(--ink))', border: '1px solid var(--border)', borderRadius: 22, padding: '48px 44px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 30, flexWrap: 'wrap' }}>
+          <div>
+            <h2 style={{ ...sectionTitle, fontSize: 'clamp(24px,3.2vw,36px)', marginBottom: 8 }}>Quer abrir sua casa?</h2>
+            <p style={{ fontSize: 16, color: 'var(--dim)', maxWidth: 440 }}>Seja anfitrião de uma Casa de Vitória e veja sua sala virar um lugar de transformação.</p>
+          </div>
+          <button onClick={openHost} className="btn-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15.5, padding: '16px 30px', borderRadius: 99, cursor: 'pointer', border: 'none' }}>Quero ser anfitrião →</button>
+        </div>
+      </section>
+    </div>
+  );
+}

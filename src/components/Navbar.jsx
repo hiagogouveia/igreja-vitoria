@@ -1,88 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import Button from './ui/Button';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
+const NAV_ITEMS = [
+  { label: 'Quem Somos', to: '/quem-somos' },
+  { label: 'Ministérios', to: '/ministerios' },
+  { label: 'Casa de Vitória', to: '/cav' },
+  { label: 'Ao Vivo', to: '/aovivo' },
+  { label: 'Eventos', to: '/eventos' },
+  { label: 'Mensagens', to: '/mensagens' },
+  { label: 'Contato', to: '/contato' },
+];
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const navLinks = [
-        { name: 'Home', href: '/#home' },
-        { name: 'Ao Vivo', href: '/#live' },
-        { name: 'Casa de Vitória', href: '/#cav-home' }, // Updated to point to the new section
-        { name: 'Eventos', href: '/#events' },
-        { name: 'Contribua', href: '/contribua' }, // Changed to direct link if it's a page, or /#donate if section
-    ];
-
-    const scrollToTop = (e) => {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setIsOpen(false);
-    };
-
-    return (
-        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/90 backdrop-blur-md border-b border-white/10 py-2' : 'bg-transparent py-4'}`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <div className="flex-shrink-0 flex items-center">
-                        <a href="/" onClick={scrollToTop}>
-                            <img src="/logo-v-final.png" alt="Igreja Vitória" className="h-20 w-auto object-contain invert" />
-                        </a>
-                    </div>
-
-                    {/* Desktop Menu */}
-                    <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-8">
-                            <a href="/#home" className="text-white hover:text-neon-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(31,107,255,0.5)]">Home</a>
-                            <a href="/#live" className="text-gray-300 hover:text-neon-purple px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(139,47,255,0.5)]">Ao Vivo</a>
-                            <a href="/#cav-home" className="text-gray-300 hover:text-neon-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Casa de Vitória</a>
-                            <a href="/#events" className="text-gray-300 hover:text-neon-purple px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">Eventos</a>
-                            <Link to="/contribua" className="bg-neon-blue/10 text-neon-blue border border-neon-blue/50 hover:bg-neon-blue hover:text-white px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 shadow-[0_0_10px_rgba(31,107,255,0.2)] hover:shadow-[0_0_20px_rgba(31,107,255,0.6)]">
-                                Contribua
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <div className="md:hidden">
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="text-gray-300 hover:text-white p-2"
-                        >
-                            {isOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            <div className={`md:hidden absolute w-full bg-black/95 backdrop-blur-xl border-b border-white/10 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'
-                }`}>
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                    {navLinks.map((link) => (
-                        <a
-                            key={link.name}
-                            href={link.href}
-                            className="block px-3 py-4 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 border-l-2 border-transparent hover:border-neon-blue transition-all"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            {link.name}
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </nav>
-    );
+const logoImg = {
+  width: 24, height: 'auto',
+  filter: 'brightness(0) invert(1) drop-shadow(0 0 12px rgba(240,168,72,.4))',
 };
 
-export default Navbar;
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const go = (to) => { setOpen(false); navigate(to); };
+
+  return (
+    <>
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, display: 'flex',
+        alignItems: 'center', justifyContent: 'space-between', padding: '15px 28px',
+        backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+        background: 'linear-gradient(180deg,rgba(5,5,5,.9),rgba(5,5,5,.45))',
+        borderBottom: '1px solid var(--border-soft)',
+      }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 11, cursor: 'pointer', textDecoration: 'none', color: 'var(--text)' }}>
+          <img src="/assets/logo-white.png" alt="Igreja Vitória" style={logoImg} />
+          <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 15, letterSpacing: '.06em', textTransform: 'uppercase' }}>Vitória</span>
+        </Link>
+
+        <div data-desknav style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          {NAV_ITEMS.map((item) => (
+            <Link key={item.to} to={item.to} className="nav-pill" style={{
+              fontSize: 13, color: 'var(--dim)', padding: '9px 13px', borderRadius: 99, cursor: 'pointer',
+              fontWeight: 500, fontFamily: 'var(--head)', textDecoration: 'none',
+            }}>{item.label}</Link>
+          ))}
+          <Link to="/contribua" className="btn-glow" style={{
+            marginLeft: 8, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)',
+            fontWeight: 700, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', textDecoration: 'none',
+          }}>Contribua</Link>
+        </div>
+
+        <div
+          data-mobnav
+          onClick={() => setOpen(true)}
+          role="button"
+          aria-label="Abrir menu"
+          style={{ display: 'none', flexDirection: 'column', gap: 5, cursor: 'pointer', padding: 8 }}
+        >
+          <span style={{ width: 24, height: 2, background: 'var(--text)', borderRadius: 2 }} />
+          <span style={{ width: 24, height: 2, background: 'var(--text)', borderRadius: 2 }} />
+          <span style={{ width: 16, height: 2, background: 'var(--glow)', borderRadius: 2 }} />
+        </div>
+      </nav>
+
+      {open && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 70, background: 'rgba(5,5,5,.97)', backdropFilter: 'blur(8px)',
+          display: 'flex', flexDirection: 'column', padding: '24px 28px', animation: 'rise .4s var(--ease)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 48 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
+              <img src="/assets/logo-white.png" alt="Igreja Vitória" style={logoImg} />
+              <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 15, letterSpacing: '.06em', textTransform: 'uppercase' }}>Vitória</span>
+            </div>
+            <span onClick={() => setOpen(false)} aria-label="Fechar menu" style={{ fontSize: 30, color: 'var(--dim)', cursor: 'pointer', lineHeight: 1 }}>×</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {NAV_ITEMS.map((item, i) => (
+              <span key={item.to} onClick={() => go(item.to)} style={{
+                fontFamily: 'var(--display)', fontWeight: 700, fontSize: 30, textTransform: 'uppercase',
+                letterSpacing: '-.01em', color: 'var(--text)', padding: '10px 0', cursor: 'pointer',
+                borderBottom: '1px solid var(--border-soft)', animation: `rise .5s var(--ease) ${0.04 * i + 0.05}s both`,
+              }}>{item.label}</span>
+            ))}
+          </div>
+          <span onClick={() => go('/contribua')} style={{
+            marginTop: 32, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)',
+            fontWeight: 700, fontSize: 17, padding: 16, borderRadius: 99, cursor: 'pointer', textAlign: 'center',
+          }}>Contribua →</span>
+          <div style={{ marginTop: 'auto', fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', color: 'var(--faint)', textTransform: 'uppercase' }}>
+            Domingo · 10h e 18h · Campo Grande — MS
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

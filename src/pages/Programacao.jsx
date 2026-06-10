@@ -1,22 +1,54 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
+import useReveal from '../lib/useReveal';
+import { btnPrimarySm, display, eyebrowLine, wrap } from '../lib/ui';
 
-const Programacao = () => {
-    return (
-        <div className="pt-24 container mx-auto px-4 min-h-screen">
-            <h1 className="text-4xl font-bold mb-8">Programação Semanal</h1>
-            <div className="grid md:grid-cols-2 gap-6">
-                <div className="p-6 border border-white/10 rounded-lg bg-zinc-900">
-                    <h2 className="text-2xl font-bold mb-2">Domingo</h2>
-                    <p className="text-gray-400">10h - Culto da Manhã</p>
-                    <p className="text-gray-400">18h - Culto da Noite</p>
-                </div>
-                <div className="p-6 border border-white/10 rounded-lg bg-zinc-900">
-                    <h2 className="text-2xl font-bold mb-2">Quarta-feira</h2>
-                    <p className="text-gray-400">20h - Culto de Ensino</p>
-                </div>
-            </div>
+const slotTitle = { fontFamily: 'var(--display)', fontWeight: 800, fontSize: 32, color: 'var(--glow)' };
+const cardHead = { padding: '22px 30px', borderBottom: '1px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' };
+const dayLabel = { fontFamily: 'var(--display)', fontWeight: 800, textTransform: 'uppercase', fontSize: 22, letterSpacing: '-.01em' };
+const tag = { fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--glow)' };
+
+function Slot({ time, title, sub, border }) {
+  return (
+    <div style={{ padding: '26px 30px', borderRight: border ? '1px solid var(--border-soft)' : undefined, display: 'flex', alignItems: 'center', gap: 20 }}>
+      <span style={slotTitle}>{time}</span>
+      <div>
+        <div style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 17 }}>{title}</div>
+        <div style={{ fontSize: 13, color: 'var(--dim)' }}>{sub}</div>
+      </div>
+    </div>
+  );
+}
+
+export default function Programacao() {
+  useReveal();
+  return (
+    <div>
+      <section style={{ padding: '130px 28px 24px' }}>
+        <div style={wrap}>
+          <div style={eyebrowLine}><span style={{ width: 24, height: 1, background: 'var(--glow)' }} />Programação Semanal</div>
+          <h1 style={{ ...display, fontSize: 'clamp(38px,6.5vw,82px)', maxWidth: '14ch' }}>Toda semana,<br />uma palavra.</h1>
         </div>
-    );
-};
+      </section>
 
-export default Programacao;
+      <section className="reveal" style={{ padding: '50px 28px 100px' }}>
+        <div style={{ ...wrap, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 18, overflow: 'hidden' }}>
+            <div style={cardHead}><span style={dayLabel}>Domingo</span><span style={tag}>2 cultos</span></div>
+            <div data-split style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+              <Slot time="10h" title="Culto da Manhã" sub="Adoração e palavra para começar a semana" border />
+              <Slot time="18h" title="Culto da Família" sub="O culto principal, para toda a família" />
+            </div>
+          </div>
+          <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 18, overflow: 'hidden' }}>
+            <div style={cardHead}><span style={dayLabel}>Quarta-feira</span><span style={tag}>Quarta-Flow</span></div>
+            <Slot time="20h" title="Culto de Ensino" sub="Aprofundamento na palavra e renovo no meio da semana" />
+          </div>
+          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 8 }}>
+            <Link to="/aovivo" className="btn-glow" style={{ ...btnPrimarySm, padding: '14px 28px' }}>Assistir ao vivo</Link>
+            <Link to="/contato" className="btn-ghost" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(255,255,255,.05)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 15, padding: '13px 26px', borderRadius: 99, textDecoration: 'none' }}>Como chegar →</Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -1,54 +1,71 @@
-import React from 'react';
-import { Instagram, Youtube, MapPin, Mail, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { site } from '../lib/data';
 
-const Footer = () => {
-    return (
-        <footer className="bg-black border-t border-white/10 py-16 relative overflow-hidden">
-            {/* Ambient background light */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-neon-blue/5 blur-[100px] pointer-events-none rounded-full"></div>
-
-            <div className="container mx-auto px-4 relative z-10">
-                <div className="grid md:grid-cols-4 gap-12 mb-12">
-                    <div className="col-span-1 md:col-span-1">
-                        <span className="mb-6 block">
-                            <img src="/logo-v-final.png" alt="Igreja Vitória" className="h-16 w-auto object-contain invert" />
-                        </span>
-                        <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                            Uma igreja vibrante, apaixonada por Jesus e comprometida em ser luz na nossa cidade.
-                        </p>
-                        <div className="flex space-x-4">
-                            <a href="https://www.instagram.com/igrejavitoriacg/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-neon-purple transition-colors">
-                                <Instagram size={20} />
-                            </a>
-                            <a href="https://www.youtube.com/@igrejavitoriacampogrande" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-neon-blue transition-colors">
-                                <Youtube size={20} />
-                            </a>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4 text-sm text-gray-400">
-                        <div className="flex items-start gap-3">
-                            <MapPin size={18} className="text-neon-blue mt-0.5 flex-shrink-0" />
-                            <p>R. Mal. Rondon, 163<br />Amambai, Campo Grande - MS</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Phone size={18} className="text-neon-purple flex-shrink-0" />
-                            <p>(67) 99831-8450</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Mail size={18} className="text-neon-blue flex-shrink-0" />
-                            <p>contato@igrejavitoria.com.br</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
-                <p>&copy; {new Date().getFullYear()} Igreja Vitória. Todos os direitos reservados.</p>
-                <p className="mt-2 md:mt-0">Desenvolvido com excelência.</p>
-            </div>
-        </footer>
-    );
+const colHead = {
+  fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em',
+  textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 16,
+};
+const navLink = { fontSize: 14, color: 'var(--dim)', cursor: 'pointer', textDecoration: 'none' };
+const socialBox = {
+  width: 40, height: 40, borderRadius: 11, border: '1px solid var(--border)', background: 'var(--s1)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--mono)', fontSize: 11,
+  color: 'var(--dim)', textDecoration: 'none',
 };
 
-export default Footer;
+export default function Footer() {
+  return (
+    <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--ink)', position: 'relative' }}>
+      <div style={{ maxWidth: 1180, margin: '0 auto', padding: '64px 28px 40px' }}>
+        <div data-foot style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr', gap: 40, marginBottom: 48 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 18 }}>
+              <img src="/assets/logo-white.png" alt="Igreja Vitória" style={{ width: 26, filter: 'brightness(0) invert(1) drop-shadow(0 0 14px rgba(240,168,72,.4))' }} />
+              <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 17, letterSpacing: '.05em', textTransform: 'uppercase' }}>Vitória</span>
+            </div>
+            <p style={{ fontSize: 14.5, color: 'var(--dim)', lineHeight: 1.6, maxWidth: 300 }}>
+              Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. {site.city}.
+            </p>
+            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+              <a href={site.instagram} target="_blank" rel="noreferrer" className="icon-box" style={socialBox}>IG</a>
+              <a href={site.youtube} target="_blank" rel="noreferrer" className="icon-box" style={socialBox}>YT</a>
+            </div>
+          </div>
+
+          <div>
+            <div style={colHead}>Navegar</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+              <Link to="/quem-somos" className="foot-link" style={navLink}>Quem Somos</Link>
+              <Link to="/ministerios" className="foot-link" style={navLink}>Ministérios</Link>
+              <Link to="/cav" className="foot-link" style={navLink}>Casa de Vitória</Link>
+              <Link to="/eventos" className="foot-link" style={navLink}>Eventos</Link>
+            </div>
+          </div>
+
+          <div>
+            <div style={colHead}>Conteúdo</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+              <Link to="/aovivo" className="foot-link" style={navLink}>Ao Vivo</Link>
+              <Link to="/mensagens" className="foot-link" style={navLink}>Mensagens</Link>
+              <Link to="/programacao" className="foot-link" style={navLink}>Programação</Link>
+              <Link to="/contribua" className="foot-link" style={navLink}>Contribua</Link>
+            </div>
+          </div>
+
+          <div>
+            <div style={colHead}>Contato</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+              <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noreferrer" className="foot-link" style={navLink}>WhatsApp · {site.whatsappLabel}</a>
+              <a href={`mailto:${site.email}`} className="foot-link" style={navLink}>{site.email}</a>
+              <span style={{ fontSize: 14, color: 'var(--dim)', lineHeight: 1.5 }}>{site.address}<br />{site.city}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, paddingTop: 26, borderTop: '1px solid var(--border-soft)' }}>
+          <span style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.08em', color: 'var(--faint)' }}>© 2026 Igreja Vitória · {site.city}</span>
+          <span style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.08em', color: 'var(--faint)' }}>Feito com fé · @igrejavitoriacg</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
