@@ -138,11 +138,20 @@ h2.title{font-weight:700;font-size:clamp(38px,6vw,86px);letter-spacing:-.04em;li
 .burger span{width:24px;height:2px;background:var(--spirit-white);transition:.3s}
 @media(max-width:940px){.nav-links{display:none}.burger{display:flex}}
 
-.drawer{position:fixed;inset:0;z-index:6000;background:rgba(4,3,3,.97);backdrop-filter:blur(20px);
-  display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 9vw;transform:translateX(100%);transition:transform .45s var(--ease)}
+/* Menu mobile · mesmo tema liquid glass da barra */
+.drawer{position:fixed;inset:0;z-index:6000;isolation:isolate;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 9vw;
+  transform:translateX(100%);transition:transform .45s var(--ease);
+  background:rgba(255,255,255,.04);
+  box-shadow:inset 2px 2px 1px 0 rgba(255,255,255,.22),inset -1px -1px 1px 1px rgba(255,255,255,.10)}
+.drawer::before{content:"";position:absolute;inset:0;z-index:-2;
+  backdrop-filter:blur(26px) saturate(160%) url(#glass-distortion);
+  -webkit-backdrop-filter:blur(26px) saturate(160%)}
+.drawer::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(12,8,7,.55),rgba(4,3,3,.62))}
 .drawer.open{transform:none}
 .drawer a{font-weight:700;font-size:clamp(28px,8vw,46px);text-transform:uppercase;letter-spacing:-.02em;
-  padding:12px 0;border-bottom:1px solid rgba(244,241,236,.08)}
+  padding:12px 0;border-bottom:1px solid rgba(244,241,236,.12);text-shadow:0 1px 10px rgba(0,0,0,.4)}
 .drawer .x{position:absolute;top:26px;right:7vw;font-size:34px;color:var(--spirit-white)}
 
 /* ============================================================
