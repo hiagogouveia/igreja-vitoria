@@ -262,8 +262,9 @@ h2.title{font-weight:700;font-size:clamp(38px,6vw,86px);letter-spacing:-.04em;li
 @media(max-width:1080px){.lineup-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){.lineup-grid{grid-template-columns:repeat(2,1fr);gap:11px}}
 .speaker{position:relative;border-radius:var(--r-md);overflow:hidden;aspect-ratio:3/4;background:var(--bg-2);
-  border:1px solid rgba(244,241,236,.08);transition:transform .45s var(--ease),border-color .3s,box-shadow .45s}
-.speaker:hover{transform:translateY(-6px);border-color:rgba(255,90,31,.45);box-shadow:var(--sh-lg)}
+  border:1px solid rgba(244,241,236,.08);transition:border-color .3s,box-shadow .45s;
+  will-change:transform,opacity}
+.speaker:hover{border-color:rgba(255,90,31,.45);box-shadow:var(--sh-lg)}
 .speaker image-slot{position:absolute;inset:0;width:100%;height:100%}
 .speaker .sp-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:0}
 .speaker:hover .sp-photo{transform:scale(1.04);transition:transform .6s var(--ease)}
