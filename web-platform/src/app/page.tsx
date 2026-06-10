@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import ConferenceTeaser from "@/components/ConferenceTeaser";
 import LiveSection from "@/components/LiveSection";
 import Ministries from "@/components/Ministries";
 import CavSection from "@/components/CavSection";
@@ -17,6 +18,7 @@ export default function Home() {
     <main className="flex flex-col min-h-screen">
       <Navbar />
       <Hero />
+      <ConferenceTeaser />
       <Beliefs />
       <LiveSection />
       <Ministries />
