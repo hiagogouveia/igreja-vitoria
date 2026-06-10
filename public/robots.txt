@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Vitória Conference 2026 · RESTORE — /conference/
+# Sitemap: https://SEU-DOMINIO/sitemap.xml

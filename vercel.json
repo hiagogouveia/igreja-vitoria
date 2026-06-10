@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/((?!conference|conference2|conference3|acamps-2026|caravana-jesher|assets|api|.*\\.).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
