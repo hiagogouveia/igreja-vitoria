@@ -115,6 +115,12 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
 .searchbar:focus-within { border-color: var(--glow); }
 .zoom-parent:hover .zoom-img { transform: scale(1.05); }
 
+/* Conference highlight fold */
+.conf-kv { transition: transform 1.2s var(--ease); }
+.conf-fold:hover .conf-kv { transform: scale(1.05); }
+.conf-cta { transition: transform .25s var(--ease), box-shadow .3s var(--ease); }
+.conf-fold:hover .conf-cta { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(240,168,72,.5); }
+
 /* ---------- Responsive grid overrides ---------- */
 @media (max-width: 1080px) {
   [data-grid5] { grid-template-columns: repeat(3, 1fr) !important; }
