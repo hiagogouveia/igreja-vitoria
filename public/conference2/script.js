@@ -193,7 +193,7 @@
   var ctx = canvas.getContext('2d');
 
   var FRAME_COUNT = 40;
-  var FPS = 12;                       // ~12fps → loop de ~3.3s
+  var FPS = 6;                        // slow-motion cinematográfico: 6fps → loop de ~6.7s
   var frameDuration = 1000 / FPS;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -213,13 +213,18 @@
     if (img && img.complete && img.naturalWidth) drawCover(img);
   }
 
+  // Enquadramento: os frames são um vídeo do pôster (texto embutido à
+  // esquerda + marca "Veo" no canto). Damos zoom e focamos à direita para
+  // mostrar a restauração (vidro → pomba) e cortar o texto/marca embutidos,
+  // deixando o lado esquerdo livre para o conteúdo do hero.
+  var ZOOM = 1.5, FOCUS_X = 0.92, FOCUS_Y = 0.42;
   function drawCover(img) {
     if (!img || !img.naturalWidth) return;
     var cw = canvas.width, ch = canvas.height;
     var iw = img.naturalWidth, ih = img.naturalHeight;
-    var scale = Math.max(cw / iw, ch / ih);
+    var scale = Math.max(cw / iw, ch / ih) * ZOOM;
     var dw = iw * scale, dh = ih * scale;
-    ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    ctx.drawImage(img, (cw - dw) * FOCUS_X, (ch - dh) * FOCUS_Y, dw, dh);
   }
 
   function loop(t) {

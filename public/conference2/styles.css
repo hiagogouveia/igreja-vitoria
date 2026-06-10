@@ -491,3 +491,23 @@ html.js-anim .reveal.in{opacity:1;transform:none;filter:none}
    ============================================================ */
 .hero-bg .poster.poster-seq{background-image:url('frames/frame-001.jpg');animation:none}
 .hero-seq{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:block}
+
+/* ============================================================
+   HERO V2 · ajuste de experiência (slow-motion + animação visível)
+   Sobrescreve os overlays para revelar mais a sequência, mantendo
+   legibilidade do texto/CTAs (lado esquerdo e base mais escuros).
+   ============================================================ */
+/* Scrim com peso à esquerda: escurece onde ficam o texto do hero (e
+   eventual resíduo de texto embutido nos frames), deixando a pomba à
+   direita bem visível. (Antes: 90deg .985→.965→.6→.32 / 0deg .95→t→t→.6) */
+.hero-scrim{
+  background:
+    linear-gradient(90deg, rgba(4,3,3,.95) 0%, rgba(4,3,3,.78) 28%, rgba(4,3,3,.36) 55%, rgba(4,3,3,.12) 80%, rgba(4,3,3,.04) 100%),
+    linear-gradient(0deg, rgba(4,3,3,.74) 0%, transparent 42%, transparent 74%, rgba(4,3,3,.26) 100%);
+}
+/* Grão mais sutil (antes: opacity .5) */
+.hero-grain{opacity:.28}
+/* Realce da "restauração": brilho/contraste/saturação leves na sequência */
+.hero-seq{filter:brightness(1.12) contrast(1.08) saturate(1.06)}
+/* O fallback estático acompanha o mesmo realce */
+.hero-bg .poster.poster-seq{filter:brightness(1.12) contrast(1.08) saturate(1.06)}
