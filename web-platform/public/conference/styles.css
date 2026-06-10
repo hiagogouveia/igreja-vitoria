@@ -552,3 +552,22 @@ html.js-anim .reveal.in{opacity:1;transform:none;filter:none}
   .hero-scroll{height:100vh}                           /* sem pin: hero normal */
   .hero-scroll .hero{position:relative}
 }
+
+/* ============================================================
+   MENU MOBILE · entrada escalonada (stagger) ao abrir
+   ============================================================ */
+.drawer .x,
+.drawer a{opacity:0;transform:translateX(26px);
+  transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.drawer.open .x,
+.drawer.open a{opacity:1;transform:none}
+.drawer.open .x{transition-delay:.10s}
+.drawer.open a:nth-of-type(1){transition-delay:.18s}
+.drawer.open a:nth-of-type(2){transition-delay:.25s}
+.drawer.open a:nth-of-type(3){transition-delay:.32s}
+.drawer.open a:nth-of-type(4){transition-delay:.39s}
+.drawer.open a:nth-of-type(5){transition-delay:.46s}
+.drawer.open a:nth-of-type(6){transition-delay:.55s}
+@media(prefers-reduced-motion:reduce){
+  .drawer .x,.drawer a{opacity:1;transform:none;transition:none}
+}
