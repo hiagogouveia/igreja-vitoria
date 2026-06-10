@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCavs } from '@/app/actions/cav-actions';
 import CavInterface from '@/components/cavs/CavInterface';
-import Navbar from '@/components/Navbar';
+import SiteNavbar from '@/components/site/SiteNavbar';
 
 // Ensure fresh data
 export const dynamic = 'force-dynamic';
@@ -21,8 +21,10 @@ export default async function CavEnderecosPage() {
 
     return (
         <main className="min-h-screen bg-black text-white flex flex-col">
-            <Navbar />
-            <CavInterface initialCavs={cavs as any} />
+            <SiteNavbar />
+            <div style={{ paddingTop: 64 }}>
+                <CavInterface initialCavs={cavs as any} />
+            </div>
         </main>
     );
 }

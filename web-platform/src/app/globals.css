@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Legacy "neon" tokens — still used by /cav, /cav-enderecos and the admin area. Kept for compatibility. */
 @theme {
   --color-neon-blue: #1F6BFF;
   --color-neon-purple: #8B2FFF;
@@ -10,35 +11,129 @@
   --shadow-neon-purple: 0 0 10px rgba(139, 47, 255, 0.5), 0 0 20px rgba(139, 47, 255, 0.3);
 }
 
+/* ============================================================
+   IGREJA VITÓRIA — DESIGN SYSTEM "GLOW" (fonte da verdade)
+   ============================================================ */
 :root {
-  background-color: var(--color-dark-bg);
-  color: #fff;
+  --void: #050505;
+  --ink: #0B0B0C;
+  --s1: #101012;
+  --s2: #17171A;
+  --s3: #202024;
+  --border: #26262B;
+  --border-soft: #1B1B1F;
+  --glow: #F0A848;
+  --glow-deep: #C77A24;
+  --glow-soft: #F8CE8E;
+  --beam: #5B8DEF;
+  --pulse: #E8475B;
+  --heaven: #EFE7D6;
+  --text: #F4F2EE;
+  --dim: #A8A6A2;
+  --faint: #6B6A68;
+  --display: 'Archivo Expanded', 'Archivo', sans-serif;
+  --head: 'Archivo', sans-serif;
+  --body: 'Hanken Grotesk', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+
+  background-color: var(--void);
+  color: var(--text);
+  color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  background-color: var(--color-dark-bg);
-  color: #fff;
-  min-height: 100vh;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { min-height: 100vh; background: var(--void); color: var(--text); font-family: var(--body); overflow-x: hidden; }
+
+::selection { background: var(--glow); color: #050505; }
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: #0b0b0c; }
+::-webkit-scrollbar-thumb { background: #26262b; border-radius: 99px; border: 3px solid #0b0b0c; }
+::-webkit-scrollbar-thumb:hover { background: var(--glow-deep); }
+
+/* ---------- Keyframes ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes breathe { 0%,100% { opacity: .65; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.1); } }
+@keyframes kenburns { 0% { transform: scale(1.06) translate(0,0); } 100% { transform: scale(1.16) translate(-1.5%,-2%); } }
+@keyframes beamSweep { 0% { opacity: .25; } 50% { opacity: .85; } 100% { opacity: .4; } }
+@keyframes pulse { 0%,100% { opacity: .4; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes cue { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 50.1% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Reveal on scroll (progressive enhancement) ----------
+   Hidden state only applies once JS adds `.js-reveal` to <html>, so SSR HTML,
+   crawlers and no-JS users always see the content. */
+.reveal { transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.js-reveal .reveal { opacity: 0; transform: translateY(34px); }
+.js-reveal .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .js-reveal .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* ---------- Interaction utility classes ---------- */
+.btn-glow { transition: transform .2s var(--ease), box-shadow .3s var(--ease); }
+.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 10px 34px rgba(240,168,72,.42); }
+.btn-pulse { transition: transform .2s var(--ease), box-shadow .3s var(--ease); }
+.btn-pulse:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(232,71,91,.4); }
+.btn-ghost { transition: border-color .3s, color .3s, background .3s; }
+.btn-ghost:hover { border-color: var(--glow); color: var(--glow); }
+.btn-ghost-pulse { transition: border-color .3s, color .3s; }
+.btn-ghost-pulse:hover { border-color: var(--pulse); color: var(--pulse); }
+.btn-fill-glow { transition: background .3s, color .3s, border-color .3s; }
+.btn-fill-glow:hover { background: var(--glow); color: #050505; border-color: var(--glow); }
+.lift { transition: transform .4s var(--ease), border-color .4s, background .4s; }
+.lift:hover { transform: translateY(-5px); border-color: var(--glow-deep); }
+.lift-soft:hover { background: var(--s2); }
+.lift-sm { transition: transform .4s var(--ease), border-color .4s; }
+.lift-sm:hover { transform: translateY(-4px); border-color: var(--glow-deep); }
+.hov-glow { transition: border-color .3s; }
+.hov-glow:hover { border-color: var(--glow); }
+.hov-beam { transition: border-color .3s; }
+.hov-beam:hover { border-color: var(--beam); }
+.hov-wa { transition: border-color .3s; }
+.hov-wa:hover { border-color: #25D366; }
+.link-glow { transition: color .2s; }
+.link-glow:hover { color: var(--glow-soft); }
+.nav-pill { transition: color .2s, background .2s; }
+.nav-pill:hover { color: var(--text); background: var(--s2); }
+.foot-link { transition: color .2s; }
+.foot-link:hover { color: var(--text); }
+.icon-box { transition: border-color .3s, color .3s; }
+.icon-box:hover { border-color: var(--glow); color: var(--glow); }
+.tab-pill { transition: border-color .25s, color .25s, background .25s; }
+.tab-pill:hover { border-color: var(--glow); color: var(--glow); }
+.field { transition: border-color .25s; }
+.field:focus { border-color: var(--glow); outline: none; }
+.searchbar:focus-within { border-color: var(--glow); }
+.zoom-parent:hover .zoom-img { transform: scale(1.05); }
 
-::-webkit-scrollbar-track {
-  background: var(--color-dark-surface);
+/* ---------- Responsive grid overrides ---------- */
+@media (max-width: 1080px) {
+  [data-grid5] { grid-template-columns: repeat(3, 1fr) !important; }
+  [data-grid-min] { grid-template-columns: repeat(3, 1fr) !important; }
+  [data-grid-ev] { grid-template-columns: 1fr 1fr !important; }
 }
-
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+@media (max-width: 900px) {
+  [data-desknav] { display: none !important; }
+  [data-mobnav] { display: flex !important; }
+  [data-split] { grid-template-columns: 1fr !important; }
+  [data-grid5] { grid-template-columns: repeat(2, 1fr) !important; }
+  [data-grid-min] { grid-template-columns: repeat(2, 1fr) !important; }
+  [data-grid3] { grid-template-columns: 1fr !important; }
+  [data-grid-ev] { grid-template-columns: 1fr !important; }
+  [data-grid-msg] { grid-template-columns: 1fr 1fr !important; }
+  [data-foot] { grid-template-columns: 1fr 1fr !important; }
+  [data-evrow] { grid-template-columns: 1fr !important; }
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+@media (max-width: 560px) {
+  [data-grid5], [data-grid-min], [data-grid-msg], [data-foot] { grid-template-columns: 1fr !important; }
+  section { padding-left: 18px !important; padding-right: 18px !important; }
 }
