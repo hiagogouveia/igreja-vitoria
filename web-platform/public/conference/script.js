@@ -141,7 +141,7 @@
     }
     function openCheckout(tier, price) {
       mTier.textContent = tier || 'Founders';
-      mPrice.textContent = price || 'R$149';
+      mPrice.textContent = price || 'R$159';
       modalForm.style.display = ''; modalSuccess.style.display = 'none';
       clearErrors();
       modal.classList.add('open'); document.body.style.overflow = 'hidden';
