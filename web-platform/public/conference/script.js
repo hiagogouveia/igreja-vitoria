@@ -30,15 +30,8 @@
     if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
     drawer.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeDrawer); });
 
-    /* ---------- Hero glass restoration ---------- */
-    // The shattered-glass overlay heals shortly after load → Broken→Restore in the hero itself.
-    var hero = document.querySelector('.hero');
-    if (hero) {
-      setTimeout(function () { hero.classList.add('healed'); }, reduce ? 0 : 900);
-    }
-
-    /* ---------- Countdown → opening night 28 Aug 2026, 19:00 (BRT) ---------- */
-    var target = new Date('2026-08-28T19:00:00-03:00').getTime();
+    /* ---------- Countdown → opening night 26 Aug 2026, 19:00 (BRT) ---------- */
+    var target = new Date('2026-08-26T19:00:00-03:00').getTime();
     var cd = {
       days: document.querySelector('[data-cd="days"]'),
       hours: document.querySelector('[data-cd="hours"]'),
@@ -179,104 +172,4 @@
       modalForm.style.display = 'none'; modalSuccess.style.display = '';
     });
   });
-})();
-
-/* ============================================================
-   HERO V3 — sequência CONTROLADA PELO SCROLL (scroll-driven)
-   A hero fica "presa" (sticky) numa seção alta; conforme o scroll
-   avança, os 40 frames evoluem (vidro quebrado → restauração → pomba).
-   Estratégia: sticky (pin) + scroll/rAF + canvas (cover com foco/zoom).
-   Frames próprios em /conference/frames.
-   Fallback: 1º frame estático (poster + preload) se o JS não rodar.
-   ============================================================ */
-(function () {
-  'use strict';
-  var canvas = document.getElementById('heroSeq');
-  var section = document.querySelector('.hero-scroll');
-  if (!canvas || !canvas.getContext || !section) return;
-  var ctx = canvas.getContext('2d');
-
-  var FRAME_COUNT = 40;
-  var BASE = '/conference/frames/frame-';   // reaproveita os frames da V2
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-  // Mesmo enquadramento da V2: corta texto/marca embutidos, foca a restauração.
-  var ZOOM = 1.5, FOCUS_X = 0.92, FOCUS_Y = 0.42;
-
-  function pad(n) { return ('00' + n).slice(-3); }
-  function srcFor(i) { return BASE + pad(i + 1) + '.jpg'; }
-
-  var images = new Array(FRAME_COUNT);
-  var loadedFlags = new Array(FRAME_COUNT);
-  var loaded = 0, current = -1, ticking = false;
-
-  function drawCover(img) {
-    if (!img || !img.naturalWidth) return;
-    var cw = canvas.width, ch = canvas.height;
-    var iw = img.naturalWidth, ih = img.naturalHeight;
-    var scale = Math.max(cw / iw, ch / ih) * ZOOM;
-    var dw = iw * scale, dh = ih * scale;
-    ctx.drawImage(img, (cw - dw) * FOCUS_X, (ch - dh) * FOCUS_Y, dw, dh);
-  }
-
-  // Procura o frame carregado mais próximo (≤ alvo) para nunca ficar em branco.
-  function nearestLoaded(idx) {
-    for (var i = idx; i >= 0; i--) if (loadedFlags[i]) return images[i];
-    for (var j = idx + 1; j < FRAME_COUNT; j++) if (loadedFlags[j]) return images[j];
-    return null;
-  }
-
-  function progress() {
-    var rect = section.getBoundingClientRect();
-    var total = section.offsetHeight - window.innerHeight;
-    if (total <= 0) return 0;
-    var p = (-rect.top) / total;
-    return p < 0 ? 0 : (p > 1 ? 1 : p);
-  }
-
-  function render() {
-    ticking = false;
-    var idx = Math.round(progress() * (FRAME_COUNT - 1));
-    if (idx === current) return;
-    var img = loadedFlags[idx] ? images[idx] : nearestLoaded(idx);
-    if (img) { drawCover(img); current = idx; updatePhase(idx / (FRAME_COUNT - 1)); }
-  }
-
-  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(render); } }
-
-  function resize() {
-    canvas.width = Math.max(1, Math.round((canvas.clientWidth || window.innerWidth) * dpr));
-    canvas.height = Math.max(1, Math.round((canvas.clientHeight || window.innerHeight) * dpr));
-    current = -1; render();
-  }
-
-  // Bônus: o chip de fase acompanha a restauração (Broken → Restoration → Restore).
-  var chip = document.querySelector('.hero .phase-chip');
-  function updatePhase(p) {
-    if (!chip) return;
-    var label, cls;
-    if (p < 0.4) { label = 'Fase · Broken'; cls = 'pc-broken'; }
-    else if (p < 0.78) { label = 'Fase · Restoration'; cls = 'pc-restoration'; }
-    else { label = 'Fase · Restore'; cls = 'pc-restore'; }
-    if (chip.getAttribute('data-phase') === cls) return;
-    chip.setAttribute('data-phase', cls);
-    chip.className = 'phase-chip ' + cls;
-    chip.innerHTML = '<span class="dot"></span>' + label;
-  }
-
-  // Preload de todos os frames; desenha o 1º assim que chegar (fallback vivo).
-  for (var i = 0; i < FRAME_COUNT; i++) {
-    (function (idx) {
-      var im = new Image();
-      im.decoding = 'async';
-      im.onload = function () { loadedFlags[idx] = true; loaded++; if (idx === 0 && current < 0) { resize(); } else if (idx === current) drawCover(im); };
-      im.onerror = function () { loaded++; };
-      im.src = srcFor(idx);
-      images[idx] = im;
-    })(i);
-  }
-
-  resize();
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', resize, { passive: true });
 })();

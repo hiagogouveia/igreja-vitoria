@@ -3,36 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RESTORE · Vitória Conference 2026 — Tempo de Restauração</title>
-<meta name="description" content="Vitória Conference 2026 · RESTORE. 28, 29 e 30 de Agosto. Três dias de adoração, palavra e restauração. Deus está restaurando histórias — garanta sua vaga.">
-<meta name="theme-color" content="#040303">
+<title>VitóriaCon 2026 · RESTORE — Conferência Profética de Adoração</title>
+<meta name="description" content="VitóriaCon 2026 · RESTORE. 26 a 30 de Agosto, Campo Grande. Conferência Profética de Adoração e Mover Sobrenatural — garanta sua vaga.">
+<meta name="theme-color" content="#D2D7DA">
 <meta name="author" content="Igreja Vitória">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="RESTORE · Vitória Conference 2026">
-<meta property="og:description" content="Tempo de Restauração. 28–30 Agosto 2026. Deus está restaurando histórias.">
+<meta property="og:title" content="VitóriaCon 2026 · RESTORE">
+<meta property="og:description" content="Conferência Profética de Adoração e Mover Sobrenatural. 26–30 Agosto 2026 · Campo Grande.">
 <meta property="og:image" content="https://igreja-vitoria.vercel.app/conference/assets/kv-3.jpg">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Igreja Vitória">
 <meta property="og:url" content="https://igreja-vitoria.vercel.app/conference/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RESTORE · Vitória Conference 2026">
-<meta name="twitter:description" content="Tempo de Restauração. 28–30 Agosto 2026. Deus está restaurando histórias.">
+<meta name="twitter:title" content="VitóriaCon 2026 · RESTORE">
+<meta name="twitter:description" content="Conferência Profética de Adoração e Mover Sobrenatural. 26–30 Agosto 2026 · Campo Grande.">
 <meta name="twitter:image" content="https://igreja-vitoria.vercel.app/conference/assets/kv-3.jpg">
 <link rel="canonical" href="https://igreja-vitoria.vercel.app/conference/">
 <link rel="icon" href="/conference/assets/vitoria-logo.png">
-<!-- Hero: 1º frame da sequência pré-carregado — fallback instantâneo (sem tela branca) -->
-<link rel="preload" as="image" href="/conference/frames/frame-001.jpg" fetchpriority="high">
-<!-- Fontes auto-hospedadas (sem dependência do Google Fonts) -->
+<!-- Fontes auto-hospedadas (Hanken Grotesk + JetBrains Mono) -->
 <link rel="preload" as="font" type="font/woff2" href="/conference/assets/fonts/hankengrotesk-300-latin.woff2" crossorigin>
 <link rel="preload" as="style" href="/conference/fonts.css" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="/conference/fonts.css"></noscript>
+<!-- Archivo (títulos) + Pirata One (wordmark blackletter) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Pirata+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/conference/styles.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Event","url":"https://igreja-vitoria.vercel.app/conference/","image":"https://igreja-vitoria.vercel.app/conference/assets/kv-3.jpg","name":"Vitória Conference 2026 · RESTORE","startDate":"2026-08-28T19:00-03:00","endDate":"2026-08-30T22:00-03:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Igreja Vitória"},"description":"Tempo de Restauração. Três dias de adoração, palavra e celebração dos 6 anos da Igreja Vitória.","offers":{"@type":"Offer","name":"Founders","price":"149","priceCurrency":"BRL","availability":"https://schema.org/InStock"}}
+{"@context":"https://schema.org","@type":"Event","url":"https://igreja-vitoria.vercel.app/conference/","image":"https://igreja-vitoria.vercel.app/conference/assets/kv-3.jpg","name":"VitóriaCon 2026 · RESTORE","startDate":"2026-08-26T19:00-03:00","endDate":"2026-08-30T22:00-03:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Igreja Vitória","address":"Campo Grande - MS"},"description":"Conferência Profética de Adoração e Mover Sobrenatural — RESTORE. Cinco dias celebrando os 6 anos da Igreja Vitória.","offers":{"@type":"Offer","name":"Founders","price":"149","priceCurrency":"BRL","availability":"https://schema.org/InStock"}}
 </script>
 </head>
 <body>
+
+<!-- Atmosfera de fundo (névoa clara + lavagens pastel desfocadas) + grão -->
+<div class="atmosphere"></div>
+<div class="grain"></div>
 
 <!-- Filtro SVG do efeito liquid glass (distorção do que está atrás do nav) -->
 <svg class="lg-defs" aria-hidden="true" width="0" height="0" style="position:absolute">
@@ -50,9 +56,9 @@
 
 <!-- ============ NAV ============ -->
 <nav class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="Vitória Conferência 26 — início">
+  <a class="brand" href="#top" aria-label="VitóriaCon 2026 — início">
     <img src="/conference/assets/vitoria-logo.png" alt="Igreja Vitória">
-    <span class="lk"><b>Vitória</b><b>Conferência <span>26</span></b></span>
+    <span class="lk">VitóriaCon</span>
   </a>
   <div class="nav-links">
     <a href="#experiencia">Experiência</a>
@@ -72,53 +78,32 @@
   <a class="btn btn-primary cta" href="#ingressos">Garantir minha vaga</a>
 </div>
 
-<!-- ============ 01 · HERO (BROKEN → restores) ============ -->
-<!-- Hero V3: seção alta com pin (sticky); a sequência é controlada pelo scroll -->
-<section class="hero-scroll" id="top" data-screen-label="Hero">
-<header class="hero">
-  <div class="hero-bg">
-    <div class="poster poster-seq"></div>
-    <canvas id="heroSeq" class="hero-seq" aria-hidden="true"></canvas>
-  </div>
-  <div class="hero-scrim"></div>
-  <div class="hero-grain"></div>
-  <div class="hero-fire"></div>
-
+<!-- ============ 01 · HERO (liquid glass · atmosfera) ============ -->
+<header class="hero" id="top" data-screen-label="Hero">
   <div class="hero-inner">
-    <div class="hero-top">
-      <div class="eyebrow hero-eyebrow">Igreja Vitória · 6 anos · 2026</div>
-      <div class="phase-chip pc-broken" style="margin-top:2px"><span class="dot"></span>Fase · Broken</div>
+    <div class="hero-kicker">Agosto 26–30 · Campo Grande</div>
+    <div class="hero-wordmark">VitóriaCon</div>
+    <div class="hero-year">2026</div>
+    <div class="hero-sub">Conferência Profética de Adoração e Mover Sobrenatural — <em>Restore</em></div>
+    <div class="hero-actions">
+      <button class="btn btn-primary" data-checkout data-tier="Founders" data-price="R$149">
+        Garantir minha vaga
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <a class="btn btn-outline" href="#programacao">Ver programação</a>
     </div>
-    <div>
-      <h1 class="hero-restore" data-anim aria-label="Restore">REST<span class="o" aria-hidden="true"></span>RE</h1>
-      <div class="hero-sub">Tempo de <em>Restauração.</em></div>
-      <p class="hero-tagline">Deus está restaurando histórias. E esta pode ser a sua.</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" data-checkout data-tier="Founders" data-price="R$149">
-          Garantir minha vaga
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </button>
-        <a class="btn btn-outline" href="#programacao">Ver programação</a>
+    <div class="hero-bottom">
+      <div class="hero-dates">26 · 27 · 28 · 29 · 30 Agosto 2026</div>
+      <div class="countdown" id="countdown" aria-label="Contagem regressiva">
+        <div class="cd-unit"><span class="num" data-cd="days">00</span><span class="lab">Dias</span></div>
+        <div class="cd-unit"><span class="num" data-cd="hours">00</span><span class="lab">Horas</span></div>
+        <div class="cd-unit"><span class="num" data-cd="mins">00</span><span class="lab">Min</span></div>
+        <div class="cd-unit"><span class="num" data-cd="secs">00</span><span class="lab">Seg</span></div>
       </div>
     </div>
   </div>
-
-  <div class="hero-bottom">
-    <div class="hero-dates">
-      <span class="d">28</span><span class="sep"></span><span class="d">29</span><span class="sep"></span><span class="d">30</span>
-      <span class="mo">Agosto 2026</span>
-    </div>
-    <div class="countdown" id="countdown" aria-label="Contagem regressiva">
-      <div class="cd-unit"><span class="num" data-cd="days">00</span><span class="lab">Dias</span></div>
-      <div class="cd-unit"><span class="num" data-cd="hours">00</span><span class="lab">Horas</span></div>
-      <div class="cd-unit"><span class="num" data-cd="mins">00</span><span class="lab">Min</span></div>
-      <div class="cd-unit"><span class="num" data-cd="secs">00</span><span class="lab">Seg</span></div>
-    </div>
-  </div>
-
   <div class="scroll-cue"><span>Role</span><span class="ln"></span></div>
 </header>
-</section>
 
 <!-- ============ 02 · MANIFESTO (BROKEN) ============ -->
 <section class="manifesto shell" id="manifesto" data-screen-label="Manifesto">
@@ -144,9 +129,9 @@
       <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
         <span class="sec-num">01</span><span class="phase-chip pc-restoration"><span class="dot"></span>Fase · Restoration</span>
       </div>
-      <h2 class="title">Três dias.<br>Um mover<br>de Deus.</h2>
+      <h2 class="title">Cinco dias.<br>Um mover<br>de Deus.</h2>
     </div>
-    <p class="lead reveal rd1">Louvor que rompe. Palavra que reposiciona. Comunhão que cura. A Vitória Conference é o lugar onde a luz começa a refazer o que parecia perdido — e prepara você para o novo.</p>
+    <p class="lead reveal rd1">Louvor que rompe. Palavra que reposiciona. Comunhão que cura. A VitóriaCon é o lugar onde a luz começa a refazer o que parecia perdido — e prepara você para o novo.</p>
   </div>
 
   <div class="xp-editorial">
@@ -178,10 +163,10 @@
   </div>
 
   <div class="xp-stats reveal">
-    <div class="s"><div class="n">3</div><div class="l">dias de imersão</div></div>
+    <div class="s"><div class="n">5</div><div class="l">dias de imersão</div></div>
     <div class="s"><div class="n">6</div><div class="l">anos de Igreja Vitória</div></div>
     <div class="s"><div class="n">500</div><div class="l">vidas reunidas</div></div>
-    <div class="s"><div class="n">8</div><div class="l">vozes convidadas</div></div>
+    <div class="s"><div class="n">6</div><div class="l">vozes convidadas</div></div>
   </div>
 </section>
 
@@ -197,48 +182,58 @@
     <p class="lead">Vozes que carregam uma palavra para esta nova estação. Ministério, louvor e talks.</p>
   </div>
   <div class="lineup-grid">
-    <div class="speaker"><span class="idx">01</span><img class="sp-photo" src="/conference/assets/speakers/samuel.jpg" alt="Apóstolo Samuel" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstolo</div><div class="nm">Samuel</div></div></div>
-    <div class="speaker"><span class="idx">02</span><img class="sp-photo" src="/conference/assets/speakers/neila.jpg" alt="Apóstola Neila" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstola</div><div class="nm">Neila</div></div></div>
-    <div class="speaker"><span class="idx">03</span><img class="sp-photo" src="/conference/assets/speakers/heber-son.jpg" alt="Apóstolo Heber Son" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstolo</div><div class="nm">Heber Son</div></div></div>
-    <div class="speaker"><span class="idx">04</span><img class="sp-photo" src="/conference/assets/speakers/rayssa.jpg" alt="Apóstola Rayssa" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Apóstola</div><div class="nm">Rayssa</div></div></div>
-    <div class="speaker"><span class="idx">05</span><div class="media-fill" aria-hidden="true"><img class="dove" src="/conference/assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Talks</div><div class="nm">Gabriel Júnior</div></div></div>
-    <div class="speaker"><span class="idx">06</span><div class="media-fill" aria-hidden="true"><img class="dove" src="/conference/assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Gran Finale</div><div class="nm">Marcelo Marques</div></div></div>
-    <div class="speaker"><span class="idx">07</span><div class="media-fill" aria-hidden="true"><img class="dove" src="/conference/assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Worship</div><div class="nm">Vitória Worship</div></div></div>
-    <div class="speaker"><span class="idx">08</span><img class="sp-photo" src="/conference/assets/speakers/geisson.jpg" alt="Apóstolo Geisson Augusto" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Preletor</div><div class="nm">Geisson Augusto</div></div></div>
+    <div class="speaker"><span class="idx">01</span><div class="media-fill" aria-hidden="true"><img class="dove" src="/conference/assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Ministração</div><div class="nm">Gabriel<br>Júnior</div></div></div>
+    <div class="speaker"><span class="idx">02</span><div class="media-fill" aria-hidden="true"><img class="dove" src="/conference/assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Ministração</div><div class="nm">Mateus<br>Brito</div></div></div>
+    <div class="speaker"><span class="idx">03</span><img class="sp-photo" src="/conference/assets/speakers/heber-son.jpg" alt="Ap. Heber Son e Rayssa Coelho" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Preleção</div><div class="nm">Ap. Heber Son<br>&amp; Rayssa</div></div></div>
+    <div class="speaker"><span class="idx">04</span><div class="media-fill" aria-hidden="true"><img class="dove" src="/conference/assets/vitoria-logo.png" alt="" loading="lazy" decoding="async"></div><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Adoração</div><div class="nm">Vitória<br>Worship</div></div></div>
+    <div class="speaker"><span class="idx">05</span><img class="sp-photo" src="/conference/assets/speakers/samuel.jpg" alt="Ap. Samuel e Neila" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Ministração</div><div class="nm">Ap. Samuel<br>&amp; Neila</div></div></div>
+    <div class="speaker"><span class="idx">06</span><img class="sp-photo" src="/conference/assets/speakers/geisson.jpg" alt="Geisson Augusto" loading="lazy" decoding="async"><div class="tint"></div><div class="ov"></div><div class="info"><div class="role">Preletor</div><div class="nm">Geisson<br>Augusto</div></div></div>
   </div>
 </section>
 
 <!-- ============ 05 · SCHEDULE ============ -->
 <section class="schedule shell" id="programacao" data-screen-label="Programação">
-  <div class="sec-row reveal">
-    <div>
-      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
-        <span class="sec-num">03</span><span class="phase-chip pc-restoration"><span class="dot"></span>Fase · Restoration</span>
-      </div>
-      <h2 class="title">Programação</h2>
-    </div>
-    <p class="lead">Três dias desenhados para te levar de uma estação a outra. Sujeito a ajustes.</p>
+  <div class="cg-head reveal">
+    <div class="cg-eyebrow">Agosto 26 &ndash; 30 / 2026 <span class="cg-star">&#9733;</span> Campo Grande</div>
+    <h2 class="cg-title">Cronograma</h2>
   </div>
-  <div class="timeline">
-    <div class="tl-day reveal">
-      <div class="tl-when"><div class="day">Sexta</div><div class="date">28 AGO · NOITE</div></div>
-      <div class="tl-items"><div class="tl-card"><div class="hd"><h4>Revival Night</h4><span class="badge">Abertura</span></div><p>Uma noite de avivamento e quebra. Louvor profético <span class="who">com Gabriel Júnior</span>.</p></div></div>
-    </div>
-    <div class="tl-day reveal">
-      <div class="tl-when"><div class="day">Sábado</div><div class="date">29 AGO · DIA INTEIRO</div></div>
-      <div class="tl-items">
-        <div class="tl-card"><div class="hd"><h4>Louvor &amp; Palavra</h4></div><p>Manhã e tarde de adoração intensa e ministração da Palavra para uma nova estação.</p></div>
-        <div class="tl-card"><div class="hd"><h4>Talk · Negócios</h4><span class="badge">Talk</span></div><p>Negócios e investimentos — fé aplicada ao mercado e ao chamado empreendedor.</p></div>
-        <div class="tl-card"><div class="hd"><h4>Talk · Fé &amp; Política</h4><span class="badge">Talk</span></div><p>Um posicionamento cristão equilibrado e maduro para a vida pública — longe dos extremos.</p></div>
+  <div class="cronograma">
+    <div class="cg-day reveal">
+      <div class="cg-name">Quarta</div>
+      <div class="cg-rows">
+        <span class="cg-time">19h30</span><span class="cg-act">Prayer Night</span>
       </div>
     </div>
-    <div class="tl-day reveal">
-      <div class="tl-when"><div class="day">Domingo<br>Manhã</div><div class="date">30 AGO · MANHÃ</div></div>
-      <div class="tl-items"><div class="tl-card"><div class="hd"><h4>Rema</h4><span class="badge">Encontro</span></div><p>Reunião no estilo Rema: uma manhã de unção, encontro com Deus e batismos.</p></div></div>
+    <div class="cg-day reveal">
+      <div class="cg-name">Quinta</div>
+      <div class="cg-rows">
+        <span class="cg-time">19h30</span><span class="cg-act">Gravação Vitória Worship</span>
+        <span class="cg-time">21h</span><span class="cg-act">Revival Night</span>
+      </div>
     </div>
-    <div class="tl-day reveal">
-      <div class="tl-when"><div class="day">Domingo<br>Noite</div><div class="date">30 AGO · NOITE</div></div>
-      <div class="tl-items"><div class="tl-card"><div class="hd"><h4>Gran Finale</h4><span class="badge">Encerramento</span></div><p>Apresentações artísticas, vídeos de retrospectiva e a celebração dos 6 anos <span class="who">com Marcelo Marques</span>.</p></div></div>
+    <div class="cg-day reveal">
+      <div class="cg-name">Sexta</div>
+      <div class="cg-rows">
+        <span class="cg-time">19h30</span><span class="cg-act">Sessão 3</span>
+        <span class="cg-time">22h</span><span class="cg-act">Winners</span>
+      </div>
+    </div>
+    <div class="cg-day reveal">
+      <div class="cg-name">Sábado</div>
+      <div class="cg-rows">
+        <span class="cg-time">12h</span><span class="cg-act">Workshop / Almoço</span>
+        <span class="cg-time">15h</span><span class="cg-act">Sessão 4</span>
+        <span class="cg-time">16h30</span><span class="cg-act">Workshop &amp; Talk</span>
+        <span class="cg-time">19h30</span><span class="cg-act">Sessão 5</span>
+      </div>
+    </div>
+    <div class="cg-day reveal">
+      <div class="cg-name">Domingo</div>
+      <div class="cg-rows">
+        <span class="cg-time">9h</span><span class="cg-act">Sessão 6</span>
+        <span class="cg-time">11h</span><span class="cg-act">Batismo</span>
+        <span class="cg-time">18h</span><span class="cg-act">Culto</span>
+      </div>
     </div>
   </div>
 </section>
@@ -275,14 +270,14 @@
       <div class="tk-flag">100 primeiros</div>
       <div class="tk-name">Founders</div><div class="tk-tier">Lote fundador</div>
       <div class="tk-price">R$149</div>
-      <div class="tk-note">Os primeiros a crer. Acesso completo aos 3 dias.</div>
+      <div class="tk-note">Os primeiros a crer. Acesso completo aos 5 dias.</div>
       <ul class="tk-feat"><li>Acesso a todos os dias</li><li>Brinde exclusivo Founders</li><li>Área prioritária</li></ul>
       <button class="btn btn-primary" data-checkout data-tier="Founders" data-price="R$149">Quero este</button>
     </div>
     <div class="tk reveal rd1">
       <div class="tk-name">Legacy</div><div class="tk-tier">Inteira</div>
       <div class="tk-price">R$169</div>
-      <div class="tk-note">Acesso completo aos três dias de conferência.</div>
+      <div class="tk-note">Acesso completo aos cinco dias de conferência.</div>
       <ul class="tk-feat"><li>Acesso a todos os dias</li><li>Credencial oficial</li></ul>
       <button class="btn" data-checkout data-tier="Legacy" data-price="R$169">Comprar</button>
     </div>
@@ -320,7 +315,7 @@
 <section class="why shell" id="porque" data-screen-label="Por que participar">
   <div class="reveal">
     <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
-      <span class="sec-num" style="color:rgba(244,241,236,.8)">05</span>
+      <span class="sec-num">05</span>
     </div>
     <h2 class="title">Por que<br>estar lá?</h2>
   </div>
@@ -360,10 +355,10 @@
   <div class="final-bg"></div>
   <div class="final-scrim"></div>
   <div class="rays"><span></span><span></span><span></span></div>
-  <div class="final-inner reveal">
+  <div class="final-inner glass reveal">
     <div class="phase-chip pc-restore" style="margin-bottom:30px"><span class="dot"></span>Fase · Restore</div>
     <h2>É tempo<br>de<br>restauração.</h2>
-    <p>Talvez Deus tenha marcado estes três dias para mudar a sua história.</p>
+    <p>Talvez Deus tenha marcado estes cinco dias para mudar a sua história.</p>
     <button class="btn btn-primary btn-lg" data-checkout data-tier="Founders" data-price="R$149">
       Garantir minha vaga
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -375,8 +370,8 @@
 <footer class="footer" data-screen-label="Footer">
   <div class="footer-top">
     <div class="footer-col">
-      <a class="brand" href="#top"><img src="/conference/assets/vitoria-logo.png" alt="Igreja Vitória"><span class="lk"><b>Vitória</b><b>Conferência <span>26</span></b></span></a>
-      <p class="footer-blurb">RESTORE — Tempo de Restauração. Três dias de adoração, palavra e celebração dos 6 anos da Igreja Vitória.</p>
+      <a class="brand" href="#top"><img src="/conference/assets/vitoria-logo.png" alt="Igreja Vitória"><span class="lk">VitóriaCon</span></a>
+      <p class="footer-blurb">RESTORE — Conferência Profética de Adoração e Mover Sobrenatural. Cinco dias celebrando os 6 anos da Igreja Vitória.</p>
       <div class="socials">
         <a href="https://www.instagram.com/igrejavitoriacg/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.5"/><circle cx="17" cy="7" r="1"/></svg></a>
         <a href="https://wa.me/5567998318450" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.5-4A7 7 0 1112 19a7 7 0 01-3.5-1L4 20z"/></svg></a>
@@ -384,11 +379,11 @@
       </div>
     </div>
     <div class="footer-col"><h5>Navegação</h5><a href="#experiencia">Experiência</a><a href="#lineup">Line-up</a><a href="#programacao">Programação</a><a href="#ingressos">Ingressos</a><a href="#faq">FAQ</a></div>
-    <div class="footer-col"><h5>Evento</h5><p>28 · 29 · 30 Agosto 2026</p><p>Igreja Vitória</p><p>6 anos · RESTORE</p></div>
+    <div class="footer-col"><h5>Evento</h5><p>26–30 Agosto 2026</p><p>Igreja Vitória · Campo Grande</p><p>6 anos · RESTORE</p></div>
     <div class="footer-col"><h5>Contato</h5><a href="https://www.instagram.com/igrejavitoriacg/" target="_blank" rel="noopener">@igrejavitoriacg</a><a href="https://wa.me/5567998318450" target="_blank" rel="noopener">WhatsApp · (67) 99831-8450</a><a href="https://www.google.com/maps?ftid=0x9486e700203b13d9:0xea4486d7dc25cb82" target="_blank" rel="noopener">Rua Marechal Rondon, 163</a></div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 Vitória Conference · Igreja Vitória</p>
+    <p>© 2026 VitóriaCon · Igreja Vitória</p>
     <p>Deus está restaurando histórias.</p>
   </div>
   <div class="footer-word">Restore</div>
