@@ -519,7 +519,7 @@ html.js-anim .reveal.in{opacity:1;transform:none}
   .nav{padding:14px 6vw}
   .nav.scrolled{padding:11px 6vw}
 }
-.drawer .cta{margin-top:34px;align-self:flex-start;border-bottom:none!important;font-size:15px!important;padding:16px 30px!important}
+.drawer .cta{margin-top:34px;align-self:flex-start;border-bottom:none!important;font-size:15px!important;padding:16px 30px!important;color:var(--ivory-soft)!important}
 @media(max-width:430px){
   .hero-bottom{gap:22px}
   .countdown{width:100%;gap:8px}
