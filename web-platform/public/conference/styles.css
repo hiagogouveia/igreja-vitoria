@@ -539,3 +539,14 @@ html.js-anim .reveal.in{opacity:1;transform:none}
 .drawer.open a:nth-of-type(5){transition-delay:.46s}
 .drawer.open a:nth-of-type(6){transition-delay:.55s}
 @media(prefers-reduced-motion:reduce){.drawer .x,.drawer a{opacity:1;transform:none;transition:none}}
+
+/* ============================================================
+   MODAL DE ORIENTAÇÃO DE INGRESSO (antes do checkout e-inscrição)
+   ============================================================ */
+.buy-lead{color:var(--graphite);font-size:14.5px;line-height:1.55;margin-bottom:18px}
+.buy-rules{list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 22px;padding:0}
+.buy-rules li{font-size:13.5px;line-height:1.45;color:var(--graphite);
+  padding:11px 14px;border-radius:12px;border:1px solid rgba(11,11,12,.12);
+  background:rgba(255,255,255,.45);transition:border-color .2s,background .2s,box-shadow .2s}
+.buy-rules li b{color:var(--ink);font-weight:700}
+.buy-rules li.hl{border-color:var(--ink);background:rgba(11,11,12,.05);box-shadow:0 0 0 1.5px var(--ink) inset}

@@ -125,51 +125,34 @@
       window.addEventListener('resize', reqParallax, { passive: true });
     }
 
-    /* ---------- Checkout modal ---------- */
-    var modal = document.getElementById('checkoutModal');
-    var modalForm = document.getElementById('modalForm');
-    var modalSuccess = document.getElementById('modalSuccess');
-    var mTier = document.getElementById('mTier');
-    var mPrice = document.getElementById('mPrice');
-    var lastFocus = null;
-
-    function clearErrors() {
-      ['Name', 'Email', 'Phone'].forEach(function (k) {
-        var i = document.getElementById('m' + k), e = document.getElementById('e' + k);
-        if (i) i.classList.remove('err'); if (e) e.textContent = '';
+    /* ---------- Modal de confirmação de ingresso (antes do checkout) ---------- */
+    var buyModal = document.getElementById('buyModal');
+    if (buyModal) {
+      var buyLastFocus = null;
+      var buyRules = buyModal.querySelectorAll('.buy-rules li');
+      var openBuy = function (ticket) {
+        buyRules.forEach(function (li) {
+          li.classList.toggle('hl', !!ticket && li.getAttribute('data-rule') === ticket);
+        });
+        buyModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        buyLastFocus = document.activeElement;
+      };
+      var closeBuy = function () {
+        buyModal.classList.remove('open');
+        document.body.style.overflow = '';
+        if (buyLastFocus && buyLastFocus.focus) buyLastFocus.focus();
+      };
+      document.querySelectorAll('[data-buy]').forEach(function (b) {
+        b.addEventListener('click', function () { openBuy(b.getAttribute('data-ticket')); });
       });
+      document.getElementById('buyClose').addEventListener('click', closeBuy);
+      document.getElementById('buyBack').addEventListener('click', closeBuy);
+      buyModal.addEventListener('click', function (e) { if (e.target === buyModal) closeBuy(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && buyModal.classList.contains('open')) closeBuy(); });
+      // "Continuar para a inscrição" é o botão da e-inscrição (o widget abre o checkout);
+      // aqui apenas fechamos o modal de orientação.
+      document.getElementById('buyGo').addEventListener('click', closeBuy);
     }
-    function openCheckout(tier, price) {
-      mTier.textContent = tier || 'Founders';
-      mPrice.textContent = price || 'R$159';
-      modalForm.style.display = ''; modalSuccess.style.display = 'none';
-      clearErrors();
-      modal.classList.add('open'); document.body.style.overflow = 'hidden';
-      lastFocus = document.activeElement;
-      setTimeout(function () { var n = document.getElementById('mName'); if (n) n.focus(); }, 350);
-    }
-    function closeCheckout() {
-      modal.classList.remove('open'); document.body.style.overflow = '';
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
-    }
-    document.querySelectorAll('[data-checkout]').forEach(function (b) {
-      b.addEventListener('click', function () { openCheckout(b.getAttribute('data-tier'), b.getAttribute('data-price')); });
-    });
-    document.getElementById('modalClose').addEventListener('click', closeCheckout);
-    var mDone = document.getElementById('mDone');
-    if (mDone) mDone.addEventListener('click', closeCheckout);
-    modal.addEventListener('click', function (e) { if (e.target === modal) closeCheckout(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeCheckout(); });
-
-    document.getElementById('mSubmit').addEventListener('click', function () {
-      clearErrors();
-      var name = document.getElementById('mName'), email = document.getElementById('mEmail'), phone = document.getElementById('mPhone');
-      var ok = true;
-      if (!name.value.trim()) { name.classList.add('err'); document.getElementById('eName').textContent = 'Informe seu nome'; ok = false; }
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim())) { email.classList.add('err'); document.getElementById('eEmail').textContent = 'E-mail inválido'; ok = false; }
-      if (phone.value.replace(/\D/g, '').length < 10) { phone.classList.add('err'); document.getElementById('ePhone').textContent = 'WhatsApp inválido'; ok = false; }
-      if (!ok) return;
-      modalForm.style.display = 'none'; modalSuccess.style.display = '';
-    });
   });
 })();
