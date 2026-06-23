@@ -73,9 +73,8 @@ export function mapDbEvent(e: {
 
 // Weekly services: [weekday (0=Sun), hour, minute, label]
 export const services: [number, number, number, string][] = [
-  [0, 10, 0, 'Culto da Manhã'],
+  [3, 19, 30, 'Culto de Ensino'],
   [0, 18, 0, 'Culto da Família'],
-  [3, 20, 0, 'Culto de Ensino'],
 ];
 
 export const site = {

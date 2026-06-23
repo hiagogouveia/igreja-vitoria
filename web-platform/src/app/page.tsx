@@ -184,9 +184,9 @@ export default async function Home() {
               <h2 style={{ ...sectionTitle, fontSize: 'clamp(28px,4vw,44px)', marginBottom: 12 }}>Adore de onde<br />você estiver.</h2>
               <p style={{ fontSize: 17, color: 'var(--dim)', lineHeight: 1.55, marginBottom: 26, maxWidth: 440 }}>Não conseguiu vir? Assista nossos cultos ao vivo pelo YouTube e viva uma experiência com Deus em qualquer lugar.</p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <Link href="/aovivo" className="btn-pulse" style={{ ...btnPrimarySm, background: 'var(--pulse)', color: '#fff' }}>
+                <a href={`${site.youtube}/live`} target="_blank" rel="noreferrer" className="btn-pulse" style={{ ...btnPrimarySm, background: 'var(--pulse)', color: '#fff' }}>
                   <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff', animation: 'pulse 1.4s infinite' }} />Assistir agora
-                </Link>
+                </a>
                 <Link href="/programacao" className="btn-ghost" style={{ ...btnGhost, padding: '13px 24px' }}>Ver programação</Link>
               </div>
             </div>

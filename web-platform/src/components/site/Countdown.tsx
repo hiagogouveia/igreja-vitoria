@@ -32,7 +32,8 @@ function compute(nowMs: number): CD {
   const hh = Math.floor(diff / 3600000); diff -= hh * 3600000;
   const mm = Math.floor(diff / 60000); diff -= mm * 60000;
   const ss = Math.floor(diff / 1000);
-  return { days: pad(dd), hours: pad(hh), mins: pad(mm), secs: pad(ss), label: ns.label, date: `${WEEKDAYS[ns.t.getDay()]} ${pad(ns.t.getHours())}h` };
+  const sm = ns.t.getMinutes();
+  return { days: pad(dd), hours: pad(hh), mins: pad(mm), secs: pad(ss), label: ns.label, date: `${WEEKDAYS[ns.t.getDay()]} ${ns.t.getHours()}h${sm ? pad(sm) : ''}` };
 }
 
 export default function Countdown({ dark = false }: { dark?: boolean }) {
