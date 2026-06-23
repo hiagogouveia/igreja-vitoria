@@ -4,7 +4,7 @@ import Link from 'next/link';
 import SiteShell from '@/components/site/SiteShell';
 import { btnPrimarySm, display, eyebrowLine, wrap } from '@/lib/site-ui';
 
-export const metadata: Metadata = { title: 'Programação · Igreja Vitória', description: 'Programação semanal dos cultos da Igreja Vitória: domingos 10h e 18h, quartas 20h.' };
+export const metadata: Metadata = { title: 'Programação · Igreja Vitória', description: 'Programação semanal da Igreja Vitória: Culto da Família aos domingos 18h e Quarta Flow às quartas 19h30.' };
 
 const slotTitle: CSSProperties = { fontFamily: 'var(--display)', fontWeight: 800, fontSize: 32, color: 'var(--glow)' };
 const cardHead: CSSProperties = { padding: '22px 30px', borderBottom: '1px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' };
@@ -36,15 +36,12 @@ export default function Programacao() {
       <section className="reveal" style={{ padding: '50px 28px 100px' }}>
         <div style={{ ...wrap, display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 18, overflow: 'hidden' }}>
-            <div style={cardHead}><span style={dayLabel}>Domingo</span><span style={tag}>2 cultos</span></div>
-            <div data-split style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
-              <Slot time="10h" title="Culto da Manhã" sub="Adoração e palavra para começar a semana" border />
-              <Slot time="18h" title="Culto da Família" sub="O culto principal, para toda a família" />
-            </div>
+            <div style={cardHead}><span style={dayLabel}>Domingo</span><span style={tag}>Culto da Família</span></div>
+            <Slot time="18h" title="Culto da Família" sub="O culto principal, para toda a família" />
           </div>
           <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 18, overflow: 'hidden' }}>
-            <div style={cardHead}><span style={dayLabel}>Quarta-feira</span><span style={tag}>Quarta-Flow</span></div>
-            <Slot time="20h" title="Culto de Ensino" sub="Aprofundamento na palavra e renovo no meio da semana" />
+            <div style={cardHead}><span style={dayLabel}>Quarta-feira</span><span style={tag}>Meio de semana</span></div>
+            <Slot time="19h30" title="Quarta Flow" sub="Renovo, adoração e palavra no meio da semana" />
           </div>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 8 }}>
             <Link href="/aovivo" className="btn-glow" style={{ ...btnPrimarySm, padding: '14px 28px' }}>Assistir ao vivo</Link>

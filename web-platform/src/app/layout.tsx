@@ -5,14 +5,14 @@ import RevealManager from "@/components/site/RevealManager";
 export const metadata: Metadata = {
   title: "Igreja Vitória · Campo Grande — MS",
   description:
-    "Igreja Vitória · Campo Grande — MS. Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. Cultos aos domingos 10h e 18h e quartas 20h. Encontre fé, propósito e família.",
+    "Igreja Vitória · Campo Grande — MS. Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. Cultos aos domingos 18h (Culto da Família) e quartas 19h30 (Quarta Flow). Encontre fé, propósito e família.",
   metadataBase: new URL("https://igreja-vitoria.vercel.app"),
   openGraph: {
     type: "website",
     siteName: "Igreja Vitória",
     title: "Igreja Vitória · Campo Grande — MS",
     description:
-      "Encontre Deus. Viva em família. Transforme sua história. Cultos aos domingos 10h e 18h em Campo Grande — MS.",
+      "Encontre Deus. Viva em família. Transforme sua história. Cultos aos domingos 18h e quartas 19h30 em Campo Grande — MS.",
     images: ["/assets/worship-arms.jpg"],
     locale: "pt_BR",
   },

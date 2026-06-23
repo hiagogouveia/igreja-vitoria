@@ -60,7 +60,7 @@ export default function SiteNavbar() {
             ))}
           </div>
           <span onClick={() => go('/contribua')} style={{ marginTop: 32, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 17, padding: 16, borderRadius: 99, cursor: 'pointer', textAlign: 'center' }}>Contribua →</span>
-          <div style={{ marginTop: 'auto', fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', color: 'var(--faint)', textTransform: 'uppercase' }}>Domingo · 10h e 18h · Campo Grande — MS</div>
+          <div style={{ marginTop: 'auto', fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', color: 'var(--faint)', textTransform: 'uppercase' }}>Domingo 18h · Quarta 19h30 · Campo Grande — MS</div>
         </div>
       )}
     </>

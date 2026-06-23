@@ -63,7 +63,7 @@ export default async function Home() {
       <div style={{ borderTop: '1px solid var(--border-soft)', borderBottom: '1px solid var(--border-soft)', background: 'var(--ink)' }}>
         <div style={{ ...wrap, padding: '22px 28px', display: 'flex', flexWrap: 'wrap', gap: '18px 40px', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px 36px' }}>
-            {[['Domingo', '10h · Manhã  |  18h · Família'], ['Quarta-feira', '20h · Culto de Ensino'], ['Onde', 'R. Mal. Rondon, 163 · Amambai']].map(([k, v]) => (
+            {[['Domingo', '18h · Culto da Família'], ['Quarta-feira', '19h30 · Quarta Flow'], ['Onde', 'R. Mal. Rondon, 163 · Amambai']].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <span style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--faint)' }}>{k}</span>
                 <span style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 16 }}>{v}</span>
@@ -321,7 +321,7 @@ export default async function Home() {
               <span style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--glow)' }}>Onde estamos</span>
               <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 24, letterSpacing: '-.01em', margin: '14px 0 18px' }}>R. Mal. Rondon, 163<br />Amambai · {site.city}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
-                {[['DOMINGO', '10h · Culto da Manhã  ·  18h · Culto da Família'], ['QUARTA', '20h · Culto de Ensino'], ['CEP', site.cep]].map(([k, v]) => (
+                {[['DOMINGO', '18h · Culto da Família'], ['QUARTA', '19h30 · Quarta Flow'], ['CEP', site.cep]].map(([k, v]) => (
                   <div key={k} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', letterSpacing: '.1em', minWidth: 78, paddingTop: 2 }}>{k}</span>
                     <span style={{ fontSize: 15, color: 'var(--text)' }}>{v}</span>
