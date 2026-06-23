@@ -2,7 +2,7 @@
 
 import { useState, type CSSProperties } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
   { label: 'Quem Somos', to: '/quem-somos' },
@@ -19,7 +19,9 @@ const logoImg: CSSProperties = { width: 24, height: 'auto', filter: 'brightness(
 export default function SiteNavbar() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const go = (to: string) => { setOpen(false); router.push(to); };
+  const isActive = (to: string) => to === '/' ? pathname === '/' : (pathname === to || pathname.startsWith(to + '/'));
 
   return (
     <>
@@ -31,9 +33,12 @@ export default function SiteNavbar() {
         </Link>
 
         <div data-desknav style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          {NAV_ITEMS.map((item) => (
-            <Link key={item.to} href={item.to} className="nav-pill" style={{ fontSize: 13, color: 'var(--dim)', padding: '9px 13px', borderRadius: 99, cursor: 'pointer', fontWeight: 500, fontFamily: 'var(--head)', textDecoration: 'none' }}>{item.label}</Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const on = isActive(item.to);
+            return (
+              <Link key={item.to} href={item.to} aria-current={on ? 'page' : undefined} className="nav-pill" style={{ fontSize: 13, color: on ? 'var(--glow)' : 'var(--dim)', background: on ? 'rgba(240,168,72,.12)' : 'transparent', padding: '9px 13px', borderRadius: 99, cursor: 'pointer', fontWeight: on ? 700 : 500, fontFamily: 'var(--head)', textDecoration: 'none' }}>{item.label}</Link>
+            );
+          })}
           <Link href="/contribua" className="btn-glow" style={{ marginLeft: 8, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', textDecoration: 'none' }}>Contribua</Link>
         </div>
 
@@ -56,7 +61,7 @@ export default function SiteNavbar() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {NAV_ITEMS.map((item, i) => (
-              <span key={item.to} onClick={() => go(item.to)} style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 30, textTransform: 'uppercase', letterSpacing: '-.01em', color: 'var(--text)', padding: '10px 0', cursor: 'pointer', borderBottom: '1px solid var(--border-soft)', animation: `rise .5s var(--ease) ${0.04 * i + 0.05}s both` }}>{item.label}</span>
+              <span key={item.to} onClick={() => go(item.to)} aria-current={isActive(item.to) ? 'page' : undefined} style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 30, textTransform: 'uppercase', letterSpacing: '-.01em', color: isActive(item.to) ? 'var(--glow)' : 'var(--text)', padding: '10px 0', cursor: 'pointer', borderBottom: '1px solid var(--border-soft)', animation: `rise .5s var(--ease) ${0.04 * i + 0.05}s both` }}>{item.label}</span>
             ))}
           </div>
           <span onClick={() => go('/contribua')} style={{ marginTop: 32, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 17, padding: 16, borderRadius: 99, cursor: 'pointer', textAlign: 'center' }}>Contribua →</span>
