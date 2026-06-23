@@ -7,7 +7,7 @@ import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import ConferenceFold from '@/components/site/ConferenceFold';
-import { beliefs, fallbackEvents, messages, ministries, site, testimonials } from '@/lib/site-data';
+import { beliefs, fallbackEvents, messages, ministries, site } from '@/lib/site-data';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
 
 export default async function Home() {
@@ -196,25 +196,33 @@ export default async function Home() {
             <Link href="/eventos" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Agenda completa →</Link>
           </div>
           <div data-grid-ev style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 16 }}>
-            {events.map((e) => (
-              <div key={e.id} className="lift" style={{ position: 'relative', borderRadius: 18, overflow: 'hidden', border: '1px solid var(--border)', minHeight: 300, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={e.photo} alt={e.title} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.15) 25%,rgba(5,5,5,.94))' }} />
-                {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>Destaque</div>}
-                <div style={{ position: 'relative', padding: 22 }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.06em', color: 'var(--glow)', marginBottom: 10 }}>
-                    <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 13, background: 'var(--void)', padding: '6px 11px', borderRadius: 8 }}>{e.date}</span><span>{e.time} · {e.place}</span>
+            {events.map((e) => {
+              const cardStyle = { position: 'relative' as const, borderRadius: 18, overflow: 'hidden', border: '1px solid var(--border)', minHeight: 300, display: 'flex', flexDirection: 'column' as const, justifyContent: 'flex-end' as const };
+              const inner = (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={e.photo} alt={e.title} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.15) 25%,rgba(5,5,5,.94))' }} />
+                  {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>Destaque</div>}
+                  <div style={{ position: 'relative', padding: 22 }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.06em', color: 'var(--glow)', marginBottom: 10 }}>
+                      <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 13, background: 'var(--void)', padding: '6px 11px', borderRadius: 8 }}>{e.date}</span><span>{e.time} · {e.place}</span>
+                    </div>
+                    <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 22, letterSpacing: '-.01em', marginBottom: 14 }}>{e.title}</h3>
+                    {e.href ? (
+                      <span className="btn-fill-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, backdropFilter: 'blur(6px)' }}>{e.cta ?? 'Saiba mais'} →</span>
+                    ) : (
+                      <RegisterModal kicker="Inscrição em evento" title={e.title} sub={`${e.date} · ${e.time} · ${e.place}`} triggerClass="btn-fill-glow" triggerStyle={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)' }}>Fazer inscrição →</RegisterModal>
+                    )}
                   </div>
-                  <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 22, letterSpacing: '-.01em', marginBottom: 14 }}>{e.title}</h3>
-                  {e.href ? (
-                    <a href={e.href} target={e.href.startsWith('http') ? '_blank' : undefined} rel={e.href.startsWith('http') ? 'noreferrer' : undefined} className="btn-fill-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)', textDecoration: 'none' }}>{e.cta ?? 'Saiba mais'} →</a>
-                  ) : (
-                    <RegisterModal kicker="Inscrição em evento" title={e.title} sub={`${e.date} · ${e.time} · ${e.place}`} triggerClass="btn-fill-glow" triggerStyle={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)' }}>Fazer inscrição →</RegisterModal>
-                  )}
-                </div>
-              </div>
-            ))}
+                </>
+              );
+              return e.href ? (
+                <a key={e.id} href={e.href} target={e.href.startsWith('http') ? '_blank' : undefined} rel={e.href.startsWith('http') ? 'noreferrer' : undefined} className="lift" style={{ ...cardStyle, cursor: 'pointer', textDecoration: 'none', color: 'var(--text)' }}>{inner}</a>
+              ) : (
+                <div key={e.id} className="lift" style={cardStyle}>{inner}</div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -267,31 +275,6 @@ export default async function Home() {
               <PixCopy value={site.pixCnpj} />
               <p style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', marginTop: 12, letterSpacing: '.04em' }}>Igreja Vitória · Campo Grande — MS</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- TESTEMUNHOS ---------- */}
-      <section className="reveal" style={{ padding: '104px 28px', borderTop: '1px solid var(--border-soft)', background: 'linear-gradient(180deg,var(--ink),var(--void))' }}>
-        <div style={wrap}>
-          <div style={{ maxWidth: 680, marginBottom: 46 }}>
-            <span style={kicker}>07 — HISTÓRIAS DE TRANSFORMAÇÃO</span>
-            <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 0' }}>Vidas reais.<br />Histórias verdadeiras.</h2>
-          </div>
-          <div data-grid3 style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-            {testimonials.map((t) => (
-              <div key={t.name} className="hov-glow" style={{ ...card, padding: 30 }}>
-                <div style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 54, color: 'var(--glow)', lineHeight: .4, opacity: .45, height: 28 }}>“</div>
-                <blockquote style={{ fontFamily: 'var(--head)', fontWeight: 500, fontSize: 18, lineHeight: 1.45, color: 'var(--text)', margin: '10px 0 22px', letterSpacing: '-.01em' }}>{t.quote}</blockquote>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 42, height: 42, borderRadius: '50%', background: t.av, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, color: '#050505' }}>{t.initials}</div>
-                  <div>
-                    <div style={{ fontFamily: 'var(--head)', fontWeight: 600, fontSize: 14.5 }}>{t.name}</div>
-                    <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', letterSpacing: '.06em' }}>{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
