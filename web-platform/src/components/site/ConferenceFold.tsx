@@ -22,9 +22,10 @@ export default function ConferenceFold() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: 'var(--mono)', fontSize: 13, letterSpacing: '.24em', textTransform: 'uppercase', color: 'var(--glow)', marginBottom: 18 }}>
             <span style={{ width: 26, height: 1, background: 'var(--glow)', opacity: .7 }} />26 a 30 de Agosto · 2026 · Campo Grande
           </div>
-          <h2 style={{ ...display, fontSize: 'clamp(48px,10vw,128px)', lineHeight: .86, marginBottom: 14, textShadow: '0 0 70px rgba(240,168,72,.4)' }}>
-            Vitória<span style={{ color: 'var(--glow)' }}>Con</span> 2026
+          <h2 style={{ fontFamily: "'Pirata One', serif", fontWeight: 400, fontSize: 'clamp(60px,12vw,170px)', lineHeight: .9, margin: 0, color: 'var(--glow-soft)', textShadow: '0 2px 60px rgba(240,168,72,.5)' }}>
+            VitóriaCon
           </h2>
+          <div style={{ ...display, fontSize: 'clamp(30px,5.5vw,74px)', lineHeight: 1, marginBottom: 16, color: 'var(--text)' }}>2026</div>
           <p style={{ fontFamily: 'var(--head)', fontWeight: 600, fontSize: 'clamp(18px,2.4vw,26px)', letterSpacing: '-.01em', color: 'var(--text)', marginBottom: 14 }}>
             Conferência Profética de Adoração e Mover Sobrenatural — Restore
           </p>
