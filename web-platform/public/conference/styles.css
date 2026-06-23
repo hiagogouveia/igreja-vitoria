@@ -473,7 +473,9 @@ h2.title{font-family:var(--font-wide);font-weight:800;font-stretch:125%;
 .modal{width:min(460px,100%);background:var(--glass-fill-strong);
   -webkit-backdrop-filter:blur(28px) saturate(165%);backdrop-filter:blur(28px) saturate(165%);
   border:1px solid rgba(255,255,255,.6);border-radius:var(--r-lg);padding:36px;position:relative;
+  max-height:calc(100dvh - 48px);overflow-y:auto;-webkit-overflow-scrolling:touch;
   transform:translateY(20px) scale(.97);transition:transform .4s var(--ease);box-shadow:var(--glass-shadow),var(--glass-inner)}
+@media(max-width:480px){.modal{padding:30px 20px}.modal h3{font-size:24px}.buy-rules li{padding:10px 12px}}
 .scrim.open .modal{transform:none}
 .modal .x{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(11,11,12,.18);
   color:var(--graphite);font-size:18px;display:flex;align-items:center;justify-content:center;transition:.25s}
