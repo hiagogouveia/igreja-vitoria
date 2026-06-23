@@ -64,26 +64,7 @@ async function main() {
         })
     }
 
-    // CAVs
-    const cavs = [
-        {
-            name: "CAV Bairro Universitário",
-            address: "Rua Elesbão Murtinho, 250",
-            neighborhood: "Bairro Universitário",
-            dayOfWeek: "Sexta",
-            time: "19:30",
-            active: true,
-        }
-    ]
-
-    for (const cav of cavs) {
-        // Check if exists nicely
-        const count = await prisma.cav.count({ where: { name: cav.name } })
-        if (count === 0) {
-            await prisma.cav.create({ data: cav })
-        }
-    }
-
+    // CAVs: a lista oficial é gerenciada por prisma/sync-cavs.js
     console.log('Seed finished successfully')
 }
 

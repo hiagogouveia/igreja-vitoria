@@ -28,7 +28,7 @@ const CAVS = [
         leaderName: 'Pr. Hiago & Isa',
         address: 'Rua Antônio Alves, 406, Rita Vieira, Campo Grande, MS',
         neighborhood: 'Rita Vieira',
-        dayOfWeek: 'Sexta',
+        dayOfWeek: 'Quinta',
         time: '19:30',
     },
     {

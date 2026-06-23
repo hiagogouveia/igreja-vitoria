@@ -37,16 +37,15 @@ export const messages = [
   { id: 6, title: 'A Fé Que Vence o Mundo', series: 'Vitória', speaker: 'Ev. Wagner', duration: '41 min', date: '28 ABR', type: 'audio', thumb: '/assets/worship-arms.jpg' },
 ];
 
-// Fallback events used only when the DB has no active events.
-export const fallbackEvents = [
-  { id: 'conf-vitoria', title: 'Conferência Vitória', date: '15 AGO', time: '19:00', place: 'Auditório Principal', featured: true, photo: '/assets/worship-team.jpg', desc: 'O maior encontro do ano. Três noites de adoração profunda, palavra restauradora e a presença de Deus enchendo a casa.' },
-  { id: 'noite-adoracao', title: 'Noite de Adoração', date: '22 AGO', time: '20:00', place: 'Sede', featured: false, photo: '/assets/worship-arms.jpg', desc: 'Uma noite inteira dedicada a adorar. Sem pressa, sem agenda — só nós e a presença Dele.' },
-  { id: 'acampamento-jovem', title: 'Acampamento Jovem', date: '10 SET', time: '18:00', place: 'Sítio Vitória', featured: false, photo: '/assets/community-prayer.jpg', desc: 'A juventude Vitória reunida para um fim de semana de fé, amizade e diversão que marca a vida.' },
+// Eventos em destaque exibidos na home (curados).
+export const fallbackEvents: SiteEvent[] = [
+  { id: 'vitoriacon-2026', title: 'VitóriaCon 2026', date: '26–30 AGO', time: 'Conferência', place: 'Igreja Vitória', featured: true, photo: '/assets/worship-team.jpg', desc: 'Conferência Profética de Adoração e Mover Sobrenatural — RESTORE. Cinco dias marcando os 6 anos da Igreja Vitória.', href: '/conference', cta: 'Garantir vaga' },
+  { id: 'campanha-agasalho', title: 'Campanha do Agasalho', date: '21 JUN — 31 JUL', time: 'Doações', place: 'R. Mal. Rondon, 163', featured: true, photo: '/assets/community-prayer.jpg', desc: 'Doe amor, compartilhe calor. Receba agasalhos, cobertores, cachecóis, toucas e meias na Igreja Vitória. Mais que roupas, levamos dignidade e carinho a quem precisa. Realização: Instituto Vitória.', href: 'https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20participar%20da%20Campanha%20do%20Agasalho.', cta: 'Quero doar' },
 ];
 
 export type SiteEvent = {
   id: string; title: string; date: string; time: string; place: string;
-  featured: boolean; photo: string; desc: string;
+  featured: boolean; photo: string; desc: string; href?: string; cta?: string;
 };
 
 const FALLBACK_PHOTOS = ['/assets/worship-team.jpg', '/assets/worship-arms.jpg', '/assets/community-prayer.jpg'];

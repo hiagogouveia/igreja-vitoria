@@ -7,6 +7,17 @@ import { display, eyebrowLine, field, fieldLabel, wrap } from '@/lib/site-ui';
 
 export default function ContatoContent() {
   const [sent, setSent] = useState(false);
+  const [nome, setNome] = useState('');
+  const [zap, setZap] = useState('');
+  const [assunto, setAssunto] = useState('Quero visitar');
+  const [mensagem, setMensagem] = useState('');
+
+  const enviar = (e: React.FormEvent) => {
+    e.preventDefault();
+    const msg = `Olá! Mensagem pelo site.\n\n*Assunto:* ${assunto}\n*Nome:* ${nome}\n*WhatsApp:* ${zap}\n*Mensagem:* ${mensagem}`;
+    window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+    setSent(true);
+  };
 
   return (
     <>
@@ -48,20 +59,20 @@ export default function ContatoContent() {
                 <p style={{ fontSize: 14, color: 'var(--dim)', maxWidth: 320 }}>Recebemos seu contato e responderemos em breve pelo canal informado.</p>
               </div>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <form onSubmit={enviar} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div data-split style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                     <label style={fieldLabel}>Nome</label>
-                    <input className="field" type="text" required placeholder="Seu nome" style={field} />
+                    <input className="field" type="text" required placeholder="Seu nome" style={field} value={nome} onChange={(e) => setNome(e.target.value)} />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                     <label style={fieldLabel}>WhatsApp</label>
-                    <input className="field" type="text" required placeholder="(67) 9 0000-0000" style={field} />
+                    <input className="field" type="text" required placeholder="(67) 9 0000-0000" style={field} value={zap} onChange={(e) => setZap(e.target.value)} />
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                   <label style={fieldLabel}>Assunto</label>
-                  <select className="field" style={field} defaultValue="Quero visitar">
+                  <select className="field" style={field} value={assunto} onChange={(e) => setAssunto(e.target.value)}>
                     <option>Quero visitar</option>
                     <option>Pedido de oração</option>
                     <option>Quero servir</option>
@@ -71,9 +82,9 @@ export default function ContatoContent() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                   <label style={fieldLabel}>Mensagem</label>
-                  <textarea className="field" rows={4} required placeholder="Escreva aqui…" style={{ ...field, resize: 'vertical' }} />
+                  <textarea className="field" rows={4} required placeholder="Escreva aqui…" style={{ ...field, resize: 'vertical' }} value={mensagem} onChange={(e) => setMensagem(e.target.value)} />
                 </div>
-                <button type="submit" className="btn-glow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: 15, borderRadius: 11, cursor: 'pointer', border: 'none' }}>Enviar mensagem →</button>
+                <button type="submit" className="btn-glow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: 15, borderRadius: 11, cursor: 'pointer', border: 'none' }}>Enviar pelo WhatsApp →</button>
               </form>
             )}
           </div>

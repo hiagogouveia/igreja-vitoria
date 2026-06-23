@@ -1,28 +1,18 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
-import prisma from '@/lib/prisma';
 import SiteShell from '@/components/site/SiteShell';
 import Countdown from '@/components/site/Countdown';
 import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import ConferenceFold from '@/components/site/ConferenceFold';
-import { beliefs, fallbackEvents, mapDbEvent, messages, ministries, site, testimonials } from '@/lib/site-data';
+import { beliefs, fallbackEvents, messages, ministries, site, testimonials } from '@/lib/site-data';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
 
-async function getEvents() {
-  try {
-    const rows = await prisma.event.findMany({ where: { active: true }, orderBy: { startDate: 'asc' }, take: 3 });
-    if (!rows.length) return fallbackEvents;
-    return rows.map(mapDbEvent);
-  } catch {
-    return fallbackEvents;
-  }
-}
-
 export default async function Home() {
-  const events = await getEvents();
+  // Eventos em destaque (curados): Conferência + Campanha do Agasalho.
+  const events = fallbackEvents;
 
   return (
     <SiteShell>
@@ -156,7 +146,7 @@ export default async function Home() {
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {[{ bairro: 'Bairro Universitário', addr: 'Av. Vitor Meireles, 163 · Casa 03', when: 'Sexta · 19:30' }, { bairro: 'Centro', addr: 'Próximo à sede · grupo aberto', when: 'Quinta · 19:30' }].map((c) => (
+            {[{ bairro: 'CAV Rita Vieira', addr: 'Rua Antônio Alves, 406 · Rita Vieira', when: 'Quinta · 19:30' }, { bairro: 'CAV Centro', addr: 'Rua dos Ferroviários, 412 · Centro', when: 'Terça · 19:30' }].map((c) => (
               <div key={c.bairro} className="hov-beam" style={{ ...card, borderRadius: 14, padding: '22px 24px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
                   <div>
@@ -217,7 +207,11 @@ export default async function Home() {
                     <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 13, background: 'var(--void)', padding: '6px 11px', borderRadius: 8 }}>{e.date}</span><span>{e.time} · {e.place}</span>
                   </div>
                   <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 22, letterSpacing: '-.01em', marginBottom: 14 }}>{e.title}</h3>
-                  <RegisterModal kicker="Inscrição em evento" title={e.title} sub={`${e.date} · ${e.time} · ${e.place}`} triggerClass="btn-fill-glow" triggerStyle={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)' }}>Fazer inscrição →</RegisterModal>
+                  {e.href ? (
+                    <a href={e.href} target={e.href.startsWith('http') ? '_blank' : undefined} rel={e.href.startsWith('http') ? 'noreferrer' : undefined} className="btn-fill-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)', textDecoration: 'none' }}>{e.cta ?? 'Saiba mais'} →</a>
+                  ) : (
+                    <RegisterModal kicker="Inscrição em evento" title={e.title} sub={`${e.date} · ${e.time} · ${e.place}`} triggerClass="btn-fill-glow" triggerStyle={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)' }}>Fazer inscrição →</RegisterModal>
+                  )}
                 </div>
               </div>
             ))}
@@ -270,8 +264,8 @@ export default async function Home() {
             </div>
             <div style={{ background: 'rgba(11,11,12,.7)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: 18, padding: 26 }}>
               <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 8 }}>PIX · CNPJ</div>
-              <PixCopy value={site.pixCnpj} style={{ marginBottom: 14 }} />
-              <Link href="/contribua-pagamento" className="btn-glow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: 15, borderRadius: 12, cursor: 'pointer', textDecoration: 'none' }}>Contribuir com cartão →</Link>
+              <PixCopy value={site.pixCnpj} />
+              <p style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', marginTop: 12, letterSpacing: '.04em' }}>Igreja Vitória · Campo Grande — MS</p>
             </div>
           </div>
         </div>
