@@ -5,11 +5,11 @@ import { ArrowRight } from 'lucide-react';
 
 /**
  * Dobra promocional da Vitória Conference 2026 · RESTORE.
- * Leva para a landing oficial estática em /conference (servida de
- * public/conference, fora do router do Next — por isso usamos <a>).
+ * Leva para a landing oficial estática em /vitoriacon (servida de
+ * public/vitoriacon, fora do router do Next — por isso usamos <a>).
  * Identidade visual aprovada (vermelho/lava sobre preto).
  */
-const CONFERENCE_URL = '/conference';
+const CONFERENCE_URL = '/vitoriacon';
 
 const ConferenceTeaser = () => {
     return (
@@ -22,7 +22,7 @@ const ConferenceTeaser = () => {
             <div className="absolute inset-0">
                 <div
                     className="absolute inset-0 bg-cover bg-center md:bg-right opacity-70"
-                    style={{ backgroundImage: "url('/conference/assets/kv-3.jpg')" }}
+                    style={{ backgroundImage: "url('/vitoriacon/assets/kv-3.jpg')" }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/30" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60" />

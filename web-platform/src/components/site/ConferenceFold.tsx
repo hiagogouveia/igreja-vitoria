@@ -2,13 +2,13 @@ import { display, wrap } from '@/lib/site-ui';
 
 /**
  * Highlighted full-fold teaser for the Vitória Conference 2026 (RESTORE).
- * Identidade clara / liquid glass (espelha a landing /conference): foto de fundo
+ * Identidade clara / liquid glass (espelha a landing /vitoriacon): foto de fundo
  * mantida, lavagem clara por cima e o conteúdo num card de vidro fosco.
- * O bloco inteiro é um link para a landing estática em /conference.
+ * O bloco inteiro é um link para a landing estática em /vitoriacon.
  */
 export default function ConferenceFold() {
   return (
-    <a href="/conference" aria-label="VitóriaCon 2026 — RESTORE" style={{ display: 'block', textDecoration: 'none', color: 'var(--ink)' }}>
+    <a href="/vitoriacon" aria-label="VitóriaCon 2026 — RESTORE" style={{ display: 'block', textDecoration: 'none', color: 'var(--ink)' }}>
       <section className="reveal conf-fold" style={{ position: 'relative', minHeight: '86vh', display: 'flex', alignItems: 'center', overflow: 'hidden', borderTop: '1px solid var(--border-soft)', borderBottom: '1px solid var(--border-soft)' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/worship-team.jpg" alt="VitóriaCon 2026 — RESTORE" loading="lazy" className="conf-kv" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }} />

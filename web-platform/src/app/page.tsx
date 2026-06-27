@@ -7,6 +7,7 @@ import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import ConferenceFold from '@/components/site/ConferenceFold';
+import ConferencePopup from '@/components/site/ConferencePopup';
 import { beliefs, fallbackEvents, messages, ministries, site } from '@/lib/site-data';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
 
@@ -16,6 +17,7 @@ export default async function Home() {
 
   return (
     <SiteShell>
+      <ConferencePopup />
       {/* ---------- HERO ---------- */}
       <header style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 64px' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>

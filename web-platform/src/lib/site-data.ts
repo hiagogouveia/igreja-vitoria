@@ -39,7 +39,7 @@ export const messages = [
 
 // Eventos em destaque exibidos na home (curados).
 export const fallbackEvents: SiteEvent[] = [
-  { id: 'vitoriacon-2026', title: 'VitóriaCon 2026', date: '26–30 AGO', time: 'Conferência', place: 'Igreja Vitória', featured: true, photo: '/assets/worship-team.jpg', desc: 'Conferência Profética de Adoração e Mover Sobrenatural — RESTORE. Cinco dias marcando os 6 anos da Igreja Vitória.', href: '/conference', cta: 'Garantir vaga' },
+  { id: 'vitoriacon-2026', title: 'VitóriaCon 2026', date: '26–30 AGO', time: 'Conferência', place: 'Igreja Vitória', featured: true, photo: '/assets/worship-team.jpg', desc: 'Conferência Profética de Adoração e Mover Sobrenatural — RESTORE. Cinco dias marcando os 6 anos da Igreja Vitória.', href: '/vitoriacon', cta: 'Garantir vaga' },
   { id: 'campanha-agasalho', title: 'Campanha do Agasalho', date: '21 JUN — 31 JUL', time: 'Doações', place: 'R. Mal. Rondon, 163', featured: true, photo: '/assets/agasalho.jpg', desc: 'Doe amor, compartilhe calor. Receba agasalhos, cobertores, cachecóis, toucas e meias na Igreja Vitória. Mais que roupas, levamos dignidade e carinho a quem precisa. Realização: Instituto Vitória.', href: 'https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20participar%20da%20Campanha%20do%20Agasalho.', cta: 'Quero doar' },
 ];
 

@@ -143,3 +143,8 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
   [data-grid5], [data-grid-min], [data-grid-msg], [data-foot] { grid-template-columns: 1fr !important; }
   section { padding-left: 18px !important; padding-right: 18px !important; }
 }
+
+/* Pop-up de campanha (VitóriaCon) — botão principal: glow + leve escala */
+.vc-pop-cta { transition: transform .25s var(--ease), box-shadow .3s var(--ease); }
+.vc-pop-cta:hover { transform: scale(1.04); box-shadow: 0 12px 38px rgba(240,168,72,.45); }
+@media (prefers-reduced-motion: reduce) { .vc-pop-cta:hover { transform: none; } }

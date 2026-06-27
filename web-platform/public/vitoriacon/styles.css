@@ -184,9 +184,9 @@ h2.title{font-family:var(--font-wide);font-weight:800;font-stretch:125%;
 /* Composição atmosférica (assets artísticos: Fundo1 gradiente + Fundo2 figura) */
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 /* Layer 1 — gradiente azul, base suave */
-.hero-grad{position:absolute;inset:0;background:url('/conference/assets/hero-grad.jpg') center/cover no-repeat;opacity:.6}
+.hero-grad{position:absolute;inset:0;background:url('/vitoriacon/assets/hero-grad.jpg') center/cover no-repeat;opacity:.6}
 /* Layer 2 — figura desfocada (memória/silhueta abstrata, fora do eixo do texto) */
-.hero-figure{position:absolute;inset:-12%;background:url('/conference/assets/hero-figure.jpg') 64% 28%/cover no-repeat;
+.hero-figure{position:absolute;inset:-12%;background:url('/vitoriacon/assets/hero-figure.jpg') 64% 28%/cover no-repeat;
   filter:blur(48px) saturate(.78) brightness(1.05);opacity:.14;transform:scale(1.12);
   -webkit-mask:radial-gradient(68% 60% at 64% 34%, #000 0%, rgba(0,0,0,.5) 45%, transparent 74%);
   mask:radial-gradient(68% 60% at 64% 34%, #000 0%, rgba(0,0,0,.5) 45%, transparent 74%)}
