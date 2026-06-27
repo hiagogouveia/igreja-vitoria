@@ -17,7 +17,8 @@ export const metadata: Metadata = {
     locale: "pt_BR",
   },
   twitter: { card: "summary_large_image" },
-  icons: { icon: "/logo-v-final.png" },
+  // Favicon: gerado pelas convenções de arquivo do App Router
+  // (src/app/icon.png, apple-icon.png, favicon.ico).
 };
 
 export default function RootLayout({
