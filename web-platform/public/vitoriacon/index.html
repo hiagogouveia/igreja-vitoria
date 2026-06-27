@@ -69,6 +69,7 @@
     <a href="#lineup">Line-up</a>
     <a href="#programacao">Programação</a>
     <a href="#ingressos">Ingressos</a>
+    <a href="#patrocinadores">Patrocinadores</a>
     <a href="#faq">FAQ</a>
   </div>
   <a class="btn btn-primary nav-cta" href="#ingressos">Garantir minha vaga</a>
@@ -78,7 +79,7 @@
 <div class="drawer" id="drawer">
   <button class="x" id="drawerClose" aria-label="Fechar">&times;</button>
   <a href="#experiencia">Experiência</a><a href="#lineup">Line-up</a><a href="#programacao">Programação</a>
-  <a href="#ingressos">Ingressos</a><a href="#faq">FAQ</a>
+  <a href="#ingressos">Ingressos</a><a href="#patrocinadores">Patrocinadores</a><a href="#faq">FAQ</a>
   <a class="btn btn-primary cta" href="#ingressos">Garantir minha vaga</a>
 </div>
 
@@ -342,12 +343,38 @@
   </div>
 </section>
 
+<!-- ============ 08b · PATROCINADORES (RESTORE) ============ -->
+<section class="sponsors shell" id="patrocinadores" data-screen-label="Patrocinadores">
+  <div class="orb" style="top:-4%;left:-6%;width:40vw;height:56vh"></div>
+  <div class="sec-row reveal" style="position:relative;z-index:2">
+    <div>
+      <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
+        <span class="sec-num">06</span><span class="phase-chip pc-restore"><span class="dot"></span>Parcerias</span>
+      </div>
+      <h2 class="title">Seja um patrocinador<br>da VitóriaCon 2026</h2>
+    </div>
+    <p class="lead">Sua empresa pode fazer parte de um dos maiores encontros cristãos da região. Durante a conferência, empresas selecionadas terão um espaço exclusivo para apresentar seus produtos e serviços aos participantes. As vagas são limitadas.</p>
+  </div>
+  <div class="sponsors-grid">
+    <div class="why-card reveal"><svg class="ic" viewBox="0 0 24 24"><path d="M3 9l9-6 9 6"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg><h4>Espaço exclusivo<br>para exposição</h4></div>
+    <div class="why-card reveal rd1"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M14 20c0-2 2-3.5 4-3.5"/></svg><h4>Contato direto com<br>centenas de pessoas</h4></div>
+    <div class="why-card reveal rd2"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.4 5 5.6.8-4 4 1 5.6L12 16l-5 2.4 1-5.6-4-4 5.6-.8z"/></svg><h4>Fortalecimento<br>da marca</h4></div>
+    <div class="why-card reveal rd3"><svg class="ic" viewBox="0 0 24 24"><path d="M12 21C5 14 4 9 7 6c2-2 5-1 5 2 0-3 3-4 5-2 3 3 2 8-5 15z"/></svg><h4>Apoio a um evento<br>que transforma vidas</h4></div>
+  </div>
+  <div class="sponsors-cta reveal">
+    <button class="btn btn-primary btn-lg" data-sponsor>
+      Quero cadastrar minha empresa
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</section>
+
 <!-- ============ 09 · FAQ ============ -->
 <section class="faq shell" id="faq" data-screen-label="FAQ">
   <div class="faq-wrap">
     <div class="reveal">
       <div class="sec-head" style="display:flex;gap:16px;align-items:center;margin-bottom:18px">
-        <span class="sec-num">06</span><span class="phase-chip pc-broken"><span class="dot"></span>Dúvidas</span>
+        <span class="sec-num">07</span><span class="phase-chip pc-broken"><span class="dot"></span>Dúvidas</span>
       </div>
       <h2 class="title">Perguntas<br>frequentes</h2>
       <p class="lead" style="margin-top:22px">Não achou sua resposta? Fale com a organização pelo WhatsApp.</p>
@@ -425,6 +452,83 @@
       data-einscricao-receipt-url="https://recibo.e-inscricao.tech"
       data-einscricao-api-participants-url="https://participants.e-inscricao.com">Continuar para a inscrição</button>
     <button class="btn btn-outline" id="buyBack" style="margin-top:10px">Voltar</button>
+  </div>
+</div>
+
+<!-- ============ MODAL · PATROCINADORES ============ -->
+<div class="scrim" id="sponsorModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sponsorTitle">
+    <button class="x" id="sponsorClose" aria-label="Fechar">&times;</button>
+    <div class="modal-body" id="sponsorBody">
+      <div class="eyebrow">Espaço para empresas</div>
+      <h3 id="sponsorTitle">Cadastre sua empresa</h3>
+      <p class="selected">Preencha os dados abaixo — leva menos de 2 minutos. Ao enviar, abrimos o WhatsApp da organização com tudo já preenchido.</p>
+      <form id="sponsorForm" novalidate>
+        <div class="fld">
+          <label for="spEmpresa">Nome da empresa *</label>
+          <input class="inp" id="spEmpresa" name="empresa" type="text" placeholder="Ex.: Vitória Soluções Ltda" autocomplete="organization">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="spCnpj">CNPJ *</label>
+          <input class="inp" id="spCnpj" name="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="spResp">Nome do responsável *</label>
+          <input class="inp" id="spResp" name="responsavel" type="text" placeholder="Quem cuida da parceria" autocomplete="name">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="spZap">WhatsApp *</label>
+          <input class="inp" id="spZap" name="whatsapp" type="tel" inputmode="numeric" placeholder="(67) 99999-9999" maxlength="16" autocomplete="tel">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="spEmail">E-mail *</label>
+          <input class="inp" id="spEmail" name="email" type="email" placeholder="contato@suaempresa.com.br" autocomplete="email">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="spSegmento">Segmento / Ramo de atuação *</label>
+          <input class="inp" id="spSegmento" name="segmento" type="text" placeholder="Ex.: Alimentação, Moda, Tecnologia">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld-row">
+          <div class="fld">
+            <label for="spCidade">Cidade *</label>
+            <input class="inp" id="spCidade" name="cidade" type="text" placeholder="Campo Grande" autocomplete="address-level2">
+            <span class="errmsg" data-err></span>
+          </div>
+          <div class="fld">
+            <label for="spUf">UF *</label>
+            <input class="inp" id="spUf" name="uf" type="text" placeholder="MS" maxlength="2" autocomplete="address-level1" style="text-transform:uppercase">
+            <span class="errmsg" data-err></span>
+          </div>
+        </div>
+        <div class="fld">
+          <label for="spLink">Instagram ou site <small>(opcional)</small></label>
+          <input class="inp" id="spLink" name="link" type="text" placeholder="@suaempresa ou suaempresa.com.br">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="spMsg">Mensagem <small>(opcional)</small></label>
+          <textarea class="inp" id="spMsg" name="mensagem" rows="3" placeholder="Conte rapidamente o que sua empresa oferece"></textarea>
+          <span class="errmsg" data-err></span>
+        </div>
+        <button class="btn btn-primary" type="submit">
+          Enviar pelo WhatsApp
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <button class="btn btn-outline" id="sponsorBack" type="button" style="margin-top:10px">Voltar</button>
+      </form>
+    </div>
+    <div class="modal-success" id="sponsorSuccess" hidden>
+      <div class="check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></svg></div>
+      <h3>Quase lá!</h3>
+      <p>Abrimos o WhatsApp da organização com os dados da sua empresa. É só enviar a mensagem para concluir o cadastro.</p>
+      <button class="btn btn-outline" id="sponsorDone" type="button" style="margin-top:18px">Fechar</button>
+    </div>
   </div>
 </div>
 <script src="/vitoriacon/script.js"></script>

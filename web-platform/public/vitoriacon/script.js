@@ -154,5 +154,140 @@
       // aqui apenas fechamos o modal de orientação.
       document.getElementById('buyGo').addEventListener('click', closeBuy);
     }
+
+    /* ---------- Modal de cadastro de patrocinadores ---------- */
+    var sponsorModal = document.getElementById('sponsorModal');
+    if (sponsorModal) {
+      // Número oficial reaproveitado do link de WhatsApp já presente no rodapé
+      // (sem duplicar o número no código).
+      var waAnchor = document.querySelector('a[href*="wa.me/"]');
+      var waDigits = waAnchor ? (waAnchor.getAttribute('href').match(/wa\.me\/(\d+)/) || [])[1] : '';
+
+      var spForm = document.getElementById('sponsorForm');
+      var spBody = document.getElementById('sponsorBody');
+      var spSuccess = document.getElementById('sponsorSuccess');
+      var spLastFocus = null;
+
+      var openSponsor = function () {
+        // sempre reabre no estado de formulário
+        spBody.hidden = false;
+        spSuccess.hidden = true;
+        sponsorModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        spLastFocus = document.activeElement;
+      };
+      var closeSponsor = function () {
+        sponsorModal.classList.remove('open');
+        document.body.style.overflow = '';
+        if (spLastFocus && spLastFocus.focus) spLastFocus.focus();
+      };
+
+      document.querySelectorAll('[data-sponsor]').forEach(function (b) {
+        b.addEventListener('click', openSponsor);
+      });
+      document.getElementById('sponsorClose').addEventListener('click', closeSponsor);
+      document.getElementById('sponsorBack').addEventListener('click', closeSponsor);
+      document.getElementById('sponsorDone').addEventListener('click', closeSponsor);
+      sponsorModal.addEventListener('click', function (e) { if (e.target === sponsorModal) closeSponsor(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && sponsorModal.classList.contains('open')) closeSponsor(); });
+
+      /* ----- Máscaras ----- */
+      var spCnpj = document.getElementById('spCnpj');
+      var spZap = document.getElementById('spZap');
+      var spUf = document.getElementById('spUf');
+
+      function maskCnpj(v) {
+        v = v.replace(/\D/g, '').slice(0, 14);
+        return v
+          .replace(/^(\d{2})(\d)/, '$1.$2')
+          .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+          .replace(/\.(\d{3})(\d)/, '.$1/$2')
+          .replace(/(\d{4})(\d)/, '$1-$2');
+      }
+      function maskPhone(v) {
+        v = v.replace(/\D/g, '').slice(0, 11);
+        if (v.length <= 10) return v.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2');
+        return v.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
+      }
+      if (spCnpj) spCnpj.addEventListener('input', function () { spCnpj.value = maskCnpj(spCnpj.value); });
+      if (spZap) spZap.addEventListener('input', function () { spZap.value = maskPhone(spZap.value); });
+      if (spUf) spUf.addEventListener('input', function () { spUf.value = spUf.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2); });
+
+      /* ----- Validações ----- */
+      function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+      function isPhone(v) { return v.replace(/\D/g, '').length >= 10; }
+      function isCNPJ(v) {
+        var c = v.replace(/\D/g, '');
+        if (c.length !== 14 || /^(\d)\1{13}$/.test(c)) return false;
+        function dig(base, len) {
+          var sum = 0, pos = len - 7;
+          for (var i = len; i >= 1; i--) { sum += base.charAt(len - i) * pos--; if (pos < 2) pos = 9; }
+          var r = sum % 11;
+          return r < 2 ? 0 : 11 - r;
+        }
+        var d1 = dig(c, 12);
+        if (d1 !== parseInt(c.charAt(12), 10)) return false;
+        var d2 = dig(c, 13);
+        return d2 === parseInt(c.charAt(13), 10);
+      }
+
+      function setErr(input, msg) {
+        input.classList.toggle('err', !!msg);
+        var holder = input.parentNode.querySelector('[data-err]');
+        if (holder) holder.textContent = msg || '';
+      }
+      // limpa o erro ao corrigir
+      spForm.querySelectorAll('.inp').forEach(function (inp) {
+        inp.addEventListener('input', function () { if (inp.classList.contains('err')) setErr(inp, ''); });
+      });
+
+      function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+      spForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var ok = true;
+        function req(id, cond, msg) {
+          var el = document.getElementById(id);
+          var bad = !cond;
+          setErr(el, bad ? msg : '');
+          if (bad && ok) { ok = false; el.focus(); }
+          else if (bad) ok = false;
+        }
+        req('spEmpresa', val('spEmpresa').length > 1, 'Informe o nome da empresa.');
+        req('spCnpj', isCNPJ(val('spCnpj')), 'CNPJ inválido.');
+        req('spResp', val('spResp').length > 1, 'Informe o responsável.');
+        req('spZap', isPhone(val('spZap')), 'WhatsApp inválido.');
+        req('spEmail', isEmail(val('spEmail')), 'E-mail inválido.');
+        req('spSegmento', val('spSegmento').length > 1, 'Informe o segmento.');
+        req('spCidade', val('spCidade').length > 1, 'Informe a cidade.');
+        req('spUf', val('spUf').length === 2, 'UF inválida.');
+        if (!ok) return;
+
+        var linha = function (rotulo, valor) { return '• ' + rotulo + ': ' + (valor || '—'); };
+        var msg = [
+          'Olá!',
+          'Tenho interesse em patrocinar a VitóriaCon 2026.',
+          '',
+          'Segue os dados da empresa:',
+          linha('Empresa', val('spEmpresa')),
+          linha('CNPJ', val('spCnpj')),
+          linha('Responsável', val('spResp')),
+          linha('WhatsApp', val('spZap')),
+          linha('E-mail', val('spEmail')),
+          linha('Segmento', val('spSegmento')),
+          linha('Cidade', val('spCidade')),
+          linha('Estado', val('spUf')),
+          linha('Instagram/Site', val('spLink')),
+          linha('Observações', val('spMsg')),
+          '',
+          'Gostaria de receber mais informações sobre o espaço para patrocinadores.'
+        ].join('\n');
+
+        if (waDigits) window.open('https://wa.me/' + waDigits + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+
+        spBody.hidden = true;
+        spSuccess.hidden = false;
+      });
+    }
   });
 })();
