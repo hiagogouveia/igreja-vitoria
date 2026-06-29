@@ -531,11 +531,34 @@
     </div>
   </div>
 </div>
+<!-- CTA flutuante → rola até os ingressos -->
+<a class="fab-tickets" href="#ingressos" aria-label="Ir para os ingressos">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1 0 4 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2 2 2 0 0 0 0-4 2 2 0 0 1 0-4z"/><path d="M14 6v12"/></svg>
+  <span>Garantir ingresso</span>
+</a>
+
 <script src="/vitoriacon/script.js"></script>
 <script src="/vitoriacon/vendor/gsap.min.js" defer></script>
 <script src="/vitoriacon/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/vitoriacon/lineup-motion.js" defer></script>
 <!-- e-inscrição · widget de checkout (evento 132317) -->
 <script src="https://cdn.jsdelivr.net/npm/@e-inscricao/widget@0.0.24/widget.js" data-einscricao-widget defer async></script>
+<script>
+(function () {
+  var fab = document.querySelector('.fab-tickets');
+  var sec = document.getElementById('ingressos');
+  if (!fab || !sec) return;
+  setTimeout(function () { fab.classList.add('is-in'); }, 1200);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { fab.classList.toggle('is-hidden', e.isIntersecting); });
+    }, { threshold: 0.22 }).observe(sec);
+  }
+  fab.addEventListener('click', function () {
+    sec.classList.remove('flash'); void sec.offsetWidth; sec.classList.add('flash');
+    setTimeout(function () { sec.classList.remove('flash'); }, 1400);
+  });
+})();
+</script>
 </body>
 </html>
