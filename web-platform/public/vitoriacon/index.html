@@ -531,10 +531,27 @@
     </div>
   </div>
 </div>
-<!-- CTA flutuante → rola até os ingressos -->
-<a class="fab-tickets" href="#ingressos" aria-label="Ir para os ingressos">
-  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1 0 4 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2 2 2 0 0 0 0-4 2 2 0 0 1 0-4z"/><path d="M14 6v12"/></svg>
-  <span>Garantir ingresso</span>
+<!-- Selo flutuante "explosão" → rola até os ingressos -->
+<a class="fab-tickets" href="#ingressos" aria-label="Garanta sua vaga — ir para os ingressos">
+  <span class="fab-spin"><span class="fab-pulse">
+    <svg class="fab-burst" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="fabGold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F4EDDD"/><stop offset=".55" stop-color="#DBC8A4"/><stop offset="1" stop-color="#C2B08F"/>
+        </linearGradient>
+        <linearGradient id="fabSheen" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffffff" stop-opacity=".65"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0"/>
+        </linearGradient>
+        <clipPath id="fabClip"><polygon points="120.0,20.0 138.2,40.1 163.4,29.9 171.1,55.9 198.2,57.7 193.9,84.4 217.5,97.7 202.0,120.0 217.5,142.3 193.9,155.6 198.2,182.3 171.1,184.1 163.4,210.1 138.2,199.9 120.0,220.0 101.8,199.9 76.6,210.1 68.9,184.1 41.8,182.3 46.1,155.6 22.5,142.3 38.0,120.0 22.5,97.7 46.1,84.4 41.8,57.7 68.9,55.9 76.6,29.9 101.8,40.1"/></clipPath>
+      </defs>
+      <polygon points="120.0,20.0 138.2,40.1 163.4,29.9 171.1,55.9 198.2,57.7 193.9,84.4 217.5,97.7 202.0,120.0 217.5,142.3 193.9,155.6 198.2,182.3 171.1,184.1 163.4,210.1 138.2,199.9 120.0,220.0 101.8,199.9 76.6,210.1 68.9,184.1 41.8,182.3 46.1,155.6 22.5,142.3 38.0,120.0 22.5,97.7 46.1,84.4 41.8,57.7 68.9,55.9 76.6,29.9 101.8,40.1" fill="url(#fabGold)" stroke="url(#fabGold)" stroke-width="16" stroke-linejoin="round"/>
+      <g clip-path="url(#fabClip)">
+        <ellipse cx="120" cy="58" rx="124" ry="74" fill="url(#fabSheen)"/>
+        <circle cx="120" cy="120" r="92" fill="none" stroke="rgba(11,11,12,.14)" stroke-width="1.5"/>
+      </g>
+    </svg>
+    <span class="fab-label"><span class="fab-ico">🎟</span>Garanta<br>sua vaga</span>
+  </span></span>
 </a>
 
 <script src="/vitoriacon/script.js"></script>
