@@ -143,8 +143,35 @@
         document.body.style.overflow = '';
         if (buyLastFocus && buyLastFocus.focus) buyLastFocus.focus();
       };
+      /* Disponibilidade de lotes (genérico): tudo derivado de data-availability no .tk.
+         Estados: available (padrão) · coming-soon · unavailable · sold-out.
+         Reativar/mudar um lote = só trocar o atributo no card (sem editar JS/CSS). */
+      var UNAVAIL_MSG = 'Este ingresso estará disponível em outro momento.';
+      var soldState = function (el) {
+        var card = el.closest ? el.closest('.tk[data-availability]') : null;
+        var st = card && card.getAttribute('data-availability');
+        return st && st !== 'available' ? st : null;
+      };
+      document.querySelectorAll('.tk[data-availability]').forEach(function (card) {
+        var st = card.getAttribute('data-availability');
+        if (!st || st === 'available') return;
+        var btn = card.querySelector('[data-buy]');
+        if (btn) {
+          btn.setAttribute('aria-disabled', 'true');
+          btn.setAttribute('tabindex', '-1');
+          var slug = btn.getAttribute('data-ticket');
+          if (slug) {
+            var li = buyModal.querySelector('.buy-rules li[data-rule="' + slug + '"]');
+            if (li) li.setAttribute('data-availability', st);
+          }
+        }
+        if (!card.getAttribute('title')) card.setAttribute('title', UNAVAIL_MSG);
+      });
       document.querySelectorAll('[data-buy]').forEach(function (b) {
-        b.addEventListener('click', function () { openBuy(b.getAttribute('data-ticket')); });
+        b.addEventListener('click', function () {
+          if (soldState(b)) return; // lote indisponível → não abre orientação nem checkout
+          openBuy(b.getAttribute('data-ticket'));
+        });
       });
       document.getElementById('buyClose').addEventListener('click', closeBuy);
       document.getElementById('buyBack').addEventListener('click', closeBuy);

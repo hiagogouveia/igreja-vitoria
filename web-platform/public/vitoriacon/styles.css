@@ -601,3 +601,33 @@ html.js-anim .reveal.in{opacity:1;transform:none}
   background:radial-gradient(58% 48% at 50% 38%,rgba(205,189,157,.22),transparent 70%);
   animation:tkFlash 1.35s var(--ease)}
 @keyframes tkFlash{0%{opacity:0}22%{opacity:1}100%{opacity:0}}
+
+/* ============================================================
+   DISPONIBILIDADE DE LOTES (genérico via data-availability)
+   Estados: available (padrão) · coming-soon · unavailable · sold-out
+   Trocar o estado de qualquer lote = só mudar o atributo no .tk
+   ============================================================ */
+/* esmaece o conteúdo (mantém o vidro do card e o selo nítidos) + mata hover */
+.tk[data-availability]:not([data-availability="available"]) .tk-name,
+.tk[data-availability]:not([data-availability="available"]) .tk-price,
+.tk[data-availability]:not([data-availability="available"]) .tk-feat,
+.tk[data-availability]:not([data-availability="available"]) .btn{opacity:.58}
+.tk[data-availability]:not([data-availability="available"]):hover{transform:none;box-shadow:var(--glass-shadow),var(--glass-inner)}
+/* botão desabilitado (aparência neutra) */
+.tk[data-availability]:not([data-availability="available"]) .btn{cursor:not-allowed;color:var(--graphite);
+  border-color:rgba(11,11,12,.14);background:rgba(11,11,12,.03)}
+.tk[data-availability]:not([data-availability="available"]) .btn:hover{border-color:rgba(11,11,12,.14);transform:none}
+/* selo (badge) — estilo comum + texto por estado */
+.tk[data-availability]:not([data-availability="available"])::before{
+  position:absolute;top:-12px;left:25px;white-space:nowrap;z-index:2;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+  background:rgba(58,62,66,.12);color:var(--graphite);border:1px solid rgba(58,62,66,.22);
+  padding:6px 13px;border-radius:var(--r-full);box-shadow:var(--sh-sm)}
+.tk[data-availability="coming-soon"]::before{content:"Disponível em breve"}
+.tk[data-availability="unavailable"]::before{content:"Indisponível"}
+.tk[data-availability="sold-out"]::before{content:"Esgotado"}
+/* reflexo no modal de orientação */
+.buy-rules li[data-availability]:not([data-availability="available"]){opacity:.5}
+.buy-rules li[data-availability="coming-soon"]::after{content:" · em breve"}
+.buy-rules li[data-availability="unavailable"]::after{content:" · indisponível"}
+.buy-rules li[data-availability="sold-out"]::after{content:" · esgotado"}
