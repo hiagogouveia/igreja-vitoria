@@ -125,27 +125,190 @@
       window.addEventListener('resize', reqParallax, { passive: true });
     }
 
-    /* ---------- Modal de confirmação de ingresso (antes do checkout) ---------- */
-    var buyModal = document.getElementById('buyModal');
-    if (buyModal) {
-      var buyLastFocus = null;
-      var buyRules = buyModal.querySelectorAll('.buy-rules li');
-      var openBuy = function (ticket) {
-        buyRules.forEach(function (li) {
-          li.classList.toggle('hl', !!ticket && li.getAttribute('data-rule') === ticket);
-        });
-        buyModal.classList.add('open');
+    /* ---------- Camada inteligente de validação de ingressos (antes do checkout) ----------
+       Cada ingresso tem sua própria CONFIGURAÇÃO (regras, campos, validação, evento).
+       Adicionar/alterar um ingresso no futuro = mexer só em TICKETS — sem duplicar lógica.
+       Fluxo: clique no card → valida → abre EXATAMENTE o Event ID correspondente.
+       A integração da e-inscrição é reaproveitada: os data-attrs de infra ficam no
+       #eiLauncher (idênticos aos anteriores) e só o Event ID muda por ingresso. */
+    var tkModal = document.getElementById('tkModal');
+    var eiLauncher = document.getElementById('eiLauncher');
+    if (tkModal && eiLauncher) {
+      var UF_LIST = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];
+
+      // Abre o widget do evento pedido. O widget da e-inscrição escuta cliques no
+      // document e lê data-einscricao-event do alvo; então definimos o evento no
+      // lançador oculto e disparamos um clique que borbulha até o document.
+      // (dispatchEvent é usado no lugar de .click() porque um elemento hidden não
+      // propaga .click() até o listener global do widget.)
+      var openEvent = function (eventId) {
+        eiLauncher.setAttribute('data-einscricao-event', eventId);
+        eiLauncher.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      };
+
+      // ---- Configuração declarativa por ingresso (fonte única da verdade) ----
+      var TICKETS = {
+        // Founders: sem validação → abre direto (o limite de 100 é controlado na e-inscrição).
+        founders: { event: '132317' },
+        winners: {
+          event: '133005',
+          title: 'Ingresso Winners',
+          intro: 'O Winners é destinado a participantes de 13 a 18 anos. Confirme a idade para continuar.',
+          fields: [{ key: 'age', label: 'Qual é a idade do participante?', type: 'number', min: 0, max: 120, placeholder: 'Ex.: 15' }],
+          validate: function (v) {
+            var a = parseInt(v.age, 10);
+            if (isNaN(a)) return 'Informe a idade do participante.';
+            if (a < 13 || a > 18) return 'O ingresso Winners é exclusivo para participantes de 13 a 18 anos. Para outras idades, escolha o ingresso correspondente.';
+            return null;
+          }
+        },
+        family: {
+          event: '133006',
+          title: 'Ingresso Family',
+          intro: 'O Family vale para famílias com no mínimo 3 participantes pagantes da mesma família.',
+          fields: [{ key: 'qtd', label: 'Quantos participantes pagantes da mesma família irão participar?', type: 'number', min: 1, max: 50, placeholder: 'Ex.: 4' }],
+          validate: function (v) {
+            var n = parseInt(v.qtd, 10);
+            if (isNaN(n)) return 'Informe a quantidade de participantes pagantes.';
+            if (n < 3) return 'O ingresso Family exige no mínimo 3 participantes pagantes da mesma família. Para menos pessoas, o ingresso Founders é o ideal.';
+            return null;
+          }
+        },
+        kids: {
+          event: '133008',
+          title: 'Espaço Kids',
+          intro: 'O Kids é gratuito e exclusivo para crianças de até 12 anos. Informe quantas crianças e a idade de cada uma.',
+          fields: [{ key: 'count', label: 'Quantas crianças irão participar?', type: 'number', min: 1, max: 10, placeholder: 'Ex.: 2', ages: true }],
+          validate: function (v) {
+            var n = parseInt(v.count, 10);
+            if (isNaN(n) || n < 1) return 'Informe quantas crianças irão participar.';
+            for (var i = 0; i < n; i++) {
+              var a = parseInt(v['age' + i], 10);
+              if (isNaN(a)) return 'Informe a idade de todas as crianças.';
+              if (a > 12) return 'O Espaço Kids é exclusivo para crianças de até 12 anos. Para 13 anos ou mais, o ingresso Winners é o indicado.';
+            }
+            return null;
+          }
+        },
+        caravana: {
+          event: '133007',
+          title: 'Caravana',
+          intro: 'A Caravana é para grupos de uma mesma igreja. Preencha os dados abaixo para confirmarmos o grupo.',
+          fields: [
+            { key: 'igreja', label: 'Nome da igreja', type: 'text', placeholder: 'Ex.: Igreja Vitória' },
+            { key: 'cidade', label: 'Cidade', type: 'text', placeholder: 'Ex.: Campo Grande' },
+            { key: 'estado', label: 'Estado', type: 'select', options: UF_LIST, placeholder: 'UF' },
+            { key: 'qtd', label: 'Quantidade aproximada de participantes', type: 'number', min: 1, placeholder: 'Ex.: 20' }
+          ],
+          // Sem validação de quantidade: os dados só confirmam que se trata de uma caravana.
+          validate: function (v) {
+            if (!v.igreja) return 'Informe o nome da igreja.';
+            if (!v.cidade) return 'Informe a cidade.';
+            if (!v.estado) return 'Selecione o estado.';
+            if (!v.qtd) return 'Informe a quantidade aproximada de participantes.';
+            return null;
+          }
+        }
+      };
+
+      var tkFields = document.getElementById('tkFields');
+      var tkTitle = document.getElementById('tkTitle');
+      var tkIntro = document.getElementById('tkIntro');
+      var tkAlert = document.getElementById('tkAlert');
+      var tkSubmit = document.getElementById('tkSubmit');
+      var tkForm = document.getElementById('tkForm');
+      var tkLastFocus = null;
+      var currentCfg = null;
+
+      var showAlert = function (msg) { tkAlert.textContent = msg; tkAlert.hidden = false; };
+      var hideAlert = function () { tkAlert.hidden = true; tkAlert.textContent = ''; };
+
+      // Monta o HTML de um campo a partir da config (input, number ou select).
+      var fieldHTML = function (f) {
+        var id = 'tk_' + f.key, inner;
+        if (f.type === 'select') {
+          var opts = '<option value="" disabled selected>' + (f.placeholder || 'Selecione') + '</option>' +
+            f.options.map(function (o) { return '<option value="' + o + '">' + o + '</option>'; }).join('');
+          inner = '<select class="inp" id="' + id + '" name="' + f.key + '">' + opts + '</select>';
+        } else {
+          var attrs = 'type="' + f.type + '"';
+          if (f.type === 'number') attrs += ' inputmode="numeric"';
+          if (f.min != null) attrs += ' min="' + f.min + '"';
+          if (f.max != null) attrs += ' max="' + f.max + '"';
+          if (f.placeholder) attrs += ' placeholder="' + f.placeholder + '"';
+          inner = '<input class="inp" id="' + id + '" name="' + f.key + '" ' + attrs + '>';
+        }
+        return '<div class="fld"><label for="' + id + '">' + f.label + '</label>' + inner + '</div>';
+      };
+
+      // Renderiza os campos do ingresso e, no Kids, gera as idades conforme a quantidade.
+      var renderFields = function (cfg) {
+        tkFields.innerHTML = cfg.fields.map(fieldHTML).join('');
+        var ageField = cfg.fields.filter(function (f) { return f.ages; })[0];
+        if (ageField) {
+          var countEl = document.getElementById('tk_' + ageField.key);
+          var host = document.createElement('div');
+          host.className = 'tk-ages';
+          countEl.closest('.fld').insertAdjacentElement('afterend', host);
+          var syncAges = function () {
+            var max = ageField.max || 10;
+            var n = Math.max(0, Math.min(parseInt(countEl.value, 10) || 0, max));
+            var cur = host.querySelectorAll('.fld').length;
+            for (var k = cur - 1; k >= n; k--) { if (host.children[k]) host.children[k].remove(); } // remove excedente (preserva o que já foi digitado)
+            for (var i = cur; i < n; i++) {
+              host.insertAdjacentHTML('beforeend',
+                '<div class="fld"><label for="tk_age' + i + '">Idade da criança ' + (i + 1) + '</label>' +
+                '<input class="inp" id="tk_age' + i + '" name="age' + i + '" type="number" inputmode="numeric" min="0" max="12" placeholder="Até 12"></div>');
+            }
+            hideAlert();
+          };
+          countEl.addEventListener('input', syncAges);
+        }
+        // some com a mensagem ao editar qualquer campo
+        tkFields.addEventListener('input', hideAlert);
+        tkFields.addEventListener('change', hideAlert);
+      };
+
+      var openTicket = function (slug) {
+        var cfg = TICKETS[slug];
+        if (!cfg) return;
+        if (!cfg.fields) { openEvent(cfg.event); return; } // Founders: abre direto, sem validação
+        currentCfg = cfg;
+        tkTitle.textContent = cfg.title;
+        tkIntro.textContent = cfg.intro;
+        hideAlert();
+        renderFields(cfg);
+        tkModal.classList.add('open');
         document.body.style.overflow = 'hidden';
-        buyLastFocus = document.activeElement;
+        tkLastFocus = document.activeElement;
+        var first = tkFields.querySelector('.inp');
+        if (first) setTimeout(function () { first.focus(); }, 60);
       };
-      var closeBuy = function () {
-        buyModal.classList.remove('open');
+      var closeTicket = function () {
+        tkModal.classList.remove('open');
         document.body.style.overflow = '';
-        if (buyLastFocus && buyLastFocus.focus) buyLastFocus.focus();
+        if (tkLastFocus && tkLastFocus.focus) tkLastFocus.focus();
       };
+
+      tkForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!currentCfg) return;
+        var v = {};
+        tkFields.querySelectorAll('.inp').forEach(function (inp) { v[inp.name] = (inp.value || '').trim(); });
+        var err = currentCfg.validate ? currentCfg.validate(v) : null;
+        if (err) { showAlert(err); return; }
+        closeTicket();
+        openEvent(currentCfg.event); // aprovado → abre o evento correspondente
+      });
+
+      document.getElementById('tkClose').addEventListener('click', closeTicket);
+      document.getElementById('tkBack').addEventListener('click', closeTicket);
+      tkModal.addEventListener('click', function (e) { if (e.target === tkModal) closeTicket(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && tkModal.classList.contains('open')) closeTicket(); });
+
       /* Disponibilidade de lotes (genérico): tudo derivado de data-availability no .tk.
          Estados: available (padrão) · coming-soon · unavailable · sold-out.
-         Reativar/mudar um lote = só trocar o atributo no card (sem editar JS/CSS). */
+         Reativar/mudar um lote = só trocar o atributo no card. */
       var UNAVAIL_MSG = 'Este ingresso estará disponível em outro momento.';
       var soldState = function (el) {
         var card = el.closest ? el.closest('.tk[data-availability]') : null;
@@ -156,30 +319,16 @@
         var st = card.getAttribute('data-availability');
         if (!st || st === 'available') return;
         var btn = card.querySelector('[data-buy]');
-        if (btn) {
-          btn.setAttribute('aria-disabled', 'true');
-          btn.setAttribute('tabindex', '-1');
-          var slug = btn.getAttribute('data-ticket');
-          if (slug) {
-            var li = buyModal.querySelector('.buy-rules li[data-rule="' + slug + '"]');
-            if (li) li.setAttribute('data-availability', st);
-          }
-        }
+        if (btn) { btn.setAttribute('aria-disabled', 'true'); btn.setAttribute('tabindex', '-1'); }
         if (!card.getAttribute('title')) card.setAttribute('title', UNAVAIL_MSG);
       });
       document.querySelectorAll('[data-buy]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          if (soldState(b)) return; // lote indisponível → não abre orientação nem checkout
-          openBuy(b.getAttribute('data-ticket'));
+        b.addEventListener('click', function (e) {
+          if (soldState(b)) { e.preventDefault(); return; } // lote indisponível → não abre nada
+          var slug = b.getAttribute('data-ticket');
+          if (slug) openTicket(slug);
         });
       });
-      document.getElementById('buyClose').addEventListener('click', closeBuy);
-      document.getElementById('buyBack').addEventListener('click', closeBuy);
-      buyModal.addEventListener('click', function (e) { if (e.target === buyModal) closeBuy(); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && buyModal.classList.contains('open')) closeBuy(); });
-      // "Continuar para a inscrição" é o botão da e-inscrição (o widget abre o checkout);
-      // aqui apenas fechamos o modal de orientação.
-      document.getElementById('buyGo').addEventListener('click', closeBuy);
     }
 
     /* ---------- Modal de cadastro de patrocinadores ---------- */

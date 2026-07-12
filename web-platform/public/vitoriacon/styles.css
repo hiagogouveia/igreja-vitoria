@@ -478,7 +478,7 @@ h2.title{font-family:var(--font-wide);font-weight:800;font-stretch:125%;
   border:1px solid rgba(255,255,255,.6);border-radius:var(--r-lg);padding:36px;position:relative;
   max-height:calc(100dvh - 48px);overflow-y:auto;-webkit-overflow-scrolling:touch;
   transform:translateY(20px) scale(.97);transition:transform .4s var(--ease);box-shadow:var(--glass-shadow),var(--glass-inner)}
-@media(max-width:480px){.modal{padding:30px 20px}.modal h3{font-size:24px}.buy-rules li{padding:10px 12px}}
+@media(max-width:480px){.modal{padding:30px 20px}.modal h3{font-size:24px}}
 .scrim.open .modal{transform:none}
 .modal .x{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(11,11,12,.18);
   color:var(--graphite);font-size:18px;display:flex;align-items:center;justify-content:center;transition:.25s}
@@ -549,12 +549,12 @@ html.js-anim .reveal.in{opacity:1;transform:none}
    MODAL DE ORIENTAÇÃO DE INGRESSO (antes do checkout e-inscrição)
    ============================================================ */
 .buy-lead{color:var(--graphite);font-size:14.5px;line-height:1.55;margin-bottom:18px}
-.buy-rules{list-style:none;display:flex;flex-direction:column;gap:8px;margin:0 0 22px;padding:0}
-.buy-rules li{font-size:13.5px;line-height:1.45;color:var(--graphite);
-  padding:11px 14px;border-radius:12px;border:1px solid rgba(11,11,12,.12);
-  background:rgba(255,255,255,.45);transition:border-color .2s,background .2s,box-shadow .2s}
-.buy-rules li b{color:var(--ink);font-weight:700}
-.buy-rules li.hl{border-color:var(--ink);background:rgba(11,11,12,.05);box-shadow:0 0 0 1.5px var(--ink) inset}
+/* Validação de ingresso: idades do Kids em grade + mensagem amigável de bloqueio.
+   (o modal reutiliza .scrim/.modal/.fld/.inp da identidade do projeto) */
+.tk-ages{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:480px){.tk-ages{grid-template-columns:1fr}}
+.tk-alert{font-size:13.5px;line-height:1.5;color:#9a3b39;background:rgba(179,82,79,.10);
+  border:1px solid rgba(179,82,79,.28);border-radius:var(--r-sm);padding:12px 14px;margin:2px 0 16px}
 
 /* ============================================================
    08b · PATROCINADORES (reusa .why-card / .scrim / .modal / .fld / .inp)
@@ -626,8 +626,3 @@ html.js-anim .reveal.in{opacity:1;transform:none}
 .tk[data-availability="coming-soon"]::before{content:"Disponível em breve"}
 .tk[data-availability="unavailable"]::before{content:"Indisponível"}
 .tk[data-availability="sold-out"]::before{content:"Esgotado"}
-/* reflexo no modal de orientação */
-.buy-rules li[data-availability]:not([data-availability="available"]){opacity:.5}
-.buy-rules li[data-availability="coming-soon"]::after{content:" · em breve"}
-.buy-rules li[data-availability="unavailable"]::after{content:" · indisponível"}
-.buy-rules li[data-availability="sold-out"]::after{content:" · esgotado"}

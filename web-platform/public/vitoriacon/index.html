@@ -303,7 +303,7 @@
       <ul class="tk-feat"><li>Valor válido para famílias</li><li>A partir de 3 pessoas pagantes</li><li>Participantes de 13 a 18 anos pagam o valor Winners</li></ul>
       <button class="btn" data-buy data-ticket="family">Comprar</button>
     </div>
-    <div class="tk reveal rd4" data-availability="coming-soon">
+    <div class="tk reveal rd4">
       <div class="tk-name">Promo Caravana</div>
       <div class="tk-price">R$89</div>
       <ul class="tk-feat"><li>Valor especial para caravanas</li><li>Consulte as regras para grupos</li></ul>
@@ -317,10 +317,10 @@
     </div>
   </div>
   <div class="tickets-cta reveal">
-    <button class="btn btn-primary btn-lg" data-buy>
+    <a class="btn btn-primary btn-lg" href="#ingressos">
       Quero garantir minha vaga
       <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </button>
+    </a>
   </div>
 </section>
 
@@ -428,31 +428,31 @@
   <div class="footer-word">Restore</div>
 </footer>
 
-<!-- ============ CHECKOUT MODAL ============ -->
-<div class="scrim" id="buyModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="buyTitle">
-    <button class="x" id="buyClose" aria-label="Fechar">&times;</button>
+<!-- ============ VALIDAÇÃO DE INGRESSO (camada inteligente antes do checkout) ============
+     Modal único e reutilizável: os campos são montados dinamicamente conforme o
+     ingresso (config em script.js → TICKETS). Fluxo: card → validação → widget. -->
+<div class="scrim" id="tkModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tkTitle">
+    <button class="x" id="tkClose" aria-label="Fechar">&times;</button>
     <div class="eyebrow">Antes de continuar</div>
-    <h3 id="buyTitle">Escolha o ingresso certo</h3>
-    <p class="buy-lead">Na próxima etapa a inscrição abre com todos os lotes. Confirme qual é o seu antes de pagar — cada ingresso atende a um caso:</p>
-    <ul class="buy-rules">
-      <li data-rule="founders"><b>Founders</b> — Público geral, acima de 18 anos.</li>
-      <li data-rule="legacy"><b>Legacy</b> — Público geral, acima de 18 anos.</li>
-      <li data-rule="winners"><b>Winners</b> — Jovens de 13 a 18 anos.</li>
-      <li data-rule="caravana"><b>Promo Caravana</b> — Só para quem vem de fora, de outra igreja (caravana).</li>
-      <li data-rule="family"><b>Family</b> — Só para família: casal + filho(s) pagante(s).</li>
-      <li data-rule="kids"><b>Kids</b> — Crianças até 12 anos (gratuito).</li>
-    </ul>
-    <button class="btn btn-primary" id="buyGo"
-      data-einscricao-event="132317"
-      data-einscricao-url="https://checkout.e-inscricao.com"
-      data-einscricao-api-url="https://www.e-inscricao.com"
-      data-einscricao-ms-api-url="https://ei-pay.e-inscricao.com"
-      data-einscricao-receipt-url="https://recibo.e-inscricao.tech"
-      data-einscricao-api-participants-url="https://participants.e-inscricao.com">Continuar para a inscrição</button>
-    <button class="btn btn-outline" id="buyBack" style="margin-top:10px">Voltar</button>
+    <h3 id="tkTitle">Confirme seu ingresso</h3>
+    <p class="buy-lead" id="tkIntro"></p>
+    <form id="tkForm" novalidate>
+      <div id="tkFields"></div>
+      <p class="tk-alert" id="tkAlert" role="alert" hidden></p>
+      <button class="btn btn-primary" type="submit" id="tkSubmit">Continuar para a inscrição</button>
+      <button class="btn btn-outline" type="button" id="tkBack" style="margin-top:10px">Voltar</button>
+    </form>
   </div>
 </div>
+<!-- Lançador oculto do widget e-inscrição: infra reaproveitada (idêntica à anterior);
+     apenas o Event ID varia por ingresso, definido em tempo de clique pelo script. -->
+<button id="eiLauncher" type="button" hidden aria-hidden="true" tabindex="-1"
+  data-einscricao-url="https://checkout.e-inscricao.com"
+  data-einscricao-api-url="https://www.e-inscricao.com"
+  data-einscricao-ms-api-url="https://ei-pay.e-inscricao.com"
+  data-einscricao-receipt-url="https://recibo.e-inscricao.tech"
+  data-einscricao-api-participants-url="https://participants.e-inscricao.com"></button>
 
 <!-- ============ MODAL · PATROCINADORES ============ -->
 <div class="scrim" id="sponsorModal">
