@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import RevealManager from "@/components/site/RevealManager";
+import MetaPixel from "@/components/analytics/MetaPixel";
 
 export const metadata: Metadata = {
   title: "Igreja Vitória · Campo Grande — MS",
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <RevealManager />
+        <MetaPixel />
       </body>
     </html>
   );
