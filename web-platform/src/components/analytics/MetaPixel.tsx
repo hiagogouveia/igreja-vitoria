@@ -1,5 +1,6 @@
 import Script from "next/script";
 import { FB_PIXEL_ID } from "@/lib/meta-pixel";
+import PageViewTracker from "./PageViewTracker";
 
 /**
  * Meta Pixel — instalado UMA única vez, globalmente, pelo layout raiz.
@@ -13,6 +14,7 @@ export default function MetaPixel() {
   return (
     <>
       <Script src="/meta-pixel.js" strategy="afterInteractive" />
+      <PageViewTracker />
       <noscript>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
