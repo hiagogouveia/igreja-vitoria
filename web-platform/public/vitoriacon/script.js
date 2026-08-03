@@ -150,6 +150,8 @@
       var TICKETS = {
         // Founders: sem validação → abre direto (o limite de 100 é controlado na e-inscrição).
         founders: { event: '132317' },
+        // Legacy: mesmo público do Founders (geral, acima de 18 anos) → sem validação.
+        legacy: { event: '133336' },
         winners: {
           event: '133005',
           title: 'Ingresso Winners',
