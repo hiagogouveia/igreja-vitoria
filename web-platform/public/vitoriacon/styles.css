@@ -632,3 +632,6 @@ html.js-anim .reveal.in{opacity:1;transform:none}
 .tk.featured[data-availability]:not([data-availability="available"])::before{
   background:rgba(242,234,219,.14);color:var(--ivory-soft);border-color:rgba(242,234,219,.3)}
 .tk.featured[data-availability="sold-out"]::before{content:"Vagas Encerradas"}
+/* botão desabilitado em card escuro: a versão clara acima ficaria invisível em texto graphite-no-preto */
+.tk.featured[data-availability]:not([data-availability="available"]) .btn{
+  color:rgba(242,234,219,.65);border-color:rgba(242,234,219,.22);background:rgba(242,234,219,.06)}

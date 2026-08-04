@@ -316,6 +316,11 @@
         'unavailable': 'Este ingresso não está disponível no momento.',
         'sold-out': 'As vagas deste ingresso se esgotaram.'
       };
+      var UNAVAIL_BTN_LABEL = {
+        'coming-soon': 'Em breve',
+        'unavailable': 'Indisponível',
+        'sold-out': 'Esgotado'
+      };
       var soldState = function (el) {
         var card = el.closest ? el.closest('.tk[data-availability]') : null;
         var st = card && card.getAttribute('data-availability');
@@ -325,7 +330,13 @@
         var st = card.getAttribute('data-availability');
         if (!st || st === 'available') return;
         var btn = card.querySelector('[data-buy]');
-        if (btn) { btn.setAttribute('aria-disabled', 'true'); btn.setAttribute('tabindex', '-1'); }
+        if (btn) {
+          btn.setAttribute('aria-disabled', 'true');
+          btn.setAttribute('tabindex', '-1');
+          // texto do botão passa a dizer o motivo (em vez de manter "Comprar" cinza sem contexto)
+          var label = UNAVAIL_BTN_LABEL[st];
+          if (label) btn.textContent = (st === 'sold-out' && card.classList.contains('featured')) ? 'Vagas Encerradas' : label;
+        }
         if (!card.getAttribute('title')) card.setAttribute('title', UNAVAIL_MSG[st] || UNAVAIL_MSG['coming-soon']);
       });
       document.querySelectorAll('[data-buy]').forEach(function (b) {
