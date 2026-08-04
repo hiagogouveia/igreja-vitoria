@@ -311,7 +311,11 @@
       /* Disponibilidade de lotes (genérico): tudo derivado de data-availability no .tk.
          Estados: available (padrão) · coming-soon · unavailable · sold-out.
          Reativar/mudar um lote = só trocar o atributo no card. */
-      var UNAVAIL_MSG = 'Este ingresso estará disponível em outro momento.';
+      var UNAVAIL_MSG = {
+        'coming-soon': 'Este ingresso estará disponível em outro momento.',
+        'unavailable': 'Este ingresso não está disponível no momento.',
+        'sold-out': 'As vagas deste ingresso se esgotaram.'
+      };
       var soldState = function (el) {
         var card = el.closest ? el.closest('.tk[data-availability]') : null;
         var st = card && card.getAttribute('data-availability');
@@ -322,7 +326,7 @@
         if (!st || st === 'available') return;
         var btn = card.querySelector('[data-buy]');
         if (btn) { btn.setAttribute('aria-disabled', 'true'); btn.setAttribute('tabindex', '-1'); }
-        if (!card.getAttribute('title')) card.setAttribute('title', UNAVAIL_MSG);
+        if (!card.getAttribute('title')) card.setAttribute('title', UNAVAIL_MSG[st] || UNAVAIL_MSG['coming-soon']);
       });
       document.querySelectorAll('[data-buy]').forEach(function (b) {
         b.addEventListener('click', function (e) {

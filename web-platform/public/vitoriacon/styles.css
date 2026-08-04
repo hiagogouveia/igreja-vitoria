@@ -626,3 +626,9 @@ html.js-anim .reveal.in{opacity:1;transform:none}
 .tk[data-availability="coming-soon"]::before{content:"Disponível em breve"}
 .tk[data-availability="unavailable"]::before{content:"Indisponível"}
 .tk[data-availability="sold-out"]::before{content:"Esgotado"}
+/* cards com selo próprio (.tk-flag, ex.: "100 primeiros"): o selo de status assume o lugar dele */
+.tk[data-availability]:not([data-availability="available"]) .tk-flag{display:none}
+/* variante para cards escuros (.tk.featured): mesmo chip, tom claro para contraste */
+.tk.featured[data-availability]:not([data-availability="available"])::before{
+  background:rgba(242,234,219,.14);color:var(--ivory-soft);border-color:rgba(242,234,219,.3)}
+.tk.featured[data-availability="sold-out"]::before{content:"Vagas Encerradas"}
