@@ -337,11 +337,30 @@ h2.title{font-family:var(--font-wide);font-weight:800;font-stretch:125%;
 .cg-time{font-family:var(--font-wide);font-weight:800;font-size:clamp(18px,2vw,27px);letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
 .cg-act{font-family:var(--font-wide);font-weight:600;font-size:clamp(13px,1.5vw,18px);letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
 .cg-act::before{content:"—";margin-right:14px;color:var(--graphite);font-weight:500}
+.cg-ref{color:var(--ivory-deep);text-decoration:none;font-weight:700}
+.cg-ref:hover{text-decoration:underline}
 @media(max-width:720px){
   .cg-day{grid-template-columns:1fr;gap:14px;padding:26px 30px;border-radius:var(--r-lg)}
   .cg-name{font-size:clamp(30px,9vw,46px)}
   .cg-rows{column-gap:20px}
   .cg-act::before{margin-right:10px}
+}
+
+/* Almoço Especial — item extra do cronograma (mesmo cartão vidro, escala menor) */
+.cg-extra{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:clamp(20px,3vw,40px);
+  padding:clamp(24px,2.8vw,34px) clamp(30px,4vw,48px);border-radius:var(--r-lg);
+  background:var(--glass-fill);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:var(--glass-inner),0 10px 30px -22px rgba(26,30,38,.4);border:1px solid rgba(255,255,255,.5)}
+.cg-extra-badge{position:absolute;top:-14px;left:clamp(30px,4vw,48px)}
+.cg-extra-main{max-width:520px}
+.cg-extra-cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.cg-extra-price{margin:0}
+.cg-extra-buy{display:flex;flex-direction:column;gap:9px}
+.cg-extra-howto{margin:0;max-width:220px;animation:cgHowtoIn .4s var(--ease)}
+@keyframes cgHowtoIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media(max-width:720px){
+  .cg-extra{flex-direction:column;align-items:flex-start;padding:32px 26px 26px}
+  .cg-extra-cta{width:100%;justify-content:space-between}
 }
 
 /* ============================================================

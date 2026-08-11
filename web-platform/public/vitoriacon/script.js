@@ -348,6 +348,13 @@
       });
     }
 
+    /* ---------- Almoço Especial (sábado): inscrição é presencial, sem checkout no site ---------- */
+    var lunchCta = document.getElementById('lunchCta');
+    var lunchInfo = document.getElementById('lunchInfo');
+    if (lunchCta && lunchInfo) {
+      lunchCta.addEventListener('click', function () { lunchInfo.hidden = false; });
+    }
+
     /* ---------- Modal de cadastro de patrocinadores ---------- */
     var sponsorModal = document.getElementById('sponsorModal');
     if (sponsorModal) {
