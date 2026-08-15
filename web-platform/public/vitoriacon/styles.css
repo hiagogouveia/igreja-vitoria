@@ -355,9 +355,6 @@ h2.title{font-family:var(--font-wide);font-weight:800;font-stretch:125%;
 .cg-extra-main{max-width:520px}
 .cg-extra-cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .cg-extra-price{margin:0}
-.cg-extra-buy{display:flex;flex-direction:column;gap:9px}
-.cg-extra-howto{margin:0;max-width:220px;animation:cgHowtoIn .4s var(--ease)}
-@keyframes cgHowtoIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media(max-width:720px){
   .cg-extra{flex-direction:column;align-items:flex-start;padding:32px 26px 26px}
   .cg-extra-cta{width:100%;justify-content:space-between}

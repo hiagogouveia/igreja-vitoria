@@ -348,11 +348,11 @@
       });
     }
 
-    /* ---------- Almoço Especial (sábado): inscrição é presencial, sem checkout no site ---------- */
+    /* ---------- Almoço Especial (sábado): abre direto o checkout do evento (sem validação,
+       mesmo padrão do Founders/Legacy) — reaproveita o #eiLauncher/openEvent já existente. */
     var lunchCta = document.getElementById('lunchCta');
-    var lunchInfo = document.getElementById('lunchInfo');
-    if (lunchCta && lunchInfo) {
-      lunchCta.addEventListener('click', function () { lunchInfo.hidden = false; });
+    if (lunchCta && typeof openEvent === 'function') {
+      lunchCta.addEventListener('click', function () { openEvent('135118'); });
     }
 
     /* ---------- Modal de cadastro de patrocinadores ---------- */
