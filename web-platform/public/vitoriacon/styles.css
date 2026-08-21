@@ -346,9 +346,9 @@ h2.title{font-family:var(--font-wide);font-weight:800;font-stretch:125%;
   .cg-act::before{margin-right:10px}
 }
 
-/* Almoço Especial — item extra do cronograma (mesmo cartão vidro, escala menor) */
+/* Almoço Especial — item extra logo abaixo do grid de ingressos (mesmo cartão vidro do cronograma) */
 .cg-extra{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:clamp(20px,3vw,40px);
-  padding:clamp(24px,2.8vw,34px) clamp(30px,4vw,48px);border-radius:var(--r-lg);
+  margin-top:clamp(26px,3vw,38px);padding:clamp(24px,2.8vw,34px) clamp(30px,4vw,48px);border-radius:var(--r-lg);
   background:var(--glass-fill);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate));
   box-shadow:var(--glass-inner),0 10px 30px -22px rgba(26,30,38,.4);border:1px solid rgba(255,255,255,.5)}
 .cg-extra-badge{position:absolute;top:-14px;left:clamp(30px,4vw,48px)}
