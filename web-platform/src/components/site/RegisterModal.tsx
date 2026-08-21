@@ -34,7 +34,7 @@ export default function RegisterModal({
 
   const enviar = (e: React.FormEvent) => {
     e.preventDefault();
-    const msg = `Olá! Quero me cadastrar pelo site.\n\n*Interesse:* ${kicker} — ${title}\n*Nome:* ${nome}\n*WhatsApp:* ${zap}`;
+    const msg = `Olá! Quero me cadastrar pelo site.\n\n*Interesse:* ${kicker} · ${title}\n*Nome:* ${nome}\n*WhatsApp:* ${zap}`;
     window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
     setDone(true);
   };

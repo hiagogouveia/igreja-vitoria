@@ -51,7 +51,7 @@ export default function ContatoContent() {
 
           <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 18, padding: 34 }}>
             <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 22, letterSpacing: '-.01em', marginBottom: 6 }}>Envie uma mensagem</h3>
-            <p style={{ fontSize: 14, color: 'var(--dim)', marginBottom: 24 }}>Dúvidas, pedidos ou só pra dizer oi — respondemos com carinho.</p>
+            <p style={{ fontSize: 14, color: 'var(--dim)', marginBottom: 24 }}>Dúvidas, pedidos ou só pra dizer oi. Respondemos com carinho.</p>
             {sent ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px 0' }}>
                 <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(240,168,72,.14)', border: '1px solid rgba(240,168,72,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, fontSize: 28, color: 'var(--glow)' }}>✓</div>

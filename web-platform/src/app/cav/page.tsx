@@ -8,10 +8,10 @@ import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import { display, sectionTitle, wrap } from '@/lib/site-ui';
 
-export const metadata: Metadata = { title: 'Casa de Vitória · Igreja Vitória', description: 'As Casas de Vitória — nossos grupos de comunhão durante a semana. Encontre uma perto de você.' };
+export const metadata: Metadata = { title: 'Casa de Vitória · Igreja Vitória', description: 'As Casas de Vitória: nossos grupos de comunhão durante a semana. Encontre uma perto de você.' };
 
 const infoCards = [
-  { icon: '◷', tint: 'beam', title: 'Dias de Encontro', text: 'Nossas casas se reúnem durante a semana — terças, quintas e sextas. Escolha o dia e o bairro mais perto de você.' },
+  { icon: '◷', tint: 'beam', title: 'Dias de Encontro', text: 'Nossas casas se reúnem durante a semana: terças, quintas e sextas. Escolha o dia e o bairro mais perto de você.' },
   { icon: '♡', tint: 'glow', title: 'Comunhão', text: 'Mais que um grupo: uma família. Oração, palavra, comida e amizade que sustentam você o ano inteiro.' },
   { icon: '⌖', tint: 'glow', title: 'Perto de Você', text: 'Espalhadas por Campo Grande, há sempre uma casa pertinho da sua. Encontre a sua e seja bem-vindo.' },
 ];

@@ -4,11 +4,11 @@ import RegisterModal from '@/components/site/RegisterModal';
 import { ministries } from '@/lib/site-data';
 import { btnPrimary, display, eyebrowLine, kicker, sectionTitle, wrap } from '@/lib/site-ui';
 
-export const metadata: Metadata = { title: 'Quem Somos · Igreja Vitória', description: 'Conheça a história, visão, valores e a liderança da Igreja Vitória em Campo Grande — MS.' };
+export const metadata: Metadata = { title: 'Quem Somos · Igreja Vitória', description: 'Conheça a história, visão, valores e a liderança da Igreja Vitória em Campo Grande, MS.' };
 
 const pillars = [
   { tag: 'História', title: 'De onde viemos', text: 'A Igreja Vitória nasceu do desejo de ver Campo Grande transformada pelo evangelho. De um pequeno grupo reunido em oração a uma comunidade vibrante, cada passo foi marcado pela fidelidade de Deus.' },
-  { tag: 'Visão', title: 'Para onde vamos', text: 'Ser uma igreja que alcança pessoas, forma discípulos e levanta uma geração que ama a Jesus acima de tudo — influenciando a cidade e as nações.' },
+  { tag: 'Visão', title: 'Para onde vamos', text: 'Ser uma igreja que alcança pessoas, forma discípulos e levanta uma geração que ama a Jesus acima de tudo, influenciando a cidade e as nações.' },
   { tag: 'Valores', title: 'O que nos guia', text: 'Jesus no centro · Família como base · Adoração como estilo de vida · Discipulado intencional · Generosidade e serviço · Excelência com o coração.' },
 ];
 
@@ -28,7 +28,7 @@ export default function QuemSomos() {
       <section className="reveal" style={{ padding: '90px 28px 0' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontFamily: 'var(--head)', fontWeight: 500, fontSize: 'clamp(22px,3.2vw,34px)', lineHeight: 1.32, letterSpacing: '-.015em', color: 'var(--text)' }}>
-            Existimos para que cada pessoa <span style={{ color: 'var(--glow)' }}>encontre Deus</span>, seja restaurada e descubra o propósito para o qual foi criada — vivendo isso em <span style={{ color: 'var(--glow)' }}>família</span>.
+            Existimos para que cada pessoa <span style={{ color: 'var(--glow)' }}>encontre Deus</span>, seja restaurada e descubra o propósito para o qual foi criada, vivendo isso em <span style={{ color: 'var(--glow)' }}>família</span>.
           </p>
         </div>
       </section>
@@ -69,7 +69,7 @@ export default function QuemSomos() {
           <div style={{ position: 'relative' }}>
             <h2 style={{ ...sectionTitle, fontSize: 'clamp(26px,3.6vw,40px)', marginBottom: 14 }}>Sua primeira vez é por nossa conta.</h2>
             <p style={{ fontSize: 17, color: 'var(--dim)', maxWidth: 480, margin: '0 auto 28px' }}>Planeje sua visita e prepararemos uma recepção especial pra você e sua família.</p>
-            <RegisterModal kicker="Planeje sua visita" title="Quero visitar" sub="Conte pra gente quando você vem — preparamos uma recepção especial." triggerClass="btn-glow" triggerStyle={btnPrimary}>Planejar minha visita →</RegisterModal>
+            <RegisterModal kicker="Planeje sua visita" title="Quero visitar" sub="Conte pra gente quando você vem. Preparamos uma recepção especial." triggerClass="btn-glow" triggerStyle={btnPrimary}>Planejar minha visita →</RegisterModal>
           </div>
         </div>
       </section>

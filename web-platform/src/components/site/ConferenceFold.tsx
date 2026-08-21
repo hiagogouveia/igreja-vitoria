@@ -8,10 +8,10 @@ import { display, wrap } from '@/lib/site-ui';
  */
 export default function ConferenceFold() {
   return (
-    <a href="/vitoriacon" aria-label="VitóriaCon 2026 — RESTORE" style={{ display: 'block', textDecoration: 'none', color: 'var(--ink)' }}>
+    <a href="/vitoriacon" aria-label="VitóriaCon 2026 · RESTORE" style={{ display: 'block', textDecoration: 'none', color: 'var(--ink)' }}>
       <section className="reveal conf-fold" style={{ position: 'relative', minHeight: '86vh', display: 'flex', alignItems: 'center', overflow: 'hidden', borderTop: '1px solid var(--border-soft)', borderBottom: '1px solid var(--border-soft)' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/worship-team.jpg" alt="VitóriaCon 2026 — RESTORE" loading="lazy" className="conf-kv" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }} />
+        <img src="/assets/worship-team.jpg" alt="VitóriaCon 2026 · RESTORE" loading="lazy" className="conf-kv" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }} />
         {/* Lavagem clara — identidade branca / liquid glass */}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg, rgba(238,240,241,.94) 0%, rgba(238,240,241,.8) 42%, rgba(238,240,241,.5) 70%, rgba(238,240,241,.3) 100%)' }} />
         {/* Brilho dourado sutil */}
@@ -38,7 +38,7 @@ export default function ConferenceFold() {
             </h2>
             <div style={{ ...display, fontSize: 'clamp(28px,5vw,68px)', lineHeight: 1, marginBottom: 16, color: 'var(--ink)' }}>2026</div>
             <p style={{ fontFamily: 'var(--head)', fontWeight: 600, fontSize: 'clamp(17px,2.2vw,24px)', letterSpacing: '-.01em', color: 'var(--ink)', marginBottom: 12 }}>
-              Conferência Profética de Adoração e Mover Sobrenatural — Restore
+              Conferência Profética de Adoração e Mover Sobrenatural · Restore
             </p>
             <p style={{ fontSize: 'clamp(15px,1.8vw,18px)', color: '#3A3E42', maxWidth: 520, lineHeight: 1.55, marginBottom: 30 }}>
               Cinco dias de adoração, palavra e presença marcando os 6 anos da Igreja Vitória. Vem viver um tempo de restauração com a gente.

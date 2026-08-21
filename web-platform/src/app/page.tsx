@@ -36,7 +36,7 @@ export default async function Home() {
             Encontre Deus.<br />Viva em família.<br /><span style={{ color: 'var(--glow)', textShadow: '0 0 60px rgba(240,168,72,.45)' }}>Transforme sua história.</span>
           </h1>
           <p style={{ fontSize: 'clamp(17px,2.2vw,21px)', color: 'var(--text)', maxWidth: 620, lineHeight: 1.5, marginBottom: 38, animation: 'rise 1s var(--ease) .2s both' }}>
-            Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. Seja bem-vindo(a) — aqui você encontra fé, propósito e família.
+            Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. Seja bem-vindo(a): aqui você encontra fé, propósito e família.
           </p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', animation: 'rise 1s var(--ease) .3s both' }}>
             <Link href="/quem-somos" className="btn-glow" style={btnPrimary}>Quero visitar →</Link>
@@ -73,9 +73,9 @@ export default async function Home() {
       <section className="reveal" style={{ padding: '108px 28px', position: 'relative' }}>
         <div style={wrap}>
           <div style={{ maxWidth: 760, marginBottom: 52 }}>
-            <span style={kicker}>01 — NOSSA IDENTIDADE</span>
+            <span style={kicker}>01 · NOSSA IDENTIDADE</span>
             <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 14px' }}>O que nos move<br />e o que acreditamos.</h2>
-            <p style={{ fontSize: 18, color: 'var(--dim)', maxWidth: 560 }}>Cinco marcas que definem quem somos como igreja — vividas a cada encontro, dentro e fora do domingo.</p>
+            <p style={{ fontSize: 18, color: 'var(--dim)', maxWidth: 560 }}>Cinco marcas que definem quem somos como igreja, vividas a cada encontro, dentro e fora do domingo.</p>
           </div>
           <div data-grid5 style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 16 }}>
             {beliefs.map((b) => (
@@ -99,7 +99,7 @@ export default async function Home() {
             <div style={{ position: 'absolute', left: 22, bottom: 22, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--glow-soft)', background: 'rgba(5,5,5,.5)', backdropFilter: 'blur(6px)', padding: '8px 14px', borderRadius: 99, border: '1px solid var(--border)' }}>#WelcomeVictory</div>
           </div>
           <div>
-            <span style={kicker}>02 — QUEM SOMOS</span>
+            <span style={kicker}>02 · QUEM SOMOS</span>
             <h2 style={{ ...sectionTitle, fontSize: 'clamp(28px,4vw,44px)', lineHeight: 1.04, margin: '16px 0 18px' }}>Uma igreja em movimento, construída como família.</h2>
             <p style={{ fontSize: 17.5, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 16 }}>A Igreja Vitória nasceu para ser um lugar onde pessoas reais encontram um Deus real. Adoração vibrante, palavra que transforma e uma comunidade que caminha junto durante toda a semana.</p>
             <p style={{ fontSize: 17.5, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 30 }}>Aqui ninguém precisa ter tudo resolvido para pertencer. Vem como você está.</p>
@@ -113,7 +113,7 @@ export default async function Home() {
         <div style={wrap}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 46 }}>
             <div style={{ maxWidth: 620 }}>
-              <span style={kicker}>03 — NOSSOS MINISTÉRIOS</span>
+              <span style={kicker}>03 · NOSSOS MINISTÉRIOS</span>
               <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 12px' }}>Existe um lugar<br />para você servir e crescer.</h2>
             </div>
             <Link href="/ministerios" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Ver todos →</Link>
@@ -141,7 +141,7 @@ export default async function Home() {
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--beam)', background: 'rgba(91,141,239,.1)', border: '1px solid rgba(91,141,239,.25)', padding: '7px 14px', borderRadius: 99, marginBottom: 22 }}>Perto de você</div>
             <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,50px)', marginBottom: 18 }}>A igreja não termina no domingo.</h2>
-            <p style={{ fontSize: 18, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 30, maxWidth: 520 }}>Durante a semana nos reunimos nas casas — as <b style={{ color: 'var(--text)' }}>Casas de Vitória</b> — para comunhão, oração e crescimento. É onde a fé vira família e ninguém caminha sozinho.</p>
+            <p style={{ fontSize: 18, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 30, maxWidth: 520 }}>Durante a semana nos reunimos nas casas, as <b style={{ color: 'var(--text)' }}>Casas de Vitória</b>, para comunhão, oração e crescimento. É onde a fé vira família e ninguém caminha sozinho.</p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <Link href="/cav" className="btn-glow" style={btnPrimarySm}>Encontrar uma CAV</Link>
               <RegisterModal kicker="Casa de Vitória" title="Quero ser anfitrião" sub="Abra sua casa para receber uma CAV. Nossa equipe entra em contato." triggerClass="btn-ghost" triggerStyle={{ ...btnGhost, padding: '13px 24px' }}>Quero ser anfitrião</RegisterModal>
@@ -192,7 +192,7 @@ export default async function Home() {
         <div style={wrap}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 46 }}>
             <div style={{ maxWidth: 620 }}>
-              <span style={kicker}>04 — PRÓXIMOS EVENTOS</span>
+              <span style={kicker}>04 · PRÓXIMOS EVENTOS</span>
               <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 0' }}>Não perca o que está<br />por vir na nossa família.</h2>
             </div>
             <Link href="/eventos" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Agenda completa →</Link>
@@ -234,7 +234,7 @@ export default async function Home() {
         <div style={wrap}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 46 }}>
             <div style={{ maxWidth: 620 }}>
-              <span style={kicker}>05 — ÚLTIMAS MENSAGENS</span>
+              <span style={kicker}>05 · ÚLTIMAS MENSAGENS</span>
               <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 0' }}>Palavra que transforma,<br />onde e quando quiser.</h2>
             </div>
             <Link href="/mensagens" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Biblioteca completa →</Link>
@@ -267,7 +267,7 @@ export default async function Home() {
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(110deg,rgba(5,5,5,.96) 38%,rgba(5,5,5,.6))' }} />
           <div data-split style={{ position: 'relative', padding: '54px 46px', display: 'grid', gridTemplateColumns: '1fr .9fr', gap: 44, alignItems: 'center' }}>
             <div>
-              <span style={kicker}>06 — GENEROSIDADE</span>
+              <span style={kicker}>06 · GENEROSIDADE</span>
               <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.4vw,48px)', margin: '16px 0 16px' }}>Faça parte da missão.</h2>
               <p style={{ fontSize: 17.5, color: 'var(--dim)', lineHeight: 1.6, maxWidth: 460, marginBottom: 14 }}>Sua generosidade sustenta vidas sendo transformadas, projetos sociais e a expansão do Reino em Campo Grande e além.</p>
               <p style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--faint)', letterSpacing: '.04em' }}>Transparência total · prestação de contas a cada trimestre</p>
@@ -275,7 +275,7 @@ export default async function Home() {
             <div style={{ background: 'rgba(11,11,12,.7)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: 18, padding: 26 }}>
               <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 8 }}>PIX · CNPJ</div>
               <PixCopy value={site.pixCnpj} />
-              <p style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', marginTop: 12, letterSpacing: '.04em' }}>Igreja Vitória · Campo Grande — MS</p>
+              <p style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', marginTop: 12, letterSpacing: '.04em' }}>Igreja Vitória · Campo Grande, MS</p>
             </div>
           </div>
         </div>
@@ -288,7 +288,7 @@ export default async function Home() {
             <div style={{ position: 'absolute', left: '50%', top: '40%', width: 560, height: 420, maxWidth: '90%', transform: 'translate(-50%,-50%)', background: 'radial-gradient(circle,rgba(240,168,72,.14),transparent 64%)', filter: 'blur(10px)', animation: 'breathe 6s var(--ease) infinite', pointerEvents: 'none' }} />
             <div style={{ position: 'relative' }}>
               <h2 style={{ ...display, fontSize: 'clamp(32px,6vw,76px)', lineHeight: .94, marginBottom: 20 }}>Venha viver uma<br />experiência com <span style={{ color: 'var(--glow)' }}>Deus</span></h2>
-              <p style={{ fontSize: 18, color: 'var(--dim)', maxWidth: 480, margin: '0 auto 32px' }}>Te esperamos no domingo às 18h. Vem como você está — aqui você é família.</p>
+              <p style={{ fontSize: 18, color: 'var(--dim)', maxWidth: 480, margin: '0 auto 32px' }}>Te esperamos no domingo às 18h. Vem como você está. Aqui você é família.</p>
               <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
                 <Link href="/quem-somos" className="btn-glow" style={btnPrimary}>Planejar minha visita →</Link>
                 <Link href="/aovivo" className="btn-ghost" style={btnGhost}>Assistir ao vivo</Link>

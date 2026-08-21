@@ -5,11 +5,11 @@
 export const ministries = [
   { id: 'louvor', name: 'Louvor', tag: 'Adoração', leaders: 'Profeta Milena', photo: '/assets/worship-team.jpg', desc: 'O ministério de Louvor conduz a igreja à presença de Deus através da adoração. Cantores, músicos e técnicos servem com excelência para criar uma atmosfera onde o céu toca a terra.' },
   { id: 'welcome', name: 'Welcome', tag: 'Acolhimento', leaders: 'Evangelista Wagner', photo: '/assets/welcome-stage.jpg', desc: 'O time Welcome existe para que ninguém chegue e se sinta um estranho. Recebemos cada visitante com um sorriso, um café e a certeza de que aqui há lugar para ele.' },
-  { id: 'recepcao', name: 'Recepção', tag: 'Hospitalidade', leaders: 'Pr Hiago e Pra Isabela', photo: '/assets/community-prayer.jpg', desc: 'A Recepção cuida da primeira impressão — orientando, acolhendo e conduzindo cada pessoa com cuidado desde a porta até o seu assento.' },
+  { id: 'recepcao', name: 'Recepção', tag: 'Hospitalidade', leaders: 'Pr Hiago e Pra Isabela', photo: '/assets/community-prayer.jpg', desc: 'A Recepção cuida da primeira impressão, orientando, acolhendo e conduzindo cada pessoa com cuidado desde a porta até o seu assento.' },
   { id: 'intercessao', name: 'Intercessão', tag: 'Oração', leaders: 'Pra Ivone', photo: '/assets/altar-prayer.jpg', desc: 'A Intercessão é a sala de máquinas da igreja. Antes, durante e depois dos cultos, esse time guerreia em oração por vidas, famílias e pela cidade.' },
-  { id: 'kids', name: 'Vitória Kids', tag: 'Crianças', leaders: 'Profeta Leandro e Profeta Carol', photo: '/assets/worship-arms.jpg', desc: 'O Vitória Kids ensina as crianças a amarem a Jesus de forma criativa, segura e divertida — para que cresçam conhecendo o Deus que as ama.' },
+  { id: 'kids', name: 'Vitória Kids', tag: 'Crianças', leaders: 'Profeta Leandro e Profeta Carol', photo: '/assets/worship-arms.jpg', desc: 'O Vitória Kids ensina as crianças a amarem a Jesus de forma criativa, segura e divertida, para que cresçam conhecendo o Deus que as ama.' },
   { id: 'midia', name: 'Mídia', tag: 'Comunicação', leaders: 'Pastor Leonardo e Pastora Linda', photo: '/assets/welcome-stage.jpg', desc: 'A Mídia leva a mensagem para além das paredes: transmissões ao vivo, fotografia, design e redes sociais que alcançam quem ainda não chegou.' },
-  { id: 'operacionais', name: 'Operacionais', tag: 'Estrutura', leaders: 'Profeta Johnny e Profeta Hila', photo: '/assets/community-prayer.jpg', desc: 'Os Operacionais cuidam de tudo o que faz o culto acontecer — estrutura, organização e serviço para que cada encontro flua com excelência.' },
+  { id: 'operacionais', name: 'Operacionais', tag: 'Estrutura', leaders: 'Profeta Johnny e Profeta Hila', photo: '/assets/community-prayer.jpg', desc: 'Os Operacionais cuidam de tudo o que faz o culto acontecer: estrutura, organização e serviço para que cada encontro flua com excelência.' },
 ] as const;
 
 export type Ministry = (typeof ministries)[number];
@@ -39,8 +39,8 @@ export const messages = [
 
 // Eventos em destaque exibidos na home (curados).
 export const fallbackEvents: SiteEvent[] = [
-  { id: 'vitoriacon-2026', title: 'VitóriaCon 2026', date: '26–30 AGO', time: 'Conferência', place: 'Igreja Vitória', featured: true, photo: '/assets/worship-team.jpg', desc: 'Conferência Profética de Adoração e Mover Sobrenatural — RESTORE. Cinco dias marcando os 6 anos da Igreja Vitória.', href: '/vitoriacon', cta: 'Garantir vaga' },
-  { id: 'campanha-agasalho', title: 'Campanha do Agasalho', date: '21 JUN — 31 JUL', time: 'Doações', place: 'R. Mal. Rondon, 163', featured: true, photo: '/assets/agasalho.jpg', desc: 'Doe amor, compartilhe calor. Receba agasalhos, cobertores, cachecóis, toucas e meias na Igreja Vitória. Mais que roupas, levamos dignidade e carinho a quem precisa. Realização: Instituto Vitória.', href: 'https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20participar%20da%20Campanha%20do%20Agasalho.', cta: 'Quero doar' },
+  { id: 'vitoriacon-2026', title: 'VitóriaCon 2026', date: '26–30 AGO', time: 'Conferência', place: 'Igreja Vitória', featured: true, photo: '/assets/worship-team.jpg', desc: 'Conferência Profética de Adoração e Mover Sobrenatural · RESTORE. Cinco dias marcando os 6 anos da Igreja Vitória.', href: '/vitoriacon', cta: 'Garantir vaga' },
+  { id: 'campanha-agasalho', title: 'Campanha do Agasalho', date: '21 JUN–31 JUL', time: 'Doações', place: 'R. Mal. Rondon, 163', featured: true, photo: '/assets/agasalho.jpg', desc: 'Doe amor, compartilhe calor. Receba agasalhos, cobertores, cachecóis, toucas e meias na Igreja Vitória. Mais que roupas, levamos dignidade e carinho a quem precisa. Realização: Instituto Vitória.', href: 'https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20participar%20da%20Campanha%20do%20Agasalho.', cta: 'Quero doar' },
 ];
 
 export type SiteEvent = {
@@ -85,7 +85,7 @@ export const site = {
   youtube: 'https://youtube.com/@igrejavitoriacampogrande',
   youtubeHandle: '@igrejavitoriacampogrande',
   address: 'R. Mal. Rondon, 163 · Amambai',
-  city: 'Campo Grande — MS',
+  city: 'Campo Grande, MS',
   cep: '79008-000',
   mapsQuery: 'R.+Mal.+Rondon,+163+-+Amambai,+Campo+Grande+-+MS',
 };
