@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import SiteShell from '@/components/site/SiteShell';
 import RegisterModal from '@/components/site/RegisterModal';
+import EventArt from '@/components/site/EventArt';
 import { fallbackEvents } from '@/lib/site-data';
 import { display, eyebrowLine, wrap } from '@/lib/site-ui';
 
@@ -27,10 +28,10 @@ export default async function Eventos() {
             const inner = (
               <>
                 <div style={{ position: 'relative', minHeight: 200 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={e.photo} alt={e.title} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,rgba(5,5,5,.1),rgba(16,16,18,.6))' }} />
-                  {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>Destaque</div>}
+                  <EventArt event={e} />
+                  {/* o véu escuro é para foto; sobre a arte própria ele sujaria a cor oficial */}
+                  {!e.art && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,rgba(5,5,5,.1),rgba(16,16,18,.6))' }} />}
+                  {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>{e.badge ?? 'Destaque'}</div>}
                 </div>
                 <div style={{ padding: '30px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.06em', color: 'var(--glow)', marginBottom: 12 }}>

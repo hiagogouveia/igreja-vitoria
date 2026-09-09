@@ -265,3 +265,9 @@ select.inp option[value=""]{color:var(--t-3)}
   text-transform:uppercase;color:var(--t-2)}
 .foot-back{margin-top:6px;color:var(--t-2);transition:color .2s}
 .foot-back:hover{color:var(--or)}
+/* Deep: convite discreto no rodapé. O .foot-info é caixa alta com tracking largo,
+   que estraga uma frase — por isso a linha volta ao texto normal. */
+.foot-deep{margin-top:10px;max-width:46ch;text-transform:none;letter-spacing:0;
+  font-size:13px;font-weight:500;line-height:1.55;color:var(--t-2);transition:color .2s}
+.foot-deep strong{font-weight:800;color:var(--t-1)}
+.foot-deep:hover,.foot-deep:hover strong{color:var(--or)}

@@ -40,12 +40,23 @@ export const messages = [
 // Eventos em destaque exibidos na home (curados).
 export const fallbackEvents: SiteEvent[] = [
   { id: 'ceus-abertos-2026', title: 'Conferência Céus Abertos', date: '25–27 SET', time: 'Conferência', place: 'Igreja Vitória', featured: true, photo: '/assets/worship-team.jpg', desc: 'Três dias e cinco sessões em Campo Grande, com entrada gratuita. Sábado à noite acontece o Sister.', href: '/ceus-abertos', cta: 'Fazer inscrição' },
-  { id: 'campanha-agasalho', title: 'Campanha do Agasalho', date: '21 JUN–31 JUL', time: 'Doações', place: 'R. Mal. Rondon, 163', featured: true, photo: '/assets/agasalho.jpg', desc: 'Doe amor, compartilhe calor. Receba agasalhos, cobertores, cachecóis, toucas e meias na Igreja Vitória. Mais que roupas, levamos dignidade e carinho a quem precisa. Realização: Instituto Vitória.', href: 'https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20participar%20da%20Campanha%20do%20Agasalho.', cta: 'Quero doar' },
+  { id: 'sister-2026', title: 'Sister · 6 anos', date: '26 SET', time: 'Sábado, 18h', place: 'Igreja Vitória', featured: true, badge: 'Só para mulheres', photo: '/assets/worship-arms.jpg', art: { bg: 'linear-gradient(165deg,#FAEDEA,#F2DBD6)', fg: '#C4676B', label: 'Sister', sub: '6 anos', serif: true }, desc: 'A noite das mulheres dentro da Conferência Céus Abertos, comemorando 6 anos. Com Ap. Rayssa Coelho, Ap. Maricleyde Cardoso e Ap. Neila Lopes. Entrada gratuita.', href: '/ceus-abertos#sister', cta: 'Quero participar' },
+  { id: 'deep-membresia', title: 'Deep · Curso de Membresia', date: 'INÍCIO 21 SET', time: 'Segundas', place: 'Igreja Vitória', featured: true, badge: 'Inscrições abertas', photo: '/assets/altar-prayer.jpg', art: { bg: 'radial-gradient(120% 80% at 78% 8%, rgba(191,221,240,.55), transparent 62%), linear-gradient(165deg,#2E7FB8 0%,#12507F 48%,#0B3760 100%)', fg: '#FFFFFF', label: 'Deep', sub: 'Curso de membresia' }, desc: 'Já frequenta a igreja há um tempo ou participa de uma CAV, mas ainda não é membro? Chegou a sua hora. São 5 aulas, sempre às segundas, por R$ 50.', href: '/deep', cta: 'Fazer inscrição' },
 ];
+
+/**
+ * Identidade gráfica própria de um evento (Sister, Deep). Quando presente, o card
+ * usa esse bloco no lugar da foto: é mais fiel à arte oficial do que uma foto
+ * genérica de culto, e evita inventar uma imagem que o evento não tem.
+ */
+export type SiteEventArt = { bg: string; fg: string; label: string; sub?: string; serif?: boolean };
 
 export type SiteEvent = {
   id: string; title: string; date: string; time: string; place: string;
   featured: boolean; photo: string; desc: string; href?: string; cta?: string;
+  /** Texto da etiqueta no canto do card. Sem isso, um evento em destaque mostra "Destaque". */
+  badge?: string;
+  art?: SiteEventArt;
 };
 
 const FALLBACK_PHOTOS = ['/assets/worship-team.jpg', '/assets/worship-arms.jpg', '/assets/community-prayer.jpg'];

@@ -7,6 +7,8 @@ import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import CeusAbertosFold from '@/components/site/CeusAbertosFold';
+import DeepFold from '@/components/site/DeepFold';
+import EventArt from '@/components/site/EventArt';
 import ConferencePopup from '@/components/site/ConferencePopup';
 import { beliefs, fallbackEvents, messages, ministries, site } from '@/lib/site-data';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
@@ -68,6 +70,8 @@ export default async function Home() {
 
       {/* ---------- CONFERÊNCIA 2026 (destaque) ---------- */}
       <CeusAbertosFold />
+
+      <DeepFold />
 
       {/* ---------- IDENTIDADE ---------- */}
       <section className="reveal" style={{ padding: '108px 28px', position: 'relative' }}>
@@ -202,10 +206,11 @@ export default async function Home() {
               const cardStyle = { position: 'relative' as const, borderRadius: 18, overflow: 'hidden', border: '1px solid var(--border)', minHeight: 300, display: 'flex', flexDirection: 'column' as const, justifyContent: 'flex-end' as const };
               const inner = (
                 <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={e.photo} alt={e.title} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.15) 25%,rgba(5,5,5,.94))' }} />
-                  {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>Destaque</div>}
+                  <EventArt event={e} variant="card" />
+                  {/* sobre a arte própria o véu começa mais tarde (para não sujar a cor oficial no topo)
+                      e fecha mais forte embaixo, onde ficam a data e o título */}
+                  <div style={{ position: 'absolute', inset: 0, background: e.art ? 'linear-gradient(180deg,rgba(5,5,5,0) 32%,rgba(5,5,5,.85) 52%,rgba(5,5,5,.97))' : 'linear-gradient(180deg,rgba(5,5,5,.15) 25%,rgba(5,5,5,.94))' }} />
+                  {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>{e.badge ?? 'Destaque'}</div>}
                   <div style={{ position: 'relative', padding: 22 }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.06em', color: 'var(--glow)', marginBottom: 10 }}>
                       <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 13, background: 'var(--void)', padding: '6px 11px', borderRadius: 8 }}>{e.date}</span><span>{e.time} · {e.place}</span>
