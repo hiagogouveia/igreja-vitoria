@@ -6,7 +6,7 @@ import Countdown from '@/components/site/Countdown';
 import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
-import ConferenceFold from '@/components/site/ConferenceFold';
+import CeusAbertosFold from '@/components/site/CeusAbertosFold';
 import ConferencePopup from '@/components/site/ConferencePopup';
 import { beliefs, fallbackEvents, messages, ministries, site } from '@/lib/site-data';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
@@ -67,7 +67,7 @@ export default async function Home() {
       </div>
 
       {/* ---------- CONFERÊNCIA 2026 (destaque) ---------- */}
-      <ConferenceFold />
+      <CeusAbertosFold />
 
       {/* ---------- IDENTIDADE ---------- */}
       <section className="reveal" style={{ padding: '108px 28px', position: 'relative' }}>
