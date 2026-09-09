@@ -121,10 +121,13 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
    MARQUEE
    ============================================================ */
 .marquee{overflow:hidden;background:var(--ink);color:var(--paper);padding:14px 0;margin-top:clamp(10px,2vw,24px)}
-.marquee-track{display:flex;width:200%;animation:ca-marquee 26s linear infinite}
+.marquee-track{display:flex;width:max-content;animation:ca-marquee 26s linear infinite}
 @keyframes ca-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.marquee-run{display:flex;gap:44px;width:50%;flex:none;padding-right:44px;
+.marquee-run{--gap:clamp(22px,5vw,44px);
+  display:flex;gap:var(--gap);flex:none;padding-right:var(--gap);
   font-size:clamp(13px,1.5vw,17px);font-weight:800;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+/* sem isto os spans encolhem e o texto vaza por cima do vizinho */
+.marquee-run>span{flex:none}
 .marquee .ast{color:var(--or)}
 @media(prefers-reduced-motion:reduce){.marquee-track{animation:none}}
 
