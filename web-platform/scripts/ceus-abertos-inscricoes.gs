@@ -152,3 +152,26 @@ function json(obj) {
 function doGet() {
   return json({ ok: true, servico: 'inscricoes-igreja-vitoria' });
 }
+
+/**
+ * Utilitário de uso manual: apaga as linhas de teste (Nome começando com
+ * "TESTE") de todas as abas. Rode pelo editor (Executar), nunca pela web —
+ * de propósito não está exposto no doPost.
+ */
+function limparTestes() {
+  var ss = abrirPlanilha();
+  var total = 0;
+  ss.getSheets().forEach(function (sheet) {
+    var ultima = sheet.getLastRow();
+    if (ultima < 2) return;
+    var nomes = sheet.getRange(2, 2, ultima - 1, 1).getValues(); // coluna Nome
+    // De baixo para cima: apagar de cima desloca as linhas seguintes.
+    for (var i = nomes.length - 1; i >= 0; i--) {
+      if (String(nomes[i][0]).trim().toUpperCase().indexOf('TESTE') === 0) {
+        sheet.deleteRow(i + 2);
+        total++;
+      }
+    }
+  });
+  Logger.log('Linhas de teste removidas: ' + total);
+}
