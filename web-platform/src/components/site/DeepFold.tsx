@@ -14,7 +14,7 @@ export default function DeepFold() {
   return (
     <a
       href="/deep"
-      aria-label="Deep · Curso de membresia da Igreja Vitória · Nova turma em 21 de setembro, 5 aulas, R$ 50"
+      aria-label="Deep · Curso de membresia da Igreja Vitória · Nova turma em 21 de setembro, 6 aulas, R$ 50"
       style={{ display: 'block', textDecoration: 'none', color: '#fff' }}
     >
       <section
@@ -66,7 +66,7 @@ export default function DeepFold() {
                 lineHeight: 1.6, color: '#EAF3FA',
               }}>
                 Já frequenta a igreja há um tempo ou participa de uma CAV, mas ainda não é membro?
-                Chegou a sua hora. São 5 aulas, sempre às segundas.
+                Chegou a sua hora. São 6 aulas, sempre às segundas.
               </p>
             </div>
 
@@ -81,7 +81,7 @@ export default function DeepFold() {
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9 }}>
-                {['5 aulas', '5 segundas'].map((t) => (
+                {['6 aulas', '6 segundas'].map((t) => (
                   <span key={t} style={{
                     border: '1px solid rgba(255,255,255,.28)', borderRadius: 999, padding: '8px 16px',
                     fontFamily: 'var(--head)', fontWeight: 800, fontSize: 12, letterSpacing: '.12em', textTransform: 'uppercase',
