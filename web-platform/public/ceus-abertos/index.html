@@ -225,20 +225,70 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
         <span class="errmsg" data-err></span>
       </div>
       <div class="fld">
-        <label for="fCidade">Cidade</label>
-        <input class="inp" type="text" id="fCidade" name="cidade" placeholder="Campo Grande" autocomplete="address-level2">
+        <label for="fSexo">Sexo</label>
+        <select class="inp" id="fSexo" name="sexo">
+          <option value="">Selecione</option>
+          <option value="Feminino">Feminino</option>
+          <option value="Masculino">Masculino</option>
+        </select>
         <span class="errmsg" data-err></span>
       </div>
-      <div class="fld">
-        <label for="fSister">Vai participar do Sister? <small>(sábado, 18h)</small></label>
+      <!-- Sister é exclusivo para mulheres: só aparece quando o sexo for feminino -->
+      <div class="fld fld-cond" id="fldSister" hidden>
+        <label for="fSister">Quer participar do Sister? <small>(sábado, 18h · só para mulheres)</small></label>
         <select class="inp" id="fSister" name="sister">
-          <option value="Não informado">Selecione</option>
+          <option value="">Selecione</option>
           <option value="Sim">Sim, quero participar</option>
           <option value="Não">Não</option>
         </select>
+        <span class="errmsg" data-err></span>
+      </div>
+      <div class="fld">
+        <label for="fEndereco">Endereço <small>(rua e número)</small></label>
+        <input class="inp" type="text" id="fEndereco" name="endereco" placeholder="Rua, número" autocomplete="street-address">
+        <span class="errmsg" data-err></span>
+      </div>
+      <div class="fld-row">
+        <div class="fld">
+          <label for="fBairro">Bairro</label>
+          <input class="inp" type="text" id="fBairro" name="bairro" placeholder="Seu bairro">
+          <span class="errmsg" data-err></span>
+        </div>
+        <div class="fld">
+          <label for="fCidade">Cidade</label>
+          <input class="inp" type="text" id="fCidade" name="cidade" placeholder="Campo Grande" autocomplete="address-level2">
+          <span class="errmsg" data-err></span>
+        </div>
+      </div>
+      <div class="fld">
+        <label for="fCav">Já participa de alguma CAV?</label>
+        <select class="inp" id="fCav" name="cav">
+          <option value="">Selecione</option>
+          <option value="Sim">Sim</option>
+          <option value="Não">Ainda não</option>
+        </select>
+        <span class="errmsg" data-err></span>
+      </div>
+      <!-- Lista espelha as CAVs ativas hoje. Ao abrir/encerrar uma CAV,
+           basta acrescentar ou remover a opção aqui. -->
+      <div class="fld fld-cond" id="fldQualCav" hidden>
+        <label for="fQualCav">Qual CAV?</label>
+        <select class="inp" id="fQualCav" name="qualCav">
+          <option value="">Selecione</option>
+          <option value="CAV Centro">CAV Centro</option>
+          <option value="CAV Coophafe">CAV Coophafe</option>
+          <option value="CAV Joquei">CAV Joquei</option>
+          <option value="CAV Parati">CAV Parati</option>
+          <option value="CAV Rita Vieira">CAV Rita Vieira</option>
+          <option value="CAV São J. Lagoa">CAV São J. Lagoa</option>
+          <option value="CAV Sírio Libanês">CAV Sírio Libanês</option>
+          <option value="CAV Winners">CAV Winners</option>
+          <option value="Outra">Outra / não sei o nome</option>
+        </select>
+        <span class="errmsg" data-err></span>
       </div>
       <button class="btn btn-or btn-block" type="submit">Fazer minha inscrição</button>
-      <p class="form-note" id="formNote">Ao enviar, abrimos o WhatsApp da Igreja Vitória com seus dados já preenchidos. É só mandar a mensagem para concluir.</p>
+      <p class="form-note" id="formNote">Sua inscrição é gratuita. Usamos seus dados apenas para organizar a conferência e falar com você pelo WhatsApp.</p>
     </form>
   </div>
 </section>

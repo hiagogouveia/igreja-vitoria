@@ -224,6 +224,12 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
 .insc-lead{margin-top:22px;max-width:40ch;font-size:clamp(15px,1.6vw,19px);line-height:1.5;color:var(--t-4)}
 .insc-form{display:grid;gap:clamp(14px,2vw,20px);border:1px solid var(--line-inv);padding:clamp(22px,3vw,40px)}
 .fld{display:grid;gap:8px}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,18px)}
+@media(max-width:420px){.fld-row{grid-template-columns:1fr}}
+/* campos que aparecem conforme a resposta anterior (Sister / CAV) */
+@keyframes ca-fld-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.fld-cond{animation:ca-fld-in .32s var(--ease)}
+@media(prefers-reduced-motion:reduce){.fld-cond{animation:none}}
 .fld label{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--paper)}
 .fld label small{font-weight:600;letter-spacing:.04em;text-transform:none;color:var(--t-3)}
 .inp{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(240,240,238,.35);
@@ -236,6 +242,8 @@ select.inp{color-scheme:dark;cursor:pointer}
 .errmsg{font-size:11px;color:#E8837E;min-height:13px}
 .form-note{font-size:12.5px;line-height:1.5;color:var(--t-3)}
 .form-ok{border:1px solid var(--or);padding:16px;font-size:14px;color:var(--paper);line-height:1.5}
+.form-err{border:1px solid #E0655F;padding:16px;font-size:14px;color:#E8837E;line-height:1.5}
+.insc-form .inp:disabled{opacity:.55;cursor:not-allowed}
 
 /* ============================================================
    FOOTER
