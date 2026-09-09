@@ -14,7 +14,7 @@
      telefone. Enviamos como form-urlencoded de propósito: é uma "simple
      request", então não dispara preflight CORS — que o Apps Script não
      responde. Se um dia a URL mudar, é só trocar aqui. */
-  var INSCRICAO_URL = 'https://script.google.com/macros/s/AKfycbyyYXg2aB5q6TiOLwxf0J6yVrRwL9iRatOZnW0Rjov4t2mF4_0QfjkS1E4dREfc8YTGog/exec';
+  var INSCRICAO_URL = 'https://script.google.com/macros/s/AKfycbwTMAjrbR4CH8uhM6WUmjAm1GFQmzPCudRzaszOUDgw3Ush8IHJYpNkdw-_Wi6WYDuicg/exec';
 
   function ready(fn) {
     if (document.readyState !== 'loading') fn();
