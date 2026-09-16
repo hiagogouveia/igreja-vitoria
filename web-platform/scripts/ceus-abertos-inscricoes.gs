@@ -70,10 +70,6 @@ function abaPratos(ss) {
 
   // sempre no fim: a aba da conferência é identificada por ser a primeira
   sheet = ss.insertSheet(ABA_PRATOS, ss.getSheets().length);
-  var ceus = abaCeusAbertos(ss);
-  var colPrato = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
-  var letra = ceus.getRange(1, colPrato).getA1Notation().replace(/\d+/g, '');
-  var ref = "'" + ceus.getName().replace(/'/g, "''") + "'!" + letra + ':' + letra;
 
   sheet.getRange(1, 1, 1, 3).setValues([['Prato', 'Aceitando no site?', 'Já escolheram']])
     .setFontWeight('bold');
@@ -81,9 +77,7 @@ function abaPratos(ss) {
     var linha = i + 2;
     sheet.getRange(linha, 1).setValue(prato);
     sheet.getRange(linha, 2).insertCheckboxes().setValue(true);
-    // o asterisco conta também as marcadas como "(fora do limite)".
-    // setFormula usa a sintaxe en_US (vírgula), mesmo com a planilha em pt-BR.
-    sheet.getRange(linha, 3).setFormula('=COUNTIF(' + ref + ',"' + prato + '*")');
+    escreverContagem(ss, sheet.getRange(linha, 3), prato);
   });
   sheet.getRange(PRATOS.length + 3, 1).setValue(
     'Desmarque uma caixinha para o site parar de oferecer aquele prato. ' +
@@ -95,6 +89,48 @@ function abaPratos(ss) {
   sheet.setColumnWidth(3, 140);
   sheet.setFrozenRows(1);
   return sheet;
+}
+
+/**
+ * Fórmula "Já escolheram" de um prato. O separador de argumentos depende do
+ * idioma da planilha (vírgula em inglês, ponto e vírgula em português), então
+ * testa os dois e fica com o que a planilha aceitar.
+ * O asterisco conta também as linhas marcadas como "(fora do limite)".
+ */
+function escreverContagem(ss, celula, prato) {
+  var ceus = ss.getSheets()[0];
+  var colPrato = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
+  var letra = ceus.getRange(1, colPrato).getA1Notation().replace(/\d+/g, '');
+  var ref = "'" + ceus.getName().replace(/'/g, "''") + "'!" + letra + ':' + letra;
+
+  var separadores = [';', ','];
+  for (var i = 0; i < separadores.length; i++) {
+    celula.setFormula('=COUNTIF(' + ref + separadores[i] + '"' + prato + '*")');
+    SpreadsheetApp.flush();
+    if (String(celula.getDisplayValue()).charAt(0) !== '#') return true;
+  }
+  return false;
+}
+
+/**
+ * Uso manual, pelo editor (Executar): reescreve a coluna "Já escolheram"
+ * da aba de pratos, sem mexer nas caixinhas.
+ */
+function consertarContagem() {
+  var ss = abrirPlanilha();
+  var sheet = abaPratos(ss);
+  var linhas = sheet.getRange(1, 1, Math.max(sheet.getLastRow(), 1), 1).getValues();
+  var feitos = [];
+  PRATOS.forEach(function (prato) {
+    for (var i = 1; i < linhas.length; i++) {
+      if (String(linhas[i][0]).trim().toLowerCase() === prato.toLowerCase()) {
+        var celula = sheet.getRange(i + 1, 3);
+        var ok = escreverContagem(ss, celula, prato);
+        feitos.push(prato + ': ' + (ok ? celula.getDisplayValue() : 'ERRO'));
+      }
+    }
+  });
+  Logger.log('Contagem → ' + feitos.join(' | '));
 }
 
 /** Pratos com a caixinha marcada, na ordem de PRATOS. */
