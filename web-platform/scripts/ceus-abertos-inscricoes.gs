@@ -7,6 +7,12 @@
  * O site escolhe a aba pelo parâmetro "destino" ("ceus-abertos" ou "deep").
  * Sem esse parâmetro, cai no Céus Abertos — mantém compatibilidade.
  *
+ * PRATOS DO SISTER
+ *   Quem vai ao Sister escolhe levar um prato Salgado ou Doce para o brunch.
+ *   A aba "Sister · Pratos" (criada automaticamente) controla quais opções o
+ *   site oferece: desmarque a caixinha para fechar uma opção. Vale na hora,
+ *   sem implantar nada. A mesma aba mostra quantas inscritas escolheram cada uma.
+ *
  * COMO ATUALIZAR (precisa ser feito a cada mudança neste arquivo)
  *   1. Cole este conteúdo no Código.gs e salve
  *   2. Implantar → Gerenciar implantações → editar (lápis)
@@ -23,7 +29,9 @@ var FUSO = 'America/Campo_Grande';
 
 var COLUNAS_CEUS = [
   'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'Sexo', 'Sister',
-  'Endereço', 'Bairro', 'Cidade', 'Já participa de CAV', 'Qual CAV', 'Origem'
+  'Endereço', 'Bairro', 'Cidade', 'Já participa de CAV', 'Qual CAV', 'Origem',
+  // colunas novas entram sempre no FIM: as linhas antigas continuam alinhadas
+  'Prato (Sister)'
 ];
 
 var COLUNAS_DEEP = [
@@ -32,6 +40,9 @@ var COLUNAS_DEEP = [
 ];
 
 var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
+
+var ABA_PRATOS = 'Sister · Pratos';
+var PRATOS = ['Salgado', 'Doce'];
 
 function abrirPlanilha() {
   var ss = SpreadsheetApp.openById(PLANILHA_ID);
@@ -48,9 +59,62 @@ function abaCeusAbertos(ss) {
   return sheet;
 }
 
+/**
+ * Aba de controle dos pratos. Criada na primeira vez que alguém usa o site
+ * depois desta versão. Procura cada prato pelo nome na coluna A, então dá
+ * para reordenar as linhas sem quebrar nada.
+ */
+function abaPratos(ss) {
+  var sheet = ss.getSheetByName(ABA_PRATOS);
+  if (sheet) return sheet;
+
+  // sempre no fim: a aba da conferência é identificada por ser a primeira
+  sheet = ss.insertSheet(ABA_PRATOS, ss.getSheets().length);
+  var ceus = abaCeusAbertos(ss);
+  var colPrato = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
+  var letra = ceus.getRange(1, colPrato).getA1Notation().replace(/\d+/g, '');
+  var ref = "'" + ceus.getName().replace(/'/g, "''") + "'!" + letra + ':' + letra;
+
+  sheet.getRange(1, 1, 1, 3).setValues([['Prato', 'Aceitando no site?', 'Já escolheram']])
+    .setFontWeight('bold');
+  PRATOS.forEach(function (prato, i) {
+    var linha = i + 2;
+    sheet.getRange(linha, 1).setValue(prato);
+    sheet.getRange(linha, 2).insertCheckboxes().setValue(true);
+    // o asterisco conta também as marcadas como "(fora do limite)".
+    // setFormula usa a sintaxe en_US (vírgula), mesmo com a planilha em pt-BR.
+    sheet.getRange(linha, 3).setFormula('=COUNTIF(' + ref + ',"' + prato + '*")');
+  });
+  sheet.getRange(PRATOS.length + 3, 1).setValue(
+    'Desmarque uma caixinha para o site parar de oferecer aquele prato. ' +
+    'Vale na hora, sem publicar nada. Se as duas estiverem desmarcadas, ' +
+    'a pergunta do prato some e a inscrição no Sister continua aberta.'
+  ).setFontStyle('italic');
+  sheet.setColumnWidth(1, 140);
+  sheet.setColumnWidth(2, 170);
+  sheet.setColumnWidth(3, 140);
+  sheet.setFrozenRows(1);
+  return sheet;
+}
+
+/** Pratos com a caixinha marcada, na ordem de PRATOS. */
+function pratosAbertos(ss) {
+  var sheet = abaPratos(ss);
+  var ultima = Math.max(sheet.getLastRow(), 1);
+  var linhas = sheet.getRange(1, 1, ultima, 2).getValues();
+  return PRATOS.filter(function (prato) {
+    for (var i = 1; i < linhas.length; i++) {
+      if (String(linhas[i][0]).trim().toLowerCase() === prato.toLowerCase()) {
+        return linhas[i][1] === true;
+      }
+    }
+    return true; // linha apagada por engano: não fecha a opção sem querer
+  });
+}
+
 /** Aba do Deep: cria na primeira inscrição, com o cabeçalho próprio. */
 function abaDeep(ss) {
-  var sheet = ss.getSheetByName('Deep') || ss.insertSheet('Deep');
+  var sheet = ss.getSheetByName('Deep') || ss.insertSheet('Deep', ss.getSheets().length);
   garantirCabecalho(sheet, COLUNAS_DEEP);
   return sheet;
 }
@@ -99,19 +163,45 @@ function doPost(e) {
       ]);
     } else {
       var sexo = String(p.sexo || '').trim();
+      var sister = sexo === 'Feminino' ? String(p.sister || '') : '';
+      var prato = '';
+
+      if (sister === 'Sim') {
+        var abertos = pratosAbertos(ss);
+        var escolhido = String(p.prato || '').trim();
+        var clienteNovo = p.prato !== undefined; // site antigo em cache não manda o campo
+
+        if (!clienteNovo) {
+          prato = 'Não informado';
+        } else if (!escolhido && abertos.length === 0) {
+          prato = ''; // nenhum prato aberto: o site nem perguntou
+        } else if (abertos.indexOf(escolhido) !== -1) {
+          prato = escolhido;
+        } else if (p.envio !== 'cego') {
+          // A opção fechou depois que a página abriu. Devolve as opções atuais
+          // para o site pedir outra escolha, sem gravar nada.
+          return json({ ok: false, erro: 'prato-indisponivel', pratos: abertos });
+        } else {
+          // Reenvio sem leitura de resposta (no-cors): o site não teria como
+          // mostrar o erro, então grava e sinaliza em vez de perder a inscrição.
+          prato = (escolhido || 'Não informado') + ' (fora do limite)';
+        }
+      }
+
       sheet.appendRow([
         new Date(),
         nome,
         telefone,
         "'" + digitos,
         sexo,
-        sexo === 'Feminino' ? String(p.sister || '') : '',
+        sister,
         String(p.endereco || '').trim(),
         String(p.bairro || '').trim(),
         String(p.cidade || '').trim(),
         String(p.cav || '').trim(),
         String(p.qualCav || '').trim(),
-        String(p.origem || 'site')
+        String(p.origem || 'site'),
+        prato
       ]);
     }
 
@@ -133,12 +223,22 @@ function jaInscrito(sheet, digitos) {
   return false;
 }
 
-/** Escreve o cabeçalho se a aba estiver vazia. */
+/**
+ * Escreve o cabeçalho se a aba estiver vazia. Se a aba já existe, só preenche
+ * títulos de colunas novas que ainda estão em branco — nunca sobrescreve.
+ */
 function garantirCabecalho(sheet, colunas) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(colunas);
     sheet.getRange(1, 1, 1, colunas.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
+    return;
+  }
+  var atual = sheet.getRange(1, 1, 1, colunas.length).getValues()[0];
+  for (var i = 0; i < colunas.length; i++) {
+    if (String(atual[i]).trim() === '') {
+      sheet.getRange(1, i + 1).setValue(colunas[i]).setFontWeight('bold');
+    }
   }
 }
 
@@ -148,9 +248,13 @@ function json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/** Acesso por GET não é usado pelo site; responde algo neutro. */
+/** O site consulta por GET quais pratos do Sister estão abertos. */
 function doGet() {
-  return json({ ok: true, servico: 'inscricoes-igreja-vitoria' });
+  try {
+    return json({ ok: true, servico: 'inscricoes-igreja-vitoria', pratos: pratosAbertos(abrirPlanilha()) });
+  } catch (err) {
+    return json({ ok: false, erro: String(err) });
+  }
 }
 
 /**

@@ -158,6 +158,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 
     <h2 class="sister-logo"><span class="sister-s">S</span>ister</h2>
     <p class="sister-sub">Uma noite dedicada às mulheres, dentro da Conferência Céus Abertos.</p>
+    <p class="sister-brunch">Cada participante leva um prato salgado ou doce para o brunch. Você escolhe o seu na inscrição.</p>
 
     <div class="sister-names">
       <div class="sister-name reveal">Ap. Rayssa<br>Coelho</div>
@@ -241,6 +242,18 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
           <option value="Sim">Sim, quero participar</option>
           <option value="Não">Não</option>
         </select>
+        <span class="errmsg" data-err></span>
+      </div>
+      <!-- Só para quem vai ao Sister. As opções abertas vêm da aba "Sister · Pratos"
+           da planilha: o que for desmarcado lá aparece aqui como esgotado. -->
+      <div class="fld fld-cond" id="fldPrato" hidden>
+        <label for="fPrato">Qual prato você vai levar? <small>(para o brunch do Sister)</small></label>
+        <select class="inp" id="fPrato" name="prato">
+          <option value="">Selecione</option>
+          <option value="Salgado">Salgado</option>
+          <option value="Doce">Doce</option>
+        </select>
+        <span class="fld-hint">Cada participante do Sister leva um prato para o brunch.</span>
         <span class="errmsg" data-err></span>
       </div>
       <div class="fld">

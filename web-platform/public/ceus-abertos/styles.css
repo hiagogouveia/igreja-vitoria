@@ -184,6 +184,8 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
 .sister-s{font-style:italic;font-size:1.24em;line-height:0;margin-right:-.06em}
 .sister-sub{margin-top:clamp(10px,1.6vw,18px);font-size:clamp(14px,1.7vw,19px);color:var(--rose-deep);
   max-width:46ch;margin-left:auto;margin-right:auto}
+.sister-brunch{margin:clamp(10px,1.4vw,14px) auto 0;max-width:46ch;font-size:clamp(13px,1.4vw,15px);
+  line-height:1.55;font-weight:600;color:var(--rose-deep)}
 .sister-names{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));
   gap:clamp(14px,2.6vw,30px);margin-top:clamp(32px,5vw,58px)}
 .sister-name{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(21px,2.6vw,32px);line-height:1.15;
@@ -252,6 +254,7 @@ select.inp{color-scheme:dark;cursor:pointer;background-color:#16160F}
 select.inp option{background-color:#16160F;color:var(--paper)}
 select.inp option[value=""]{color:var(--t-3)}
 .errmsg{font-size:11px;color:#E8837E;min-height:13px}
+.fld-hint{font-size:12px;line-height:1.45;color:var(--t-4)}
 .form-note{font-size:12.5px;line-height:1.5;color:var(--t-3)}
 .form-ok{border:1px solid var(--or);padding:16px;font-size:14px;color:var(--paper);line-height:1.5}
 .form-err{border:1px solid #E0655F;padding:16px;font-size:14px;color:#E8837E;line-height:1.5}

@@ -67,23 +67,65 @@
     var fCidade = document.getElementById('fCidade');
     var fCav = document.getElementById('fCav');
     var fQualCav = document.getElementById('fQualCav');
+    var fPrato = document.getElementById('fPrato');
     var fldSister = document.getElementById('fldSister');
+    var fldPrato = document.getElementById('fldPrato');
     var fldQualCav = document.getElementById('fldQualCav');
     var formNote = document.getElementById('formNote');
+    var notaOriginal = formNote ? formNote.textContent : '';
 
     /* Campos condicionais: o Sister é exclusivo para mulheres, então a pergunta
        só aparece quando o sexo informado é feminino. "Qual CAV" só aparece
        para quem já participa de uma. */
+    /* Pratos do brunch do Sister. A aba "Sister · Pratos" da planilha diz quais
+       estão abertos; o que estiver fechado aparece como esgotado.
+       - null: ainda não sabemos (ou a consulta falhou) → oferece todos e o
+         servidor confere na hora de gravar;
+       - pratosSuportado=false: a implantação do Apps Script ainda é a antiga,
+         que não grava o prato → a pergunta não aparece. */
+    var pratosAbertos = null;
+    var pratosSuportado = true;
+
+    function perguntaPrato() {
+      return pratosSuportado && fSister.value === 'Sim' && fSexo.value === 'Feminino' &&
+        !(pratosAbertos && pratosAbertos.length === 0);
+    }
+
+    function aplicarPratos() {
+      Array.prototype.forEach.call(fPrato.options, function (opt) {
+        if (!opt.value) return;
+        var aberto = !pratosAbertos || pratosAbertos.indexOf(opt.value) !== -1;
+        opt.disabled = !aberto;
+        opt.textContent = aberto ? opt.value : opt.value + ' · esgotado';
+      });
+      if (fPrato.value && fPrato.options[fPrato.selectedIndex].disabled) fPrato.value = '';
+      syncCondicionais();
+    }
+
+    fetch(INSCRICAO_URL)
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && Array.isArray(res.pratos)) pratosAbertos = res.pratos;
+        else if (res && res.ok) pratosSuportado = false;
+        aplicarPratos();
+      })
+      .catch(function () { /* segue oferecendo todos; o servidor valida */ });
+
     function syncCondicionais() {
       var ehMulher = fSexo.value === 'Feminino';
       fldSister.hidden = !ehMulher;
       if (!ehMulher) { fSister.value = ''; setErr(fSister, ''); }
+
+      var comPrato = perguntaPrato();
+      fldPrato.hidden = !comPrato;
+      if (!comPrato) { fPrato.value = ''; setErr(fPrato, ''); }
 
       var temCav = fCav.value === 'Sim';
       fldQualCav.hidden = !temCav;
       if (!temCav) fQualCav.value = '';
     }
     fSexo.addEventListener('change', syncCondicionais);
+    fSister.addEventListener('change', syncCondicionais);
     fCav.addEventListener('change', syncCondicionais);
 
     function maskPhone(v) {
@@ -122,6 +164,9 @@
       if (fSexo.value === 'Feminino') {
         req(fSister, !!fSister.value, 'Selecione uma opção.');
       }
+      if (perguntaPrato()) {
+        req(fPrato, !!fPrato.value, 'Escolha o prato que você vai levar.');
+      }
       if (fCav.value === 'Sim') {
         req(fQualCav, !!fQualCav.value, 'Selecione a sua CAV.');
       }
@@ -132,6 +177,9 @@
       dados.set('telefone', fZap.value.trim());
       dados.set('sexo', fSexo.value);
       dados.set('sister', fSexo.value === 'Feminino' ? fSister.value : '');
+      // só manda o campo quando a pergunta faz sentido: sem ele, o servidor
+      // entende que é um site antigo e grava "Não informado"
+      if (pratosSuportado && fSister.value === 'Sim') dados.set('prato', fPrato.value);
       dados.set('endereco', fEndereco.value.trim());
       dados.set('bairro', fBairro.value.trim());
       dados.set('cidade', fCidade.value.trim());
@@ -143,13 +191,30 @@
       nota('Enviando sua inscrição...', '');
 
       // form-urlencoded evita preflight CORS (o Apps Script não responde OPTIONS)
+      var pratoFechou = false;
       fetch(INSCRICAO_URL, { method: 'POST', body: dados })
         .then(function (r) { return r.json(); })
         .then(function (res) {
+          if (res && res.erro === 'prato-indisponivel') {
+            // a opção fechou enquanto a página estava aberta: nada foi gravado
+            pratoFechou = true;
+            pratosAbertos = res.pratos || [];
+            aplicarPratos();
+            enviando(false);
+            nota(notaOriginal, 'form-note');
+            if (perguntaPrato()) {
+              setErr(fPrato, 'Esse prato acabou de esgotar. Escolha outra opção.');
+              fPrato.focus();
+            }
+            return;
+          }
           if (res && res.ok === false) throw new Error(res.erro || 'falha');
           concluir(res && res.duplicado);
         })
         .catch(function () {
+          if (pratoFechou) return;
+          // sem ler a resposta, o servidor grava e sinaliza em vez de recusar
+          dados.set('envio', 'cego');
           /* Se o navegador bloquear a leitura da resposta (CORS no redirect do
              Google), reenviamos em no-cors: não dá para ler o retorno, mas a
              linha é gravada do mesmo jeito. A duplicidade é tratada no servidor,
@@ -182,7 +247,9 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Inscrição enviada'; btn.style.opacity = '.6'; }
       nota(duplicado
         ? 'Você já estava inscrito com esse telefone. Está tudo certo, não precisa se inscrever de novo. Nos vemos em setembro!'
-        : 'Inscrição confirmada! Em breve a Igreja Vitória entra em contato pelo WhatsApp com mais informações.', 'form-ok');
+        : 'Inscrição confirmada! Em breve a Igreja Vitória entra em contato pelo WhatsApp com mais informações.' +
+          (fPrato.value ? ' No Sister, não esqueça de levar seu prato ' + fPrato.value.toLowerCase() + ' para o brunch.' : ''),
+        'form-ok');
     }
 
     function falhar() {
@@ -194,6 +261,7 @@
         '• WhatsApp: ' + fZap.value.trim(),
         '• Sexo: ' + fSexo.value,
         fSexo.value === 'Feminino' ? '• Sister (sábado, 18h): ' + fSister.value : '',
+        fPrato.value ? '• Prato para o brunch: ' + fPrato.value : '',
         '• Endereço: ' + (fEndereco.value.trim() || 'Não informado'),
         '• Bairro: ' + fBairro.value.trim(),
         '• Cidade: ' + fCidade.value.trim(),
