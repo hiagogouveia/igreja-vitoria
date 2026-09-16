@@ -267,7 +267,7 @@
       okTitle.textContent = duplicado ? 'Você já tinha se inscrito' : 'Inscrição confirmada!';
       okMsg.textContent = duplicado
         ? nome + ', encontramos uma inscrição com esse telefone. Está tudo certo, não precisa fazer de novo.'
-        : 'Que alegria, ' + nome + '! Em breve a Igreja Vitória fala com você pelo WhatsApp. Nos vemos de 25 a 27 de setembro.';
+        : 'Que alegria, ' + nome + '! Sua inscrição está garantida. Nos vemos de 25 a 27 de setembro.';
 
       okSister.hidden = !vaiAoSister;
       // em inscrição repetida o prato novo não é gravado, então não confirmamos
