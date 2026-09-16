@@ -260,6 +260,64 @@ select.inp option[value=""]{color:var(--t-3)}
 .form-err{border:1px solid #E0655F;padding:16px;font-size:14px;color:#E8837E;line-height:1.5}
 .insc-form .inp:disabled{opacity:.55;cursor:not-allowed}
 
+/* ---------- sucesso da inscrição ---------- */
+.insc-form{position:relative}
+/* cortina que desce sobre o formulário */
+.insc-ok{position:absolute;inset:0;z-index:5;background:var(--ink);padding:clamp(22px,3vw,40px);
+  overflow:hidden;animation:ok-cobre .5s var(--ease) both}
+.insc-ok[hidden]{display:none}
+.insc-ok.saindo{animation:ok-sai .3s ease-in both}
+@keyframes ok-cobre{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes ok-sai{to{opacity:0}}
+.insc-ok-inner{display:grid;gap:14px;justify-items:start}
+.insc-ok-inner>*{animation:ca-rise .6s var(--ease) both}
+.insc-ok-inner>:nth-child(1){animation-delay:.25s}
+.insc-ok-inner>:nth-child(2){animation-delay:.55s}
+.insc-ok-inner>:nth-child(3){animation-delay:.65s}
+.insc-ok-inner>:nth-child(4){animation-delay:.8s}
+.insc-ok-inner>:nth-child(5){animation-delay:.95s}
+
+/* círculo e ✓ se desenham */
+.ok-check{width:72px;height:72px;fill:none;stroke:var(--or);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ok-check circle,.ok-check path{stroke-dasharray:1;stroke-dashoffset:1;animation:ok-traco .6s var(--ease) forwards}
+.ok-check circle{animation-delay:.35s}
+.ok-check path{stroke-width:4.5;animation-delay:.8s}
+@keyframes ok-traco{to{stroke-dashoffset:0}}
+
+.ok-title{font-size:clamp(28px,3.4vw,42px);font-weight:900;font-stretch:118%;line-height:.95;
+  letter-spacing:-.02em;text-transform:uppercase;color:var(--paper);outline:none}
+.ok-msg{font-size:15px;line-height:1.55;color:var(--t-4);max-width:44ch}
+
+/* cartão da paleta, no tom claro da arte de referência */
+.ok-sister{width:100%;margin-top:6px;background:#EDE6E0;color:#4B2613;padding:clamp(16px,2.4vw,22px);border-radius:14px}
+.ok-sister-eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#7B2D0C}
+.paleta{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}
+.cor{display:grid;gap:6px;justify-items:center;min-width:0}
+.cor-amostra{display:block;width:100%;aspect-ratio:1/1.9;border-radius:8px;background:var(--c);
+  transform-origin:bottom;animation:ok-cor .55s var(--ease) both}
+.cor:nth-child(1) .cor-amostra{animation-delay:1s}
+.cor:nth-child(2) .cor-amostra{animation-delay:1.07s}
+.cor:nth-child(3) .cor-amostra{animation-delay:1.14s}
+.cor:nth-child(4) .cor-amostra{animation-delay:1.21s}
+.cor:nth-child(5) .cor-amostra{animation-delay:1.28s}
+.cor:nth-child(6) .cor-amostra{animation-delay:1.35s}
+@keyframes ok-cor{from{transform:scaleY(0);opacity:0}to{transform:none;opacity:1}}
+.cor-nome{font-size:10.5px;font-weight:700;color:#6B3712;text-align:center;overflow-wrap:anywhere}
+.ok-sister-txt{margin-top:14px;font-size:13.5px;line-height:1.55;color:#4B2613}
+.ok-sister-txt strong{font-weight:800;color:#7B2D0C;text-transform:uppercase;letter-spacing:.04em}
+.ok-prato{margin-top:10px;padding-top:10px;border-top:1px solid rgba(75,38,19,.18);
+  font-size:13.5px;font-weight:700;color:#7B2D0C}
+#okNova{margin-top:8px}
+
+@media(max-width:480px){
+  .paleta{grid-template-columns:repeat(3,1fr);gap:10px}
+  .cor-amostra{aspect-ratio:1.5/1}
+}
+@media(prefers-reduced-motion:reduce){
+  .insc-ok,.insc-ok.saindo,.insc-ok-inner>*,.cor-amostra{animation:none}
+  .ok-check circle,.ok-check path{animation:none;stroke-dashoffset:0}
+}
+
 /* ============================================================
    FOOTER
    ============================================================ */

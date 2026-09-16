@@ -301,6 +301,36 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       </div>
       <button class="btn btn-or btn-block" type="submit">Fazer minha inscrição</button>
       <p class="form-note" id="formNote">Sua inscrição é gratuita. Usamos seus dados apenas para organizar a conferência e falar com você pelo WhatsApp.</p>
+
+      <!-- Tela de sucesso: cobre o formulário depois do envio. Os campos já
+           voltam limpos por baixo, prontos para uma nova inscrição. -->
+      <div class="insc-ok" id="inscOk" role="status" aria-live="polite" hidden>
+        <div class="insc-ok-inner">
+          <svg class="ok-check" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="29" pathLength="1"/>
+            <path d="M19 33.5l8.5 8.5L45.5 23" pathLength="1"/>
+          </svg>
+          <h3 class="ok-title" id="okTitle" tabindex="-1">Inscrição confirmada!</h3>
+          <p class="ok-msg" id="okMsg"></p>
+
+          <!-- Só para quem vai ao Sister. Cores tiradas da arte de referência. -->
+          <div class="ok-sister" id="okSister" hidden>
+            <div class="ok-sister-eyebrow">Sister · Sugestão de cores</div>
+            <ul class="paleta" aria-label="Paleta sugerida para o Sister">
+              <li class="cor" style="--c:#6B3712"><span class="cor-amostra"></span><span class="cor-nome">Café</span></li>
+              <li class="cor" style="--c:#A97C5B"><span class="cor-amostra"></span><span class="cor-nome">Caramelo</span></li>
+              <li class="cor" style="--c:#A65B28"><span class="cor-amostra"></span><span class="cor-nome">Cobre</span></li>
+              <li class="cor" style="--c:#7B2D0C"><span class="cor-amostra"></span><span class="cor-nome">Terracota</span></li>
+              <li class="cor" style="--c:#C4A283"><span class="cor-amostra"></span><span class="cor-nome">Areia</span></li>
+              <li class="cor" style="--c:#4B2613"><span class="cor-amostra"></span><span class="cor-nome">Chocolate</span></li>
+            </ul>
+            <p class="ok-sister-txt">Se quiser entrar no clima da noite, esta é a paleta que pensamos para o Sister. <strong>É só uma sugestão:</strong> venha com a roupa em que você se sentir bem. 🤎</p>
+            <p class="ok-prato" id="okPrato" hidden></p>
+          </div>
+
+          <button type="button" class="btn btn-or btn-block" id="okNova">Fazer outra inscrição</button>
+        </div>
+      </div>
     </form>
   </div>
 </section>

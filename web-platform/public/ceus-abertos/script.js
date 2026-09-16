@@ -240,17 +240,78 @@
       formNote.textContent = texto;
     }
 
-    function concluir(duplicado) {
-      enviando(false);
-      form.querySelectorAll('.inp').forEach(function (i) { i.disabled = true; });
-      var btn = form.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.textContent = 'Inscrição enviada'; btn.style.opacity = '.6'; }
-      nota(duplicado
-        ? 'Você já estava inscrito com esse telefone. Está tudo certo, não precisa se inscrever de novo. Nos vemos em setembro!'
-        : 'Inscrição confirmada! Em breve a Igreja Vitória entra em contato pelo WhatsApp com mais informações.' +
-          (fPrato.value ? ' No Sister, não esqueça de levar seu prato ' + fPrato.value.toLowerCase() + ' para o brunch.' : ''),
-        'form-ok');
+    /* ---------- Tela de sucesso ----------
+       Cobre o formulário com a confirmação e já devolve os campos limpos por
+       baixo: quem quiser inscrever outra pessoa só toca em "Fazer outra". */
+    var telaOk = document.getElementById('inscOk');
+    var okTitle = document.getElementById('okTitle');
+    var okMsg = document.getElementById('okMsg');
+    var okSister = document.getElementById('okSister');
+    var okPrato = document.getElementById('okPrato');
+    var okNova = document.getElementById('okNova');
+    var camposForm = Array.prototype.filter.call(form.children, function (el) { return el !== telaOk; });
+
+    function ajustarAltura() {
+      // se a confirmação (com a paleta) for mais alta que o formulário, o
+      // formulário cresce para ela não vazar por cima do rodapé
+      form.style.minHeight = '';
+      if (!telaOk.hidden && telaOk.scrollHeight > form.offsetHeight) form.style.minHeight = telaOk.scrollHeight + 'px';
     }
+
+    function concluir(duplicado) {
+      var nome = fNome.value.trim().split(/\s+/)[0];
+      nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+      var vaiAoSister = fSexo.value === 'Feminino' && fSister.value === 'Sim';
+      var prato = fPrato.value;
+
+      okTitle.textContent = duplicado ? 'Você já tinha se inscrito' : 'Inscrição confirmada!';
+      okMsg.textContent = duplicado
+        ? nome + ', encontramos uma inscrição com esse telefone. Está tudo certo, não precisa fazer de novo.'
+        : 'Que alegria, ' + nome + '! Em breve a Igreja Vitória fala com você pelo WhatsApp. Nos vemos de 25 a 27 de setembro.';
+
+      okSister.hidden = !vaiAoSister;
+      // em inscrição repetida o prato novo não é gravado, então não confirmamos
+      var mostraPrato = vaiAoSister && prato && !duplicado;
+      okPrato.hidden = !mostraPrato;
+      if (mostraPrato) okPrato.textContent = 'Seu prato para o brunch: ' + prato + (prato === 'Doce' ? ' 🍰' : ' 🥐') + '. Não esqueça de levar no sábado!';
+
+      limparFormulario();
+
+      telaOk.classList.remove('saindo');
+      telaOk.hidden = false;
+      camposForm.forEach(function (el) { el.inert = true; });
+      ajustarAltura();
+      window.addEventListener('resize', ajustarAltura);
+
+      // traz o topo da confirmação para a tela, descontando o menu fixo
+      var nav = document.getElementById('nav');
+      var topo = form.getBoundingClientRect().top + window.pageYOffset - (nav ? nav.offsetHeight : 0) - 16;
+      window.scrollTo({ top: topo, behavior: reduce ? 'auto' : 'smooth' });
+      okTitle.focus({ preventScroll: true });
+    }
+
+    function limparFormulario() {
+      form.reset();
+      form.querySelectorAll('.inp').forEach(function (i) { setErr(i, ''); });
+      syncCondicionais();
+      enviando(false);
+      nota(notaOriginal, 'form-note');
+      if (formNote) { formNote.style.cursor = ''; formNote.onclick = null; }
+    }
+
+    okNova.addEventListener('click', function () {
+      var fechar = function () {
+        telaOk.hidden = true;
+        telaOk.classList.remove('saindo');
+        camposForm.forEach(function (el) { el.inert = false; });
+        window.removeEventListener('resize', ajustarAltura);
+        form.style.minHeight = '';
+        fNome.focus();
+      };
+      if (reduce) return fechar();
+      telaOk.classList.add('saindo');
+      setTimeout(fechar, 280);
+    });
 
     function falhar() {
       enviando(false);
