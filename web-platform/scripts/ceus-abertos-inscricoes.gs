@@ -13,6 +13,12 @@
  *   site oferece: desmarque a caixinha para fechar uma opção. Vale na hora,
  *   sem implantar nada. A mesma aba mostra quantas inscritas escolheram cada uma.
  *
+ * PRESENÇA DO DEEP
+ *   A aba "Deep · Presença" tem os inscritos do Deep em ordem alfabética e uma
+ *   caixinha por aula (6 segundas a partir de 21/09). Cada nova inscrição no
+ *   Deep entra nela sozinha. Para criar a aba ou puxar nomes que faltam, rode
+ *   criarPresencaDeep pelo editor.
+ *
  * COMO ATUALIZAR (precisa ser feito a cada mudança neste arquivo)
  *   1. Cole este conteúdo no Código.gs e salve
  *   2. Implantar → Gerenciar implantações → editar (lápis)
@@ -40,6 +46,9 @@ var COLUNAS_DEEP = [
 ];
 
 var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
+
+var ABA_PRESENCA_DEEP = 'Deep · Presença';
+var AULAS_DEEP = ['21/09', '28/09', '05/10', '12/10', '19/10', '26/10'];
 
 var ABA_PRATOS = 'Sister · Pratos';
 var PRATOS = ['Salgado', 'Doce'];
@@ -155,6 +164,117 @@ function abaDeep(ss) {
   return sheet;
 }
 
+/**
+ * Aba de chamada do Deep. Colunas: Nome, Telefone, uma caixinha por aula e o
+ * total de presenças da pessoa. A linha 2 soma os presentes de cada aula.
+ * As fórmulas não usam separador de argumentos, então funcionam em planilha
+ * de qualquer idioma, e usam ROW() para continuar certas quando a aba é
+ * reordenada.
+ */
+function abaPresencaDeep(ss) {
+  var sheet = ss.getSheetByName(ABA_PRESENCA_DEEP);
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet(ABA_PRESENCA_DEEP, ss.getSheets().length);
+  var cab = ['Nome', 'Telefone'];
+  AULAS_DEEP.forEach(function (data, i) { cab.push('Aula ' + (i + 1) + '\n' + data); });
+  cab.push('Presenças');
+  sheet.getRange(1, 1, 1, cab.length).setValues([cab])
+    .setFontWeight('bold').setHorizontalAlignment('center').setWrap(true);
+
+  sheet.getRange(2, 1).setValue('Presentes na aula');
+  for (var c = 3; c < 3 + AULAS_DEEP.length; c++) {
+    var letra = sheet.getRange(1, c).getA1Notation().replace(/\d+/g, '');
+    sheet.getRange(2, c).setFormula('=SUMPRODUCT(' + letra + '3:' + letra + '*1)');
+  }
+  sheet.getRange(2, 1, 1, cab.length).setFontWeight('bold').setBackground('#EEF3F8');
+  sheet.getRange(2, 3, 1, AULAS_DEEP.length + 1).setHorizontalAlignment('center');
+
+  sheet.setFrozenRows(2);
+  sheet.setFrozenColumns(1);
+  sheet.setColumnWidth(1, 260);
+  sheet.setColumnWidth(2, 130);
+  for (var k = 3; k <= cab.length; k++) sheet.setColumnWidth(k, 85);
+  return sheet;
+}
+
+/** "KAROLINA KURTZ FERNANDES" → "Karolina Kurtz Fernandes" (só na chamada). */
+function nomeBonito(nome) {
+  var minusculas = ['de', 'da', 'do', 'das', 'dos', 'e'];
+  return String(nome).trim().toLowerCase().split(/\s+/).map(function (p, i) {
+    if (i > 0 && minusculas.indexOf(p) !== -1) return p;
+    return p.charAt(0).toUpperCase() + p.slice(1);
+  }).join(' ');
+}
+
+/**
+ * Acrescenta no fim da chamada quem está inscrito no Deep e ainda não está
+ * nela, sem mexer nas caixinhas já marcadas. Compara pelo telefone, a mesma
+ * chave que impede inscrição repetida no Deep. Com `ordenar`, reordena por
+ * nome; a inscrição automática não ordena, para as linhas não mudarem de
+ * lugar enquanto alguém marca a presença. Devolve quantas pessoas entraram.
+ */
+function sincronizarPresencaDeep(ss, ordenar) {
+  var deep = abaDeep(ss);
+  var pres = abaPresencaDeep(ss);
+  var ultimaDeep = deep.getLastRow();
+  if (ultimaDeep < 2) return 0;
+
+  var jaNaChamada = {};
+  var ultimaPres = pres.getLastRow();
+  if (ultimaPres >= 3) {
+    pres.getRange(3, 2, ultimaPres - 2, 1).getDisplayValues().forEach(function (r) {
+      jaNaChamada[String(r[0]).replace(/\D/g, '')] = true;
+    });
+  }
+
+  var novos = [];
+  deep.getRange(2, 2, ultimaDeep - 1, 3).getValues().forEach(function (r) {
+    var nome = String(r[0]).trim();
+    var digitos = String(r[2]).replace(/\D/g, '');
+    if (!nome || !digitos || jaNaChamada[digitos]) return;
+    if (nome.toUpperCase().indexOf('TESTE') === 0) return;
+    jaNaChamada[digitos] = true;
+    novos.push([nomeBonito(nome), String(r[1]).trim()]);
+  });
+  if (!novos.length) return 0;
+
+  var inicio = Math.max(ultimaPres, 2) + 1;
+  var n = novos.length;
+  var colTotal = 3 + AULAS_DEEP.length;
+  var letraFim = pres.getRange(1, colTotal - 1).getA1Notation().replace(/\d+/g, '');
+  pres.getRange(inicio, 1, n, 2).setValues(novos);
+  pres.getRange(inicio, 3, n, AULAS_DEEP.length).insertCheckboxes().setHorizontalAlignment('center');
+  var formulas = [];
+  for (var i = 0; i < n; i++) {
+    formulas.push(['=SUMPRODUCT(INDIRECT("C"&ROW()&":' + letraFim + '"&ROW())*1)']);
+  }
+  pres.getRange(inicio, colTotal, n, 1).setFormulas(formulas).setHorizontalAlignment('center');
+
+  if (ordenar) ordenarPresencaDeep(pres);
+  return n;
+}
+
+/** Ordena por nome levando a linha inteira, inclusive colunas acrescentadas à mão. */
+function ordenarPresencaDeep(pres) {
+  var total = pres.getLastRow() - 2;
+  if (total < 2) return;
+  var largura = Math.max(pres.getLastColumn(), 3 + AULAS_DEEP.length);
+  pres.getRange(3, 1, total, largura).sort({ column: 1, ascending: true });
+}
+
+/**
+ * Uso manual, pelo editor (Executar): cria a chamada ou puxa quem falta, e
+ * deixa tudo em ordem alfabética. Pode rodar quantas vezes quiser.
+ */
+function criarPresencaDeep() {
+  var ss = abrirPlanilha();
+  var entraram = sincronizarPresencaDeep(ss, false);
+  ordenarPresencaDeep(abaPresencaDeep(ss));
+  Logger.log('Deep · Presença → ' + entraram + ' pessoa(s) acrescentada(s). Total na chamada: ' +
+    (abaPresencaDeep(ss).getLastRow() - 2));
+}
+
 function doPost(e) {
   // Uma inscrição por vez: evita que dois envios simultâneos gravem na mesma
   // linha ou furem a checagem de duplicidade.
@@ -197,6 +317,8 @@ function doPost(e) {
         String(p.nascimento || '').trim(),
         String(p.origem || 'site')
       ]);
+      // A chamada é um extra: se falhar, a inscrição já está gravada.
+      try { sincronizarPresencaDeep(ss, false); } catch (errPresenca) {}
     } else {
       var sexo = String(p.sexo || '').trim();
       var sister = sexo === 'Feminino' ? String(p.sister || '') : '';
