@@ -49,6 +49,8 @@ var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
 
 var ABA_PRESENCA_DEEP = 'Deep · Presença';
 var AULAS_DEEP = ['21/09', '28/09', '05/10', '12/10', '19/10', '26/10'];
+// Na aba Deep, a coluna I é onde a igreja anota o pagamento ("pg pix", "pg dinheiro"...)
+var COL_PAGAMENTO_DEEP = 9;
 
 var ABA_PRATOS = 'Sister · Pratos';
 var PRATOS = ['Salgado', 'Doce'];
@@ -106,6 +108,16 @@ function abaPratos(ss) {
  * testa os dois e fica com o que a planilha aceitar.
  * O asterisco conta também as linhas marcadas como "(fora do limite)".
  */
+function escreverFormulaLocal(celula, montar) {
+  var separadores = [';', ','];
+  for (var i = 0; i < separadores.length; i++) {
+    celula.setFormula(montar(separadores[i]));
+    SpreadsheetApp.flush();
+    if (String(celula.getDisplayValue()).charAt(0) !== '#') return separadores[i];
+  }
+  return null;
+}
+
 function escreverContagem(ss, celula, prato) {
   var ceus = ss.getSheets()[0];
   var colPrato = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
@@ -243,6 +255,48 @@ function abaPresencaDeep(ss) {
   return sheet;
 }
 
+/** Coluna "Pagamento" da chamada: logo depois de "Presenças". */
+function colPagamentoPresenca() { return 3 + AULAS_DEEP.length + 1; }
+
+/**
+ * Pagamento de cada pessoa, puxado ao vivo da coluna I da aba Deep pelo
+ * telefone. Em branco lá = "Não pago" aqui. É fórmula, então quando alguém
+ * anota o pagamento na aba Deep a chamada já mostra, sem rodar nada.
+ */
+function formulaPagamento(sep) {
+  var letra = String.fromCharCode(64 + COL_PAGAMENTO_DEEP);
+  var achar = "INDEX('Deep'!" + letra + ':' + letra + sep +
+    'MATCH(INDIRECT("B"&ROW())' + sep + "'Deep'!C:C" + sep + '0))';
+  return '=IFERROR(IF(TRIM(' + achar + ')=""' + sep + '"Não pago"' + sep + 'TRIM(' + achar + '))' + sep + '"")';
+}
+
+/** Cria a coluna "Pagamento" (se faltar) e põe a fórmula nas linhas sem ela. */
+function garantirColunaPagamento(pres) {
+  var col = colPagamentoPresenca();
+  var cab = pres.getRange(1, col);
+  if (String(cab.getValue()).trim() === '') {
+    cab.setValue('Pagamento').setFontWeight('bold').setHorizontalAlignment('center').setWrap(true);
+    pres.setColumnWidth(col, 140);
+    var regra = SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('Não pago').setFontColor('#B3261E').setBackground('#FDECEA')
+      .setRanges([pres.getRange(3, col, Math.max(pres.getMaxRows() - 2, 1), 1)]).build();
+    var regras = pres.getConditionalFormatRules();
+    regras.push(regra);
+    pres.setConditionalFormatRules(regras);
+  }
+  var ultima = pres.getLastRow();
+  if (ultima < 3) return;
+  var atuais = pres.getRange(3, col, ultima - 2, 1).getFormulas();
+  var primeira = -1;
+  for (var i = 0; i < atuais.length; i++) { if (!atuais[i][0]) { primeira = i; break; } }
+  if (primeira === -1) return;
+  // descobre o separador na primeira célula vazia e usa o mesmo no resto
+  var sep = escreverFormulaLocal(pres.getRange(3 + primeira, col), formulaPagamento);
+  if (!sep) return;
+  var novas = atuais.map(function (r) { return [r[0] || formulaPagamento(sep)]; });
+  pres.getRange(3, col, novas.length, 1).setFormulas(novas).setHorizontalAlignment('center');
+}
+
 /** "KAROLINA KURTZ FERNANDES" → "Karolina Kurtz Fernandes" (só na chamada). */
 function nomeBonito(nome) {
   var minusculas = ['de', 'da', 'do', 'das', 'dos', 'e'];
@@ -265,16 +319,31 @@ function sincronizarPresencaDeep(ss, ordenar) {
   var ultimaDeep = deep.getLastRow();
   if (ultimaDeep < 2) return 0;
 
+  var inscritos = deep.getRange(2, 2, ultimaDeep - 1, 3).getValues();
+  var nomePorTelefone = {};
+  inscritos.forEach(function (r) {
+    var digitos = String(r[2]).replace(/\D/g, '');
+    if (digitos && String(r[0]).trim()) nomePorTelefone[digitos] = nomeBonito(r[0]);
+  });
+
+  // A aba Deep é a fonte: nome corrigido lá é corrigido aqui também.
   var jaNaChamada = {};
   var ultimaPres = pres.getLastRow();
   if (ultimaPres >= 3) {
-    pres.getRange(3, 2, ultimaPres - 2, 1).getDisplayValues().forEach(function (r) {
-      jaNaChamada[String(r[0]).replace(/\D/g, '')] = true;
+    var linhas = pres.getRange(3, 1, ultimaPres - 2, 2).getDisplayValues();
+    var nomes = linhas.map(function (r) { return [r[0]]; });
+    var mudou = false;
+    linhas.forEach(function (r, i) {
+      var digitos = String(r[1]).replace(/\D/g, '');
+      jaNaChamada[digitos] = true;
+      var certo = nomePorTelefone[digitos];
+      if (certo && certo !== r[0]) { nomes[i][0] = certo; mudou = true; }
     });
+    if (mudou) pres.getRange(3, 1, nomes.length, 1).setValues(nomes);
   }
 
   var novos = [];
-  deep.getRange(2, 2, ultimaDeep - 1, 3).getValues().forEach(function (r) {
+  inscritos.forEach(function (r) {
     var nome = String(r[0]).trim();
     var digitos = String(r[2]).replace(/\D/g, '');
     if (!nome || !digitos || jaNaChamada[digitos]) return;
@@ -282,7 +351,11 @@ function sincronizarPresencaDeep(ss, ordenar) {
     jaNaChamada[digitos] = true;
     novos.push([nomeBonito(nome), String(r[1]).trim()]);
   });
-  if (!novos.length) return 0;
+  if (!novos.length) {
+    garantirColunaPagamento(pres);
+    if (ordenar) ordenarPresencaDeep(pres);
+    return 0;
+  }
 
   var inicio = Math.max(ultimaPres, 2) + 1;
   var n = novos.length;
@@ -295,6 +368,7 @@ function sincronizarPresencaDeep(ss, ordenar) {
     formulas.push(['=SUMPRODUCT(INDIRECT("C"&ROW()&":' + letraFim + '"&ROW())*1)']);
   }
   pres.getRange(inicio, colTotal, n, 1).setFormulas(formulas).setHorizontalAlignment('center');
+  garantirColunaPagamento(pres);
 
   if (ordenar) ordenarPresencaDeep(pres);
   return n;
@@ -314,8 +388,7 @@ function ordenarPresencaDeep(pres) {
  */
 function criarPresencaDeep() {
   var ss = abrirPlanilha();
-  var entraram = sincronizarPresencaDeep(ss, false);
-  ordenarPresencaDeep(abaPresencaDeep(ss));
+  var entraram = sincronizarPresencaDeep(ss, true);
   Logger.log('Deep · Presença → ' + entraram + ' pessoa(s) acrescentada(s). Total na chamada: ' +
     (abaPresencaDeep(ss).getLastRow() - 2));
 }
