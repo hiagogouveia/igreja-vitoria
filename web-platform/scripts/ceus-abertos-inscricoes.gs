@@ -142,9 +142,54 @@ function consertarContagem() {
   Logger.log('Contagem → ' + feitos.join(' | '));
 }
 
+/** Linha de cada prato na aba de controle, procurando pelo nome na coluna A. */
+function linhasDosPratos(sheet) {
+  var nomes = sheet.getRange(1, 1, Math.max(sheet.getLastRow(), 1), 1).getValues();
+  var linhas = {};
+  PRATOS.forEach(function (prato) {
+    for (var i = 1; i < nomes.length; i++) {
+      if (String(nomes[i][0]).trim().toLowerCase() === prato.toLowerCase()) { linhas[prato] = i + 1; return; }
+    }
+  });
+  return linhas;
+}
+
+/**
+ * Autocorreção da coluna "Já escolheram": se a fórmula de algum prato sumiu
+ * (alguém digitou por cima, colou só valores...), escreve de novo. Roda a cada
+ * consulta do site, então a contagem nunca fica congelada por muito tempo.
+ */
+function garantirContagem(ss, sheet) {
+  var linhas = linhasDosPratos(sheet);
+  Object.keys(linhas).forEach(function (prato) {
+    var celula = sheet.getRange(linhas[prato], 3);
+    if (String(celula.getFormula() || '').toUpperCase().indexOf('COUNTIF') === -1) {
+      escreverContagem(ss, celula, prato);
+    }
+  });
+}
+
+/** Conta cada prato lendo a coluna linha por linha, sem depender de fórmula. */
+function contagemReal(ss) {
+  var ceus = ss.getSheets()[0];
+  var col = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
+  var ultima = ceus.getLastRow();
+  var total = {};
+  PRATOS.forEach(function (prato) { total[prato] = 0; });
+  if (ultima < 2) return total;
+  ceus.getRange(2, col, ultima - 1, 1).getValues().forEach(function (r) {
+    var v = String(r[0]).trim().toLowerCase();
+    PRATOS.forEach(function (prato) {
+      if (v.indexOf(prato.toLowerCase()) === 0) total[prato]++;
+    });
+  });
+  return total;
+}
+
 /** Pratos com a caixinha marcada, na ordem de PRATOS. */
 function pratosAbertos(ss) {
   var sheet = abaPratos(ss);
+  try { garantirContagem(ss, sheet); } catch (errContagem) {}
   var ultima = Math.max(sheet.getLastRow(), 1);
   var linhas = sheet.getRange(1, 1, ultima, 2).getValues();
   return PRATOS.filter(function (prato) {
@@ -406,10 +451,39 @@ function json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/** O site consulta por GET quais pratos do Sister estão abertos. */
-function doGet() {
+/**
+ * O site consulta por GET quais pratos do Sister estão abertos.
+ * Com ?diag=1 devolve também uma conferência (só números, nenhum dado pessoal):
+ * o que a aba de pratos mostra, a contagem feita linha por linha e o tamanho
+ * da chamada do Deep.
+ */
+function doGet(e) {
   try {
-    return json({ ok: true, servico: 'inscricoes-igreja-vitoria', pratos: pratosAbertos(abrirPlanilha()) });
+    var ss = abrirPlanilha();
+    var resposta = { ok: true, servico: 'inscricoes-igreja-vitoria', pratos: pratosAbertos(ss) };
+    if (e && e.parameter && e.parameter.diag) {
+      var aba = abaPratos(ss);
+      var linhas = linhasDosPratos(aba);
+      var real = contagemReal(ss);
+      resposta.contagem = PRATOS.map(function (prato) {
+        if (!linhas[prato]) return { prato: prato, naPlanilha: 'linha não encontrada', contadoLinhaALinha: real[prato] };
+        var celula = aba.getRange(linhas[prato], 3);
+        return {
+          prato: prato,
+          naPlanilha: celula.getDisplayValue(),
+          contadoLinhaALinha: real[prato],
+          temFormula: String(celula.getFormula() || '') !== ''
+        };
+      });
+      var pres = ss.getSheetByName(ABA_PRESENCA_DEEP);
+      var deep = ss.getSheetByName('Deep');
+      resposta.deep = {
+        inscritos: deep ? Math.max(deep.getLastRow() - 1, 0) : 0,
+        abaPresencaExiste: !!pres,
+        naChamada: pres ? Math.max(pres.getLastRow() - 2, 0) : 0
+      };
+    }
+    return json(resposta);
   } catch (err) {
     return json({ ok: false, erro: String(err) });
   }
