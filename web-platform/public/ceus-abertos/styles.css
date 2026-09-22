@@ -210,6 +210,15 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
 .day-num{font-size:clamp(38px,5vw,64px);font-weight:900;font-stretch:118%;line-height:.8;color:var(--or)}
 .day-body{border-top:1px solid var(--line);padding-top:16px;font-size:clamp(14px,1.6vw,17px);color:var(--t-1)}
 .day-link{color:var(--rose);font-weight:800;border-bottom:1px solid var(--rose-line)}
+/* sessões do dia: hora em destaque, nome ao lado */
+.sessoes{list-style:none;display:grid;gap:12px}
+.sessoes li{display:flex;align-items:baseline;gap:14px}
+.s-hora{flex:none;min-width:3.6em;font-size:clamp(20px,2.2vw,26px);font-weight:900;font-stretch:112%;
+  letter-spacing:-.01em;color:var(--ink)}
+.s-nome{font-size:clamp(15px,1.6vw,18px);font-weight:700;color:var(--t-1)}
+.s-nome small{display:block;margin-top:2px;font-size:11px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--rose-deep)}
+.s-sister .s-hora{color:var(--rose-deep)}
 .day-link:hover{color:var(--rose-deep)}
 .prog-note{margin-top:clamp(18px,2.5vw,28px);background:var(--ink);color:var(--paper);
   padding:clamp(24px,3.5vw,48px);display:grid;
