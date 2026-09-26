@@ -197,6 +197,29 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
 .btn-sister{background:var(--rose);color:#fff}
 .btn-sister:hover{background:var(--rose-deep);transform:translateY(-2px)}
 
+/* ---------- Sister: inscrições encerradas ---------- */
+.sister-fechado{margin:clamp(30px,4.5vw,52px) auto 0;max-width:54ch;display:grid;gap:14px;justify-items:center;
+  border:1px solid var(--rose-line);border-radius:20px;padding:clamp(22px,3.2vw,34px);
+  background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  animation:sf-entra .6s var(--ease) both}
+@keyframes sf-entra{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.sf-selo{display:inline-flex;align-items:center;gap:10px;background:var(--rose);color:#fff;
+  border-radius:999px;padding:13px 26px;font-size:clamp(12px,1.4vw,14px);font-weight:800;
+  letter-spacing:.18em;text-transform:uppercase;box-shadow:0 10px 24px rgba(169,79,85,.28)}
+.sf-selo svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.sf-txt{text-align:center;font-size:clamp(14px,1.6vw,17px);line-height:1.6;color:var(--rose-deep)}
+.sf-txt strong{font-weight:800}
+.sf-link{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--rose);
+  border-bottom:1px solid var(--rose-line);transition:color .2s}
+.sf-link:hover{color:var(--rose-deep)}
+@media(prefers-reduced-motion:reduce){.sister-fechado{animation:none}}
+
+/* aviso dentro do formulário (fundo escuro) */
+.aviso-fechado{display:grid;gap:6px;border-left:3px solid var(--rose);border-radius:0 10px 10px 0;
+  padding:14px 16px;background:rgba(196,103,107,.14);font-size:13.5px;line-height:1.55;color:var(--t-4)}
+.aviso-fechado strong{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--rose)}
+
 /* ============================================================
    05 · PROGRAMAÇÃO
    ============================================================ */

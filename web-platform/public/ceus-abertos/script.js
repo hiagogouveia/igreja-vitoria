@@ -9,6 +9,11 @@
 
   var WHATSAPP = '5567998318450'; // número oficial (src/lib/site-data.ts)
 
+  /* Inscrições do Sister encerradas (lista completa). Com false, a pergunta
+     some do formulário, ninguém mais é gravado como participante do Sister e
+     a pergunta do prato também não aparece. Para reabrir, volte para true. */
+  var SISTER_ABERTO = false;
+
   /* Endpoint do Apps Script vinculado à planilha "Inscrições · Conferência
      Céus Abertos 2026" (Drive do Hiago). Grava a linha e deduplica pelo
      telefone. Enviamos como form-urlencoded de propósito: é uma "simple
@@ -69,6 +74,7 @@
     var fQualCav = document.getElementById('fQualCav');
     var fPrato = document.getElementById('fPrato');
     var fldSister = document.getElementById('fldSister');
+    var fldSisterFechado = document.getElementById('fldSisterFechado');
     var fldPrato = document.getElementById('fldPrato');
     var fldQualCav = document.getElementById('fldQualCav');
     var formNote = document.getElementById('formNote');
@@ -87,7 +93,7 @@
     var pratosSuportado = true;
 
     function perguntaPrato() {
-      return pratosSuportado && fSister.value === 'Sim' && fSexo.value === 'Feminino' &&
+      return SISTER_ABERTO && pratosSuportado && fSister.value === 'Sim' && fSexo.value === 'Feminino' &&
         !(pratosAbertos && pratosAbertos.length === 0);
     }
 
@@ -113,8 +119,9 @@
 
     function syncCondicionais() {
       var ehMulher = fSexo.value === 'Feminino';
-      fldSister.hidden = !ehMulher;
-      if (!ehMulher) { fSister.value = ''; setErr(fSister, ''); }
+      fldSister.hidden = !ehMulher || !SISTER_ABERTO;
+      fldSisterFechado.hidden = !ehMulher || SISTER_ABERTO;
+      if (!ehMulher || !SISTER_ABERTO) { fSister.value = ''; setErr(fSister, ''); }
 
       var comPrato = perguntaPrato();
       fldPrato.hidden = !comPrato;
@@ -161,7 +168,7 @@
       req(fBairro, fBairro.value.trim().length > 1, 'Informe seu bairro.');
       req(fCidade, fCidade.value.trim().length > 1, 'Informe sua cidade.');
       req(fCav, !!fCav.value, 'Selecione uma opção.');
-      if (fSexo.value === 'Feminino') {
+      if (SISTER_ABERTO && fSexo.value === 'Feminino') {
         req(fSister, !!fSister.value, 'Selecione uma opção.');
       }
       if (perguntaPrato()) {
@@ -176,10 +183,10 @@
       dados.set('nome', fNome.value.trim());
       dados.set('telefone', fZap.value.trim());
       dados.set('sexo', fSexo.value);
-      dados.set('sister', fSexo.value === 'Feminino' ? fSister.value : '');
+      dados.set('sister', (SISTER_ABERTO && fSexo.value === 'Feminino') ? fSister.value : '');
       // só manda o campo quando a pergunta faz sentido: sem ele, o servidor
       // entende que é um site antigo e grava "Não informado"
-      if (pratosSuportado && fSister.value === 'Sim') dados.set('prato', fPrato.value);
+      if (SISTER_ABERTO && pratosSuportado && fSister.value === 'Sim') dados.set('prato', fPrato.value);
       dados.set('endereco', fEndereco.value.trim());
       dados.set('bairro', fBairro.value.trim());
       dados.set('cidade', fCidade.value.trim());
@@ -261,7 +268,7 @@
     function concluir(duplicado) {
       var nome = fNome.value.trim().split(/\s+/)[0];
       nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-      var vaiAoSister = fSexo.value === 'Feminino' && fSister.value === 'Sim';
+      var vaiAoSister = SISTER_ABERTO && fSexo.value === 'Feminino' && fSister.value === 'Sim';
       var prato = fPrato.value;
 
       okTitle.textContent = duplicado ? 'Você já tinha se inscrito' : 'Inscrição confirmada!';
@@ -321,7 +328,7 @@
         '• Nome: ' + fNome.value.trim(),
         '• WhatsApp: ' + fZap.value.trim(),
         '• Sexo: ' + fSexo.value,
-        fSexo.value === 'Feminino' ? '• Sister (sábado, 18h): ' + fSister.value : '',
+        (SISTER_ABERTO && fSexo.value === 'Feminino') ? '• Sister (sábado, 18h): ' + fSister.value : '',
         fPrato.value ? '• Prato para o brunch: ' + fPrato.value : '',
         '• Endereço: ' + (fEndereco.value.trim() || 'Não informado'),
         '• Bairro: ' + fBairro.value.trim(),

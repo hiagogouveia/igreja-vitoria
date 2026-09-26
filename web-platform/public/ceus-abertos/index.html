@@ -158,7 +158,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 
     <h2 class="sister-logo"><span class="sister-s">S</span>ister</h2>
     <p class="sister-sub">Uma noite dedicada às mulheres, dentro da Conferência Céus Abertos.</p>
-    <p class="sister-brunch">Cada participante leva um prato salgado ou doce para o brunch. Você escolhe o seu na inscrição.</p>
+    <p class="sister-brunch">Cada participante leva um prato salgado ou doce para o brunch.</p>
 
     <div class="sister-names">
       <div class="sister-name reveal">Ap. Rayssa<br>Coelho</div>
@@ -166,9 +166,14 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <div class="sister-name reveal">Ap. Neila<br>Lopes</div>
     </div>
 
-    <div class="sister-foot">
-      <span class="sister-free">Entrada gratuita</span>
-      <a class="btn btn-sister" href="#inscricao">Inscreva-se <span class="btn-arrow" aria-hidden="true">↓</span></a>
+    <!-- Inscrições do Sister encerradas: lista completa -->
+    <div class="sister-fechado" role="status">
+      <span class="sf-selo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/></svg>
+        Inscrições encerradas
+      </span>
+      <p class="sf-txt">A lista do Sister está completa. Se você já fez sua inscrição, é só chegar: <strong>sábado, 26 de setembro, às 18h</strong>, com o seu prato para o brunch.</p>
+      <a class="sf-link" href="#inscricao">A inscrição para as outras sessões da conferência continua aberta →</a>
     </div>
   </div>
 </section>
@@ -243,6 +248,14 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
         <span class="errmsg" data-err></span>
       </div>
       <!-- Sister é exclusivo para mulheres: só aparece quando o sexo for feminino -->
+      <!-- As inscrições do Sister foram encerradas: no lugar da pergunta,
+           as mulheres veem o aviso abaixo (ver SISTER_ABERTO no script.js) -->
+      <div class="fld fld-cond" id="fldSisterFechado" hidden>
+        <div class="aviso-fechado">
+          <strong>Sister · inscrições encerradas</strong>
+          A lista do Sister já está completa. Sua inscrição segue valendo para as outras sessões da conferência.
+        </div>
+      </div>
       <div class="fld fld-cond" id="fldSister" hidden>
         <label for="fSister">Quer participar do Sister? <small>(sábado, 18h · só para mulheres)</small></label>
         <select class="inp" id="fSister" name="sister">
