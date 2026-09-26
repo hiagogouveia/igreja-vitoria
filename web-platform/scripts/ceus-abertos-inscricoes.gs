@@ -233,11 +233,16 @@ function sincronizarCheckinSister(ss, ordenar) {
   var ultimaCeus = ceus.getLastRow();
   if (ultimaCeus < 2) return 0;
 
+  /* Quem já está na lista, por telefone E por nome: assim funciona tanto para
+     quem veio do site quanto para quem foi escrito à mão, com ou sem telefone,
+     e ninguém aparece duas vezes. */
   var ja = {};
   var ultima = sheet.getLastRow();
   if (ultima >= 3) {
-    sheet.getRange(3, 3, ultima - 2, 1).getDisplayValues().forEach(function (r) {
-      ja[String(r[0]).replace(/\D/g, '')] = true;
+    sheet.getRange(3, 1, ultima - 2, 3).getDisplayValues().forEach(function (r) {
+      var digitos = String(r[2]).replace(/\D/g, '');
+      if (digitos) ja['tel:' + digitos] = true;
+      if (String(r[0]).trim()) ja['nome:' + chaveNome(r[0])] = true;
     });
   }
 
@@ -247,9 +252,11 @@ function sincronizarCheckinSister(ss, ordenar) {
     var nome = String(r[0]).trim();
     var digitos = String(r[2]).replace(/\D/g, '');
     if (String(r[4]).trim().toLowerCase() !== 'sim') return;
-    if (!nome || !digitos || ja[digitos]) return;
+    if (!nome) return;
     if (nome.toUpperCase().indexOf('TESTE') === 0) return;
-    ja[digitos] = true;
+    if ((digitos && ja['tel:' + digitos]) || ja['nome:' + chaveNome(nome)]) return;
+    if (digitos) ja['tel:' + digitos] = true;
+    ja['nome:' + chaveNome(nome)] = true;
     novos.push([nomeBonito(nome), false, String(r[1]).trim()]);
   });
   if (novos.length) {
@@ -418,6 +425,12 @@ function garantirColunaPagamento(pres) {
   if (!sep) return;
   var novas = atuais.map(function (r) { return [r[0] || formulaPagamento(sep)]; });
   pres.getRange(3, col, novas.length, 1).setFormulas(novas).setHorizontalAlignment('center');
+}
+
+/** Nome comparável: sem acento, sem espaço sobrando, tudo minúsculo. */
+function chaveNome(nome) {
+  return String(nome).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
 /** "KAROLINA KURTZ FERNANDES" → "Karolina Kurtz Fernandes" (só na chamada). */
