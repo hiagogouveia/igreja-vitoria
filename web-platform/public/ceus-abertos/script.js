@@ -89,9 +89,12 @@
     var labelSisterOriginal = labelSister ? labelSister.textContent : '';
 
     /* Mostra na seção do Sister e no formulário quantas vagas restam. */
+    var avisoTopo = document.getElementById('avisoTopoSister');
+
     function aplicarSister() {
       if (sisterAberto) sisterAberto.hidden = !SISTER_ABERTO;
       if (sisterFechado) sisterFechado.hidden = SISTER_ABERTO;
+      if (avisoTopo) avisoTopo.hidden = SISTER_ABERTO;
 
       var vagas = sisterInfo ? sisterInfo.vagas : null;
       if (sisterVagas) {
