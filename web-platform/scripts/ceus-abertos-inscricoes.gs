@@ -13,6 +13,12 @@
  *   limite. Cheio, o site para de oferecer o Sister (a inscrição na
  *   conferência continua normal).
  *
+ * CHECK-IN DO SISTER
+ *   A aba "Sister · Check-in" lista, em ordem alfabética, as mulheres que
+ *   marcaram "Sim" no Sister, com uma caixinha para marcar a chegada. Rode
+ *   criarCheckinSister pelo editor para criar a aba ou puxar quem faltar
+ *   (inclusive quem você inscrever à mão na aba da conferência).
+ *
  * PRATOS DO SISTER
  *   Quem vai ao Sister escolhe levar um prato Salgado ou Doce para o brunch.
  *   A aba "Sister · Pratos" (criada automaticamente) controla quais opções o
@@ -59,6 +65,8 @@ var LIMITE_SISTER = 160;
    volte para false. */
 var SISTER_FECHADO = true;
 var COL_SISTER = 6; // 1-indexado, igual em COLUNAS_CEUS
+
+var ABA_CHECKIN_SISTER = 'Sister · Check-in';
 
 var ABA_PRESENCA_DEEP = 'Deep · Presença';
 var AULAS_DEEP = ['21/09', '28/09', '05/10', '12/10', '19/10', '26/10'];
@@ -189,6 +197,84 @@ function vagasSister(ss) {
     vagas: vagas,
     aberto: !SISTER_FECHADO && vagas > 0
   };
+}
+
+/**
+ * Aba de check-in do Sister: Nome, caixinha de chegada e o telefone numa
+ * coluna oculta, que serve de chave para não repetir ninguém.
+ */
+function abaCheckinSister(ss) {
+  var sheet = ss.getSheetByName(ABA_CHECKIN_SISTER);
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet(ABA_CHECKIN_SISTER, ss.getSheets().length);
+  sheet.getRange(1, 1, 1, 3).setValues([['Nome', 'Check-in', 'Telefone']])
+    .setFontWeight('bold').setHorizontalAlignment('center');
+  sheet.getRange(1, 1).setHorizontalAlignment('left');
+  sheet.getRange(2, 1).setValue('Fizeram check-in');
+  sheet.getRange(2, 2).setFormula('=SUMPRODUCT(B3:B*1)').setHorizontalAlignment('center');
+  sheet.getRange(2, 1, 1, 3).setFontWeight('bold').setBackground('#F7E7E3');
+  sheet.setFrozenRows(2);
+  sheet.setFrozenColumns(1);
+  sheet.setColumnWidth(1, 300);
+  sheet.setColumnWidth(2, 110);
+  sheet.hideColumns(3); // o telefone fica escondido: a lista é só nome e chegada
+  return sheet;
+}
+
+/**
+ * Acrescenta na lista de check-in quem marcou "Sim" no Sister e ainda não
+ * está nela, sem mexer nas caixinhas já marcadas. Com `ordenar`, deixa em
+ * ordem alfabética. Devolve quantas entraram.
+ */
+function sincronizarCheckinSister(ss, ordenar) {
+  var ceus = ss.getSheets()[0];
+  var sheet = abaCheckinSister(ss);
+  var ultimaCeus = ceus.getLastRow();
+  if (ultimaCeus < 2) return 0;
+
+  var ja = {};
+  var ultima = sheet.getLastRow();
+  if (ultima >= 3) {
+    sheet.getRange(3, 3, ultima - 2, 1).getDisplayValues().forEach(function (r) {
+      ja[String(r[0]).replace(/\D/g, '')] = true;
+    });
+  }
+
+  var novos = [];
+  ceus.getRange(2, 2, ultimaCeus - 1, 5).getValues().forEach(function (r) {
+    // r: Nome, Telefone, Telefone (dígitos), Sexo, Sister
+    var nome = String(r[0]).trim();
+    var digitos = String(r[2]).replace(/\D/g, '');
+    if (String(r[4]).trim().toLowerCase() !== 'sim') return;
+    if (!nome || !digitos || ja[digitos]) return;
+    if (nome.toUpperCase().indexOf('TESTE') === 0) return;
+    ja[digitos] = true;
+    novos.push([nomeBonito(nome), false, String(r[1]).trim()]);
+  });
+  if (novos.length) {
+    var inicio = Math.max(ultima, 2) + 1;
+    sheet.getRange(inicio, 1, novos.length, 3).setValues(novos);
+    sheet.getRange(inicio, 2, novos.length, 1).insertCheckboxes().setHorizontalAlignment('center');
+  }
+  if (ordenar) {
+    var total = sheet.getLastRow() - 2;
+    if (total > 1) sheet.getRange(3, 1, total, Math.max(sheet.getLastColumn(), 3))
+      .sort({ column: 1, ascending: true });
+  }
+  return novos.length;
+}
+
+/**
+ * Uso manual, pelo editor (Executar): cria a lista de check-in do Sister ou
+ * puxa quem faltar, e deixa em ordem alfabética. Pode rodar quantas vezes
+ * quiser, inclusive no dia, depois de inscrever alguém à mão.
+ */
+function criarCheckinSister() {
+  var ss = abrirPlanilha();
+  var entraram = sincronizarCheckinSister(ss, true);
+  Logger.log('Sister · Check-in → ' + entraram + ' nome(s) acrescentado(s). Total na lista: ' +
+    (abaCheckinSister(ss).getLastRow() - 2));
 }
 
 /** Linha de cada prato na aba de controle, procurando pelo nome na coluna A. */
@@ -533,6 +619,11 @@ function doPost(e) {
       ]);
     }
 
+    // A lista de check-in do Sister é um extra: se falhar, a inscrição já está gravada.
+    if (destino !== 'deep') {
+      try { sincronizarCheckinSister(ss, false); } catch (errCheckin) {}
+    }
+
     return json({ ok: true, duplicado: false });
   } catch (err) {
     return json({ ok: false, erro: String(err) });
@@ -606,6 +697,11 @@ function doGet(e) {
         };
       });
       resposta.contagemSister = inscritasSister(ss);
+      var checkin = ss.getSheetByName(ABA_CHECKIN_SISTER);
+      resposta.checkinSister = {
+        abaExiste: !!checkin,
+        naLista: checkin ? Math.max(checkin.getLastRow() - 2, 0) : 0
+      };
       var pres = ss.getSheetByName(ABA_PRESENCA_DEEP);
       var deep = ss.getSheetByName('Deep');
       resposta.deep = {
