@@ -193,11 +193,17 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
   border:1px solid var(--rose-line);border-radius:14px;padding:clamp(18px,2.6vw,26px) 14px;background:rgba(255,255,255,.42)}
 .sister-foot{margin-top:clamp(30px,4.5vw,52px);display:flex;flex-wrap:wrap;align-items:center;
   justify-content:center;gap:16px}
+/* o display:flex acima venceria o [hidden] do navegador */
+.sister-foot[hidden]{display:none}
 .sister-free{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--rose)}
 .btn-sister{background:var(--rose);color:#fff}
 .btn-sister:hover{background:var(--rose-deep);transform:translateY(-2px)}
 
 /* ---------- Sister: inscrições encerradas ---------- */
+.sister-fechado[hidden]{display:none}
+/* poucas vagas: o aviso ganha corpo de etiqueta */
+.sister-free.ultimas{background:var(--rose);color:#fff;border-radius:999px;padding:10px 20px;
+  box-shadow:0 8px 20px rgba(169,79,85,.26)}
 .sister-fechado{margin:clamp(30px,4.5vw,52px) auto 0;max-width:54ch;display:grid;gap:14px;justify-items:center;
   border:1px solid var(--rose-line);border-radius:20px;padding:clamp(22px,3.2vw,34px);
   background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);

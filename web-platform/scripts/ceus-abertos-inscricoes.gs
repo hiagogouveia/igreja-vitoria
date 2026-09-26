@@ -7,6 +7,12 @@
  * O site escolhe a aba pelo parâmetro "destino" ("ceus-abertos" ou "deep").
  * Sem esse parâmetro, cai no Céus Abertos — mantém compatibilidade.
  *
+ * VAGAS DO SISTER
+ *   O Sister tem LIMITE_SISTER vagas. A conta é feita aqui, na hora de
+ *   gravar e dentro do lock, então duas inscrições simultâneas não furam o
+ *   limite. Cheio, o site para de oferecer o Sister (a inscrição na
+ *   conferência continua normal).
+ *
  * PRATOS DO SISTER
  *   Quem vai ao Sister escolhe levar um prato Salgado ou Doce para o brunch.
  *   A aba "Sister · Pratos" (criada automaticamente) controla quais opções o
@@ -46,6 +52,9 @@ var COLUNAS_DEEP = [
 ];
 
 var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
+
+var LIMITE_SISTER = 160;
+var COL_SISTER = 6; // 1-indexado, igual em COLUNAS_CEUS
 
 var ABA_PRESENCA_DEEP = 'Deep · Presença';
 var AULAS_DEEP = ['21/09', '28/09', '05/10', '12/10', '19/10', '26/10'];
@@ -152,6 +161,25 @@ function consertarContagem() {
     }
   });
   Logger.log('Contagem → ' + feitos.join(' | '));
+}
+
+/** Quantas já estão inscritas no Sister (coluna Sister = "Sim"). */
+function inscritasSister(ss) {
+  var ceus = ss.getSheets()[0];
+  var ultima = ceus.getLastRow();
+  if (ultima < 2) return 0;
+  var total = 0;
+  ceus.getRange(2, COL_SISTER, ultima - 1, 1).getValues().forEach(function (r) {
+    if (String(r[0]).trim().toLowerCase() === 'sim') total++;
+  });
+  return total;
+}
+
+/** Situação das vagas do Sister, do jeito que o site usa. */
+function vagasSister(ss) {
+  var inscritas = inscritasSister(ss);
+  var vagas = Math.max(LIMITE_SISTER - inscritas, 0);
+  return { limite: LIMITE_SISTER, inscritas: inscritas, vagas: vagas, aberto: vagas > 0 };
 }
 
 /** Linha de cada prato na aba de controle, procurando pelo nome na coluna A. */
@@ -443,6 +471,21 @@ function doPost(e) {
       var prato = '';
 
       if (sister === 'Sim') {
+        // Conferido aqui dentro, com o lock ativo: mesmo com dois envios ao
+        // mesmo tempo, o limite não é ultrapassado.
+        var situacao = vagasSister(ss);
+        if (!situacao.aberto) {
+          if (p.envio !== 'cego') {
+            // devolve a situação para o site avisar e reenviar sem o Sister
+            return json({ ok: false, erro: 'sister-lotado', sister: situacao });
+          }
+          // reenvio sem leitura de resposta: grava a inscrição na conferência
+          // sem o Sister, porque as vagas acabaram
+          sister = '';
+        }
+      }
+
+      if (sister === 'Sim') {
         var abertos = pratosAbertos(ss);
         var escolhido = String(p.prato || '').trim();
         var clienteNovo = p.prato !== undefined; // site antigo em cache não manda o campo
@@ -533,7 +576,12 @@ function json(obj) {
 function doGet(e) {
   try {
     var ss = abrirPlanilha();
-    var resposta = { ok: true, servico: 'inscricoes-igreja-vitoria', pratos: pratosAbertos(ss) };
+    var resposta = {
+      ok: true,
+      servico: 'inscricoes-igreja-vitoria',
+      pratos: pratosAbertos(ss),
+      sister: vagasSister(ss)
+    };
     if (e && e.parameter && e.parameter.diag) {
       var aba = abaPratos(ss);
       var linhas = linhasDosPratos(aba);
@@ -548,6 +596,7 @@ function doGet(e) {
           temFormula: String(celula.getFormula() || '') !== ''
         };
       });
+      resposta.contagemSister = inscritasSister(ss);
       var pres = ss.getSheetByName(ABA_PRESENCA_DEEP);
       var deep = ss.getSheetByName('Deep');
       resposta.deep = {

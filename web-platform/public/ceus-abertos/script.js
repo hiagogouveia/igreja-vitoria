@@ -9,10 +9,12 @@
 
   var WHATSAPP = '5567998318450'; // número oficial (src/lib/site-data.ts)
 
-  /* Inscrições do Sister encerradas (lista completa). Com false, a pergunta
-     some do formulário, ninguém mais é gravado como participante do Sister e
-     a pergunta do prato também não aparece. Para reabrir, volte para true. */
+  /* O Sister tem 160 vagas, contadas no servidor. Começa fechado e só abre
+     quando o servidor responde que ainda há vaga: assim, se a consulta falhar
+     ou a implantação do Apps Script for antiga (sem a contagem), ninguém entra
+     na lista por engano. */
   var SISTER_ABERTO = false;
+  var sisterInfo = null;
 
   /* Endpoint do Apps Script vinculado à planilha "Inscrições · Conferência
      Céus Abertos 2026" (Drive do Hiago). Grava a linha e deduplica pelo
@@ -75,6 +77,33 @@
     var fPrato = document.getElementById('fPrato');
     var fldSister = document.getElementById('fldSister');
     var fldSisterFechado = document.getElementById('fldSisterFechado');
+    var sisterAberto = document.getElementById('sisterAberto');
+    var sisterFechado = document.getElementById('sisterFechado');
+    var sisterVagas = document.getElementById('sisterVagas');
+    var labelSister = document.querySelector('label[for="fSister"] small');
+    var labelSisterOriginal = labelSister ? labelSister.textContent : '';
+
+    /* Mostra na seção do Sister e no formulário quantas vagas restam. */
+    function aplicarSister() {
+      if (sisterAberto) sisterAberto.hidden = !SISTER_ABERTO;
+      if (sisterFechado) sisterFechado.hidden = SISTER_ABERTO;
+
+      var vagas = sisterInfo ? sisterInfo.vagas : null;
+      if (sisterVagas) {
+        var poucas = vagas !== null && vagas <= 20;
+        sisterVagas.textContent = vagas === null
+          ? 'Entrada gratuita · vagas limitadas'
+          : (poucas ? (vagas === 1 ? 'Última vaga' : 'Últimas ' + vagas + ' vagas')
+                    : 'Entrada gratuita · ' + vagas + ' vagas restantes');
+        sisterVagas.classList.toggle('ultimas', poucas);
+      }
+      if (labelSister) {
+        labelSister.textContent = (vagas !== null && vagas <= 20)
+          ? '(sábado, 18h · só para mulheres · ' + (vagas === 1 ? 'última vaga' : 'últimas ' + vagas + ' vagas') + ')'
+          : labelSisterOriginal;
+      }
+      syncCondicionais();
+    }
     var fldPrato = document.getElementById('fldPrato');
     var fldQualCav = document.getElementById('fldQualCav');
     var formNote = document.getElementById('formNote');
@@ -113,7 +142,9 @@
       .then(function (res) {
         if (res && Array.isArray(res.pratos)) pratosAbertos = res.pratos;
         else if (res && res.ok) pratosSuportado = false;
+        if (res && res.sister) { sisterInfo = res.sister; SISTER_ABERTO = !!res.sister.aberto; }
         aplicarPratos();
+        aplicarSister();
       })
       .catch(function () { /* segue oferecendo todos; o servidor valida */ });
 
@@ -196,15 +227,32 @@
 
       enviando(true);
       nota('Enviando sua inscrição...', '');
+      enviar(dados, '');
+    });
 
+    /* aviso: texto extra mostrado na confirmação (usado quando o Sister lota
+       enquanto a pessoa preenchia o formulário) */
+    function enviar(dados, aviso) {
       // form-urlencoded evita preflight CORS (o Apps Script não responde OPTIONS)
-      var pratoFechou = false;
+      var naoReenviar = false;
       fetch(INSCRICAO_URL, { method: 'POST', body: dados })
         .then(function (r) { return r.json(); })
         .then(function (res) {
+          if (res && res.erro === 'sister-lotado') {
+            // as vagas acabaram no meio do preenchimento: nada foi gravado.
+            // Fecha o Sister na tela e reenvia só a inscrição da conferência.
+            naoReenviar = true;
+            sisterInfo = res.sister || { vagas: 0, aberto: false };
+            SISTER_ABERTO = false;
+            aplicarSister();
+            dados.set('sister', '');
+            dados.delete('prato');
+            enviar(dados, 'As vagas do Sister se esgotaram enquanto você preenchia, então sua inscrição vale para as outras sessões da conferência.');
+            return;
+          }
           if (res && res.erro === 'prato-indisponivel') {
             // a opção fechou enquanto a página estava aberta: nada foi gravado
-            pratoFechou = true;
+            naoReenviar = true;
             pratosAbertos = res.pratos || [];
             aplicarPratos();
             enviando(false);
@@ -216,10 +264,10 @@
             return;
           }
           if (res && res.ok === false) throw new Error(res.erro || 'falha');
-          concluir(res && res.duplicado);
+          concluir(res && res.duplicado, aviso);
         })
         .catch(function () {
-          if (pratoFechou) return;
+          if (naoReenviar) return;
           // sem ler a resposta, o servidor grava e sinaliza em vez de recusar
           dados.set('envio', 'cego');
           /* Se o navegador bloquear a leitura da resposta (CORS no redirect do
@@ -227,10 +275,10 @@
              linha é gravada do mesmo jeito. A duplicidade é tratada no servidor,
              então reenviar não gera linha repetida. */
           return fetch(INSCRICAO_URL, { method: 'POST', mode: 'no-cors', body: dados })
-            .then(function () { concluir(false); })
+            .then(function () { concluir(false, aviso); })
             .catch(function () { falhar(); });
         });
-    });
+    }
 
     function enviando(estado) {
       var btn = form.querySelector('button[type="submit"]');
@@ -265,7 +313,7 @@
       if (!telaOk.hidden && telaOk.scrollHeight > form.offsetHeight) form.style.minHeight = telaOk.scrollHeight + 'px';
     }
 
-    function concluir(duplicado) {
+    function concluir(duplicado, aviso) {
       var nome = fNome.value.trim().split(/\s+/)[0];
       nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
       var vaiAoSister = SISTER_ABERTO && fSexo.value === 'Feminino' && fSister.value === 'Sim';
@@ -275,6 +323,7 @@
       okMsg.textContent = duplicado
         ? nome + ', encontramos uma inscrição com esse telefone. Está tudo certo, não precisa fazer de novo.'
         : 'Que alegria, ' + nome + '! Sua inscrição está garantida. Nos vemos de 25 a 27 de setembro.';
+      if (aviso) okMsg.textContent += ' ' + aviso;
 
       okSister.hidden = !vaiAoSister;
       // em inscrição repetida o prato novo não é gravado, então não confirmamos
