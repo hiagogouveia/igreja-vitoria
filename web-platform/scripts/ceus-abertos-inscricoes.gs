@@ -54,6 +54,10 @@ var COLUNAS_DEEP = [
 var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
 
 var LIMITE_SISTER = 160;
+/* Fechamento manual do Sister, independente das vagas: a igreja encerrou as
+   inscrições e vai inscrever na hora quem chegar sem inscrição. Para reabrir,
+   volte para false. */
+var SISTER_FECHADO = true;
 var COL_SISTER = 6; // 1-indexado, igual em COLUNAS_CEUS
 
 var ABA_PRESENCA_DEEP = 'Deep · Presença';
@@ -179,7 +183,12 @@ function inscritasSister(ss) {
 function vagasSister(ss) {
   var inscritas = inscritasSister(ss);
   var vagas = Math.max(LIMITE_SISTER - inscritas, 0);
-  return { limite: LIMITE_SISTER, inscritas: inscritas, vagas: vagas, aberto: vagas > 0 };
+  return {
+    limite: LIMITE_SISTER,
+    inscritas: inscritas,
+    vagas: vagas,
+    aberto: !SISTER_FECHADO && vagas > 0
+  };
 }
 
 /** Linha de cada prato na aba de controle, procurando pelo nome na coluna A. */

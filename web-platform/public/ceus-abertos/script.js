@@ -16,6 +16,11 @@
   var SISTER_ABERTO = false;
   var sisterInfo = null;
 
+  /* Fechamento manual: a igreja encerrou as inscrições com 157 e guardou as
+     vagas restantes para quem chegar na hora, inscrito ali mesmo pela equipe.
+     Com true, o Sister fica fechado mesmo havendo vaga. Para reabrir, false. */
+  var SISTER_FECHADO_MANUAL = true;
+
   /* Endpoint do Apps Script vinculado à planilha "Inscrições · Conferência
      Céus Abertos 2026" (Drive do Hiago). Grava a linha e deduplica pelo
      telefone. Enviamos como form-urlencoded de propósito: é uma "simple
@@ -142,7 +147,10 @@
       .then(function (res) {
         if (res && Array.isArray(res.pratos)) pratosAbertos = res.pratos;
         else if (res && res.ok) pratosSuportado = false;
-        if (res && res.sister) { sisterInfo = res.sister; SISTER_ABERTO = !!res.sister.aberto; }
+        if (res && res.sister) {
+          sisterInfo = res.sister;
+          SISTER_ABERTO = !SISTER_FECHADO_MANUAL && !!res.sister.aberto;
+        }
         aplicarPratos();
         aplicarSister();
       })
