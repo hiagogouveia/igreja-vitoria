@@ -81,7 +81,7 @@ export default function DeepFold() {
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9 }}>
-                {['6 aulas', '6 segundas'].map((t) => (
+                {['6 aulas', '1x por semana'].map((t) => (
                   <span key={t} style={{
                     border: '1px solid rgba(255,255,255,.28)', borderRadius: 999, padding: '8px 16px',
                     fontFamily: 'var(--head)', fontWeight: 800, fontSize: 12, letterSpacing: '.12em', textTransform: 'uppercase',
