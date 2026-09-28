@@ -29,7 +29,7 @@ export default function DeepFold() {
         }}
       >
         <div style={{ ...wrap, padding: '0 28px', width: '100%' }}>
-          {/* faixa superior: nova turma + inscrições abertas */}
+          {/* faixa superior: turma em andamento + lista da próxima */}
           <div style={{
             display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12,
             borderBottom: '1px solid rgba(255,255,255,.28)', paddingBottom: 14,

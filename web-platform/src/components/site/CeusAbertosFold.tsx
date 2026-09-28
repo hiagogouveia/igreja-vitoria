@@ -82,13 +82,13 @@ export default function CeusAbertosFold() {
                   fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(13px,1.5vw,16px)',
                   letterSpacing: '.1em', textTransform: 'uppercase', padding: '16px 30px',
                 }}>
-                  Faça sua inscrição <span aria-hidden="true" style={{ fontSize: 17, lineHeight: 1 }}>→</span>
+                  Conte seu testemunho <span aria-hidden="true" style={{ fontSize: 17, lineHeight: 1 }}>→</span>
                 </span>
                 <span style={{
                   fontFamily: 'var(--head)', fontWeight: 700, fontSize: 12, letterSpacing: '.16em',
                   textTransform: 'uppercase', color: '#5A5852',
                 }}>
-                  3 dias · 5 sessões · entrada gratuita
+                  O que Deus fez em você?
                 </span>
               </div>
 

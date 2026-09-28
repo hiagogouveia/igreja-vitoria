@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 /**
  * Pop-up institucional da Conferência Céus Abertos 2026 — só na home.
- * Aparece na 1ª visita; após fechar OU clicar em "Fazer minha inscrição",
+ * Aparece na 1ª visita; após fechar OU clicar em "Contar meu testemunho",
  * não reaparece por 24h (controle via localStorage). Glassmorphism, fade +
  * scale, ESC/scroll-lock/focus-trap. Reutilizável para futuras campanhas
  * (passe título/texto/cta via props se necessário).
@@ -98,22 +98,22 @@ export default function ConferencePopup() {
       >
         <button onClick={dismiss} aria-label="Fechar" style={{ position: 'absolute', top: 14, right: 16, fontSize: 24, lineHeight: 1, color: 'var(--faint)', background: 'none', border: 'none', cursor: 'pointer' }}>×</button>
 
-        <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--glow)', marginBottom: 12 }}>Entrada gratuita</div>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--glow)', marginBottom: 12 }}>A conferência passou</div>
         <h2 id="vc-pop-title" style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(21px,4.4vw,25px)', lineHeight: 1.15, letterSpacing: '-.01em', color: 'var(--text)', marginBottom: 12 }}>
-          Conferência Céus Abertos 2026: inscrições abertas!
+Você esteve na Conferência Céus Abertos?
         </h2>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: 'var(--dim)', marginBottom: 26 }}>
-          Três dias e cinco sessões de adoração, Palavra e comunhão em Campo Grande. 25, 26 e 27 de setembro, com entrada gratuita. Faça sua inscrição e garanta seu lugar.
+          Conte para a gente o que Deus fez na sua vida nesses dias. Seu testemunho anima a igreja inteira.
         </p>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <a
             ref={primaryRef}
-            href="/ceus-abertos"
+            href="/ceus-abertos#testemunhos"
             onClick={persist}
             className="vc-pop-cta"
             style={{ flex: '1 1 180px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: '14px 22px', borderRadius: 99, textDecoration: 'none' }}
           >
-            Fazer minha inscrição →
+            Contar meu testemunho →
           </a>
           <button
             onClick={dismiss}
