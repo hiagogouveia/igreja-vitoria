@@ -7,6 +7,11 @@
  * O site escolhe a aba pelo parâmetro "destino" ("ceus-abertos" ou "deep").
  * Sem esse parâmetro, cai no Céus Abertos — mantém compatibilidade.
  *
+ * TESTEMUNHOS
+ *   O site da conferência tem um formulário de testemunho, que grava na aba
+ *   "Testemunhos" (criada automaticamente). Não tem trava de repetição: a
+ *   mesma pessoa pode mandar mais de um.
+ *
  * VAGAS DO SISTER
  *   O Sister tem LIMITE_SISTER vagas. A conta é feita aqui, na hora de
  *   gravar e dentro do lock, então duas inscrições simultâneas não furam o
@@ -58,6 +63,15 @@ var COLUNAS_DEEP = [
 ];
 
 var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
+
+/* Inscrições do Deep encerradas. Para reabrir, volte para false (e troque
+   DEEP_ABERTO no /deep/script.js do site). */
+var DEEP_FECHADO = true;
+
+var ABA_TESTEMUNHOS = 'Testemunhos';
+var COLUNAS_TESTEMUNHO = [
+  'Data/Hora', 'Nome', 'Telefone', 'Testemunho', 'Pode compartilhar', 'Origem'
+];
 
 var LIMITE_SISTER = 160;
 /* Fechamento manual do Sister, independente das vagas: a igreja encerrou as
@@ -529,6 +543,18 @@ function criarPresencaDeep() {
     (abaPresencaDeep(ss).getLastRow() - 2));
 }
 
+/** Aba dos testemunhos, criada no primeiro envio. */
+function abaTestemunhos(ss) {
+  var sheet = ss.getSheetByName(ABA_TESTEMUNHOS);
+  if (!sheet) {
+    sheet = ss.insertSheet(ABA_TESTEMUNHOS, ss.getSheets().length);
+    sheet.setColumnWidth(2, 240);
+    sheet.setColumnWidth(4, 620);
+  }
+  garantirCabecalho(sheet, COLUNAS_TESTEMUNHO);
+  return sheet;
+}
+
 function doPost(e) {
   // Uma inscrição por vez: evita que dois envios simultâneos gravem na mesma
   // linha ou furem a checagem de duplicidade.
@@ -545,6 +571,23 @@ function doPost(e) {
     var telefone = String(p.telefone || '').trim();
     var digitos = telefone.replace(/\D/g, '');
 
+    // Testemunho é outro tipo de envio: texto obrigatório, telefone opcional.
+    if (String(p.destino || '').toLowerCase() === 'testemunho') {
+      var texto = String(p.testemunho || '').trim();
+      if (nome.length < 3 || texto.length < 10) {
+        return json({ ok: false, erro: 'dados incompletos' });
+      }
+      abaTestemunhos(abrirPlanilha()).appendRow([
+        new Date(),
+        nome,
+        telefone,
+        texto,
+        String(p.compartilhar || '').trim(),
+        String(p.origem || 'site')
+      ]);
+      return json({ ok: true, duplicado: false });
+    }
+
     // Validação mínima no servidor (o site já valida, mas nunca confie só no cliente)
     if (nome.length < 3 || digitos.length < 10) {
       return json({ ok: false, erro: 'dados incompletos' });
@@ -552,6 +595,10 @@ function doPost(e) {
 
     var ss = abrirPlanilha();
     var destino = String(p.destino || 'ceus-abertos').toLowerCase();
+
+    if (destino === 'deep' && DEEP_FECHADO) {
+      return json({ ok: false, erro: 'deep-fechado' });
+    }
     var sheet = destino === 'deep' ? abaDeep(ss) : abaCeusAbertos(ss);
 
     // Duplicidade pelo telefone normalizado, dentro da própria aba:
@@ -693,7 +740,8 @@ function doGet(e) {
       ok: true,
       servico: 'inscricoes-igreja-vitoria',
       pratos: pratosAbertos(ss),
-      sister: vagasSister(ss)
+      sister: vagasSister(ss),
+      deep: { aberto: !DEEP_FECHADO }
     };
     if (e && e.parameter && e.parameter.diag) {
       var aba = abaPratos(ss);
@@ -718,10 +766,13 @@ function doGet(e) {
       var pres = ss.getSheetByName(ABA_PRESENCA_DEEP);
       var deep = ss.getSheetByName('Deep');
       resposta.deep = {
+        aberto: !DEEP_FECHADO,
         inscritos: deep ? Math.max(deep.getLastRow() - 1, 0) : 0,
         abaPresencaExiste: !!pres,
         naChamada: pres ? Math.max(pres.getLastRow() - 2, 0) : 0
       };
+      var test = ss.getSheetByName(ABA_TESTEMUNHOS);
+      resposta.testemunhos = test ? Math.max(test.getLastRow() - 1, 0) : 0;
     }
     return json(resposta);
   } catch (err) {

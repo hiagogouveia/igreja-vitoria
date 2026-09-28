@@ -47,6 +47,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
     <a href="#participacoes">Participações</a>
     <a href="#sister">Sister</a>
     <a href="#programacao">Programação</a>
+    <a href="#testemunhos">Testemunhos</a>
     <a class="nav-cta" href="#inscricao">Inscreva-se</a>
   </nav>
 </header>
@@ -374,6 +375,59 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
           </div>
 
           <button type="button" class="btn btn-or btn-block" id="okNova">Fazer outra inscrição</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ 06 · TESTEMUNHOS ============ -->
+<section class="sec testemunhos" id="testemunhos">
+  <div class="test-grid">
+    <div>
+      <div class="eyebrow or">06 · Testemunhos</div>
+      <h2 class="test-title reveal">O que Deus<br>fez em você?</h2>
+      <p class="test-lead">Se você viveu algo na Conferência Céus Abertos, conte para a gente. Pode ser uma cura, uma resposta de oração, uma decisão, um recomeço. Seu relato anima a igreja inteira.</p>
+    </div>
+
+    <form class="test-form reveal" id="testForm" novalidate>
+      <div class="fld">
+        <label for="tNome">Seu nome</label>
+        <input class="inp" type="text" id="tNome" name="nome" placeholder="Como você quer ser chamado" autocomplete="name">
+        <span class="errmsg" data-err></span>
+      </div>
+      <div class="fld">
+        <label for="tZap">WhatsApp <small>(opcional)</small></label>
+        <input class="inp" type="tel" id="tZap" name="telefone" placeholder="(67) 99999-9999" inputmode="numeric" maxlength="16" autocomplete="tel">
+        <span class="errmsg" data-err></span>
+      </div>
+      <div class="fld">
+        <label for="tTexto">Seu testemunho</label>
+        <textarea class="inp inp-area" id="tTexto" name="testemunho" rows="6" placeholder="Conte com suas palavras o que aconteceu"></textarea>
+        <span class="errmsg" data-err></span>
+      </div>
+      <div class="fld">
+        <label for="tCompartilhar">Podemos compartilhar o seu testemunho?</label>
+        <select class="inp" id="tCompartilhar" name="compartilhar">
+          <option value="">Selecione</option>
+          <option value="Sim, pode compartilhar">Sim, pode compartilhar</option>
+          <option value="Sim, mas sem o meu nome">Sim, mas sem o meu nome</option>
+          <option value="Prefiro que fique só com a igreja">Prefiro que fique só com a igreja</option>
+        </select>
+        <span class="errmsg" data-err></span>
+      </div>
+      <button class="btn btn-or btn-block" type="submit">Enviar meu testemunho</button>
+      <p class="form-note" id="testNote">Seu testemunho vai direto para a equipe da Igreja Vitória.</p>
+
+      <div class="insc-ok" id="testOk" role="status" aria-live="polite" hidden>
+        <div class="insc-ok-inner">
+          <svg class="ok-check" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="29" pathLength="1"/>
+            <path d="M19 33.5l8.5 8.5L45.5 23" pathLength="1"/>
+          </svg>
+          <h3 class="ok-title" id="testOkTitle" tabindex="-1">Obrigado!</h3>
+          <p class="ok-msg" id="testOkMsg"></p>
+          <button type="button" class="btn btn-or btn-block" id="testOutro">Enviar outro testemunho</button>
         </div>
       </div>
     </form>

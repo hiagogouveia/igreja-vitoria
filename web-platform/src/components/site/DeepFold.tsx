@@ -14,7 +14,7 @@ export default function DeepFold() {
   return (
     <a
       href="/deep"
-      aria-label="Deep · Curso de membresia da Igreja Vitória · Nova turma em 21 de setembro, 6 aulas, R$ 50"
+      aria-label="Deep · Curso de membresia da Igreja Vitória · turma iniciada em 21 de setembro, inscrições encerradas"
       style={{ display: 'block', textDecoration: 'none', color: '#fff' }}
     >
       <section
@@ -35,10 +35,10 @@ export default function DeepFold() {
             borderBottom: '1px solid rgba(255,255,255,.28)', paddingBottom: 14,
           }}>
             <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(11px,1.3vw,14px)', letterSpacing: '.2em', textTransform: 'uppercase' }}>
-              Nova turma
+              Turma em andamento
             </span>
             <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(11px,1.3vw,14px)', letterSpacing: '.2em', textTransform: 'uppercase', color: AZUL_CLARO, marginLeft: 'auto' }}>
-              Inscrições abertas
+              Inscrições encerradas
             </span>
           </div>
 
@@ -65,8 +65,8 @@ export default function DeepFold() {
                 marginTop: 'clamp(14px,2vw,22px)', maxWidth: 460, fontSize: 'clamp(15px,1.7vw,18px)',
                 lineHeight: 1.6, color: '#EAF3FA',
               }}>
-                Já frequenta a igreja há um tempo ou participa de uma CAV, mas ainda não é membro?
-                Chegou a sua hora. São 6 aulas, sempre às segundas.
+                A turma começou em 21 de setembro, às segundas, e as inscrições estão encerradas.
+                Fale com a igreja para saber da próxima.
               </p>
             </div>
 
@@ -99,7 +99,7 @@ export default function DeepFold() {
                 fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(13px,1.5vw,15px)',
                 letterSpacing: '.08em', textTransform: 'uppercase', padding: '15px 28px', borderRadius: 999,
               }}>
-                Fazer minha inscrição <span aria-hidden="true">→</span>
+                Ver detalhes <span aria-hidden="true">→</span>
               </span>
             </div>
           </div>

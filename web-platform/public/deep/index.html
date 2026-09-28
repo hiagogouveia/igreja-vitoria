@@ -6,18 +6,18 @@
 <!-- Meta Pixel · código base compartilhado com o app Next (fonte única) -->
 <script src="/meta-pixel.js" defer></script>
 <title>Deep · Curso de Membresia da Igreja Vitória</title>
-<meta name="description" content="Deep é o curso de membresia da Igreja Vitória. Nova turma com início em 21 de setembro: 6 aulas, às segundas, por R$ 50. Inscrições abertas.">
+<meta name="description" content="Deep é o curso de membresia da Igreja Vitória. A turma que começou em 21 de setembro está com as inscrições encerradas.">
 <meta name="theme-color" content="#0E3D6B">
 <meta name="author" content="Igreja Vitória">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Deep · Curso de Membresia da Igreja Vitória">
-<meta property="og:description" content="Nova turma com início em 21 de setembro. 6 aulas, às segundas, por R$ 50. Inscrições abertas.">
+<meta property="og:description" content="Turma iniciada em 21 de setembro. Inscrições encerradas.">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Igreja Vitória">
 <meta property="og:url" content="https://www.igrejavitoriacg.com.br/deep">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Deep · Curso de Membresia da Igreja Vitória">
-<meta name="twitter:description" content="Nova turma com início em 21 de setembro. 6 aulas, às segundas, por R$ 50.">
+<meta name="twitter:description" content="Turma iniciada em 21 de setembro. Inscrições encerradas.">
 <link rel="canonical" href="https://www.igrejavitoriacg.com.br/deep">
 <link rel="icon" type="image/png" href="/vitoriacon/assets/icon-vitoria.png">
 <link rel="apple-touch-icon" href="/vitoriacon/assets/icon-vitoria.png">
@@ -43,8 +43,8 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 <!-- ============ 01 · HERO ============ -->
 <section class="hero" id="top">
   <div class="hero-top">
-    <div class="hero-tag">Nova turma</div>
-    <div class="hero-tag hero-tag-alt">Inscrições abertas</div>
+    <div class="hero-tag">Turma em andamento</div>
+    <div class="hero-tag hero-tag-alt" id="heroTagInsc">Inscrições encerradas</div>
   </div>
 
   <h1 class="hero-title">Deep</h1>
@@ -63,7 +63,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
   </div>
 
   <div class="hero-actions">
-    <a class="btn btn-solid" href="#inscricao">Fazer minha inscrição <span aria-hidden="true">↓</span></a>
+    <a class="btn btn-solid" href="#inscricao" id="heroCta">Ver aviso das inscrições <span aria-hidden="true">↓</span></a>
     <a class="btn btn-outline" href="https://chat.whatsapp.com/FPY0deM8P7UHkTGpJc5z8k" target="_blank" rel="noreferrer">Entrar no grupo</a>
   </div>
 
@@ -112,12 +112,23 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
   <div class="insc-grid">
     <div>
       <div class="eyebrow">02 · Inscrições</div>
-      <h2 class="insc-title">Garanta<br>sua vaga</h2>
-      <p class="insc-lead">Preencha seus dados para entrar na nova turma. O investimento é de R$ 50, pago por PIX depois da inscrição. Em seguida, entre no grupo do WhatsApp: é por lá que a igreja avisa os horários e as datas das aulas.</p>
-      <a class="btn btn-outline btn-group" href="https://chat.whatsapp.com/FPY0deM8P7UHkTGpJc5z8k" target="_blank" rel="noreferrer">Entrar no grupo do WhatsApp</a>
+      <h2 class="insc-title" id="inscTitulo">Inscrições<br>encerradas</h2>
+      <p class="insc-lead" id="inscLead">A turma do Deep já começou, em 21 de setembro, e as inscrições estão encerradas. Quem já está inscrito continua com as aulas normalmente, às segundas.</p>
+      <a class="btn btn-outline btn-group" href="https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20saber%20sobre%20a%20pr%C3%B3xima%20turma%20do%20Deep." target="_blank" rel="noreferrer" id="inscCta">Avisar da próxima turma</a>
     </div>
 
-    <form class="insc-form" id="deepForm" novalidate>
+    <!-- Inscrições encerradas: o aviso substitui o formulário (DEEP_ABERTO no script.js) -->
+    <div class="insc-fechado" id="deepFechado">
+      <span class="df-selo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/></svg>
+        Inscrições encerradas
+      </span>
+      <p>As inscrições para esta turma do Deep <strong>já foram encerradas</strong> e não é mais possível se inscrever por aqui.</p>
+      <p>Quer participar da próxima turma? Fale com a gente no WhatsApp da igreja e avisamos quando abrir.</p>
+      <a class="btn btn-solid btn-block" href="https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20saber%20sobre%20a%20pr%C3%B3xima%20turma%20do%20Deep." target="_blank" rel="noreferrer">Falar com a igreja</a>
+    </div>
+
+    <form class="insc-form" id="deepForm" novalidate hidden>
       <div class="fld">
         <label for="dNome">Nome completo</label>
         <input class="inp" type="text" id="dNome" name="nome" placeholder="Seu nome" autocomplete="name">

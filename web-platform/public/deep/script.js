@@ -8,6 +8,12 @@
 
   var WHATSAPP = '5567998318450'; // número oficial (src/lib/site-data.ts)
 
+  /* Inscrições do Deep encerradas: a turma já começou. Com false, o
+     formulário fica escondido e no lugar dele aparece o aviso. O servidor
+     também recusa (DEEP_FECHADO no Apps Script). Para reabrir, true aqui e
+     false lá. */
+  var DEEP_ABERTO = false;
+
   /* Mesmo endpoint da conferência: o Apps Script escolhe a aba pelo
      parâmetro "destino". Enviamos form-urlencoded de propósito — é uma
      simple request, então não dispara preflight CORS, que o Apps Script
@@ -51,7 +57,10 @@
     }
 
     var form = document.getElementById('deepForm');
-    if (!form) return;
+    var fechado = document.getElementById('deepFechado');
+    if (form) form.hidden = !DEEP_ABERTO;
+    if (fechado) fechado.hidden = DEEP_ABERTO;
+    if (!form || !DEEP_ABERTO) return;
 
     var fNome = document.getElementById('dNome');
     var fZap = document.getElementById('dZap');

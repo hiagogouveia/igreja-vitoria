@@ -66,6 +66,140 @@
       })();
     }
 
+    /* ---------- Testemunhos ----------
+       Envio independente da inscrição: grava na aba "Testemunhos" pelo mesmo
+       Apps Script (destino=testemunho). */
+    (function testemunhos() {
+      var f = document.getElementById('testForm');
+      if (!f) return;
+      var fNome = document.getElementById('tNome');
+      var fZap = document.getElementById('tZap');
+      var fTexto = document.getElementById('tTexto');
+      var fComp = document.getElementById('tCompartilhar');
+      var nota = document.getElementById('testNote');
+      var notaOriginal = nota ? nota.textContent : '';
+      var tela = document.getElementById('testOk');
+      var telaTitulo = document.getElementById('testOkTitle');
+      var telaMsg = document.getElementById('testOkMsg');
+      var botaoOutro = document.getElementById('testOutro');
+      var btn = f.querySelector('button[type="submit"]');
+      var campos = Array.prototype.filter.call(f.children, function (el) { return el !== tela; });
+
+      function erro(el, msg) {
+        el.classList.toggle('err', !!msg);
+        var holder = el.parentNode.querySelector('[data-err]');
+        if (holder) holder.textContent = msg || '';
+      }
+      f.querySelectorAll('.inp').forEach(function (inp) {
+        var limpa = function () { if (inp.classList.contains('err')) erro(inp, ''); };
+        inp.addEventListener('input', limpa);
+        inp.addEventListener('change', limpa);
+      });
+      fZap.addEventListener('input', function () {
+        var v = fZap.value.replace(/\D/g, '').slice(0, 11);
+        fZap.value = v.length <= 10
+          ? v.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2')
+          : v.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
+      });
+
+      function enviando(estado) {
+        if (!btn) return;
+        btn.disabled = estado;
+        btn.style.opacity = estado ? '.6' : '';
+        btn.style.cursor = estado ? 'progress' : '';
+        btn.textContent = estado ? 'Enviando...' : 'Enviar meu testemunho';
+      }
+      function aviso(texto, classe) {
+        if (!nota) return;
+        nota.className = classe || 'form-note';
+        nota.textContent = texto;
+      }
+      function concluir(nome) {
+        telaTitulo.textContent = 'Obrigado, ' + nome + '!';
+        telaMsg.textContent = 'Seu testemunho chegou para a equipe da Igreja Vitória. Que bom poder celebrar isso com você.';
+        f.reset();
+        f.querySelectorAll('.inp').forEach(function (i) { erro(i, ''); });
+        enviando(false);
+        aviso(notaOriginal, 'form-note');
+        tela.classList.remove('saindo');
+        tela.hidden = false;
+        campos.forEach(function (el) { el.inert = true; });
+        if (tela.scrollHeight > f.offsetHeight) f.style.minHeight = tela.scrollHeight + 'px';
+        var nav = document.getElementById('nav');
+        window.scrollTo({
+          top: f.getBoundingClientRect().top + window.pageYOffset - (nav ? nav.offsetHeight : 0) - 16,
+          behavior: reduce ? 'auto' : 'smooth'
+        });
+        telaTitulo.focus({ preventScroll: true });
+      }
+      function falhar() {
+        enviando(false);
+        var texto = ['Olá! Quero deixar meu testemunho da Conferência Céus Abertos.', '',
+          '• Nome: ' + fNome.value.trim(), '', fTexto.value.trim()].join('\n');
+        aviso('Não conseguimos enviar agora. Toque aqui para mandar pelo WhatsApp.', 'form-err');
+        if (nota) {
+          nota.style.cursor = 'pointer';
+          nota.onclick = function () {
+            window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
+          };
+        }
+      }
+
+      botaoOutro.addEventListener('click', function () {
+        var fechar = function () {
+          tela.hidden = true;
+          tela.classList.remove('saindo');
+          campos.forEach(function (el) { el.inert = false; });
+          f.style.minHeight = '';
+          fNome.focus();
+        };
+        if (reduce) return fechar();
+        tela.classList.add('saindo');
+        setTimeout(fechar, 280);
+      });
+
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var ok = true;
+        function exige(el, cond, msg) {
+          var ruim = !cond;
+          erro(el, ruim ? msg : '');
+          if (ruim) { if (ok) el.focus(); ok = false; }
+        }
+        exige(fNome, fNome.value.trim().length > 2, 'Diga como podemos te chamar.');
+        exige(fTexto, fTexto.value.trim().length > 9, 'Conte um pouco do que aconteceu.');
+        exige(fComp, !!fComp.value, 'Selecione uma opção.');
+        var digitos = fZap.value.replace(/\D/g, '');
+        exige(fZap, digitos.length === 0 || digitos.length >= 10, 'Informe um WhatsApp válido ou deixe em branco.');
+        if (!ok) return;
+
+        var dados = new URLSearchParams();
+        dados.set('destino', 'testemunho');
+        dados.set('nome', fNome.value.trim());
+        dados.set('telefone', fZap.value.trim());
+        dados.set('testemunho', fTexto.value.trim());
+        dados.set('compartilhar', fComp.value);
+        dados.set('origem', 'site');
+
+        var nome = fNome.value.trim().split(/\s+/)[0];
+        nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+        enviando(true);
+        aviso('Enviando seu testemunho...', 'form-note');
+
+        fetch(INSCRICAO_URL, { method: 'POST', body: dados })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (res && res.ok === false) throw new Error(res.erro || 'falha');
+            concluir(nome);
+          })
+          .catch(function () {
+            return fetch(INSCRICAO_URL, { method: 'POST', mode: 'no-cors', body: dados })
+              .then(function () { concluir(nome); })
+              .catch(falhar);
+          });
+      });
+    })();
+
     /* ---------- Inscrição gratuita ---------- */
     var form = document.getElementById('inscForm');
     if (!form) return;
