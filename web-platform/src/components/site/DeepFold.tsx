@@ -14,7 +14,7 @@ export default function DeepFold() {
   return (
     <a
       href="/deep"
-      aria-label="Deep · Curso de membresia da Igreja Vitória · turma iniciada em 21 de setembro, inscrições encerradas"
+      aria-label="Deep · Curso de membresia da Igreja Vitória · entre na lista da próxima turma"
       style={{ display: 'block', textDecoration: 'none', color: '#fff' }}
     >
       <section
@@ -38,7 +38,7 @@ export default function DeepFold() {
               Turma em andamento
             </span>
             <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(11px,1.3vw,14px)', letterSpacing: '.2em', textTransform: 'uppercase', color: AZUL_CLARO, marginLeft: 'auto' }}>
-              Inscrições encerradas
+              Lista da próxima turma
             </span>
           </div>
 
@@ -65,8 +65,8 @@ export default function DeepFold() {
                 marginTop: 'clamp(14px,2vw,22px)', maxWidth: 460, fontSize: 'clamp(15px,1.7vw,18px)',
                 lineHeight: 1.6, color: '#EAF3FA',
               }}>
-                A turma começou em 21 de setembro, às segundas, e as inscrições estão encerradas.
-                Fale com a igreja para saber da próxima.
+                A turma atual já começou. Entre na lista e a igreja avisa você quando
+                a próxima abrir.
               </p>
             </div>
 
@@ -87,11 +87,6 @@ export default function DeepFold() {
                     fontFamily: 'var(--head)', fontWeight: 800, fontSize: 12, letterSpacing: '.12em', textTransform: 'uppercase',
                   }}>{t}</span>
                 ))}
-                {/* o valor é a dúvida nº 1 de quem vê o banner: contraste invertido para não passar batido */}
-                <span style={{
-                  background: '#fff', color: AZUL_DEEP, border: '1px solid #fff', borderRadius: 999, padding: '8px 16px',
-                  fontFamily: 'var(--head)', fontWeight: 800, fontSize: 12, letterSpacing: '.12em', textTransform: 'uppercase',
-                }}>R$ 50</span>
               </div>
 
               <span className="deep-cta" style={{
@@ -99,7 +94,7 @@ export default function DeepFold() {
                 fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(13px,1.5vw,15px)',
                 letterSpacing: '.08em', textTransform: 'uppercase', padding: '15px 28px', borderRadius: 999,
               }}>
-                Ver detalhes <span aria-hidden="true">→</span>
+                Quero na próxima <span aria-hidden="true">→</span>
               </span>
             </div>
           </div>

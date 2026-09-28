@@ -7,6 +7,11 @@
  * O site escolhe a aba pelo parâmetro "destino" ("ceus-abertos" ou "deep").
  * Sem esse parâmetro, cai no Céus Abertos — mantém compatibilidade.
  *
+ * INTERESSADOS NO DEEP
+ *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
+ *   avisado da próxima turma, na aba "Deep · Interessados" (destino=
+ *   deep-interesse). Sem valor e sem pagamento: é só uma lista de espera.
+ *
  * TESTEMUNHOS
  *   O site da conferência tem um formulário de testemunho, que grava na aba
  *   "Testemunhos" (criada automaticamente). Não tem trava de repetição: a
@@ -67,6 +72,12 @@ var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
 /* Inscrições do Deep encerradas. Para reabrir, volte para false (e troque
    DEEP_ABERTO no /deep/script.js do site). */
 var DEEP_FECHADO = true;
+
+var ABA_INTERESSE_DEEP = 'Deep · Interessados';
+var COLUNAS_INTERESSE_DEEP = [
+  'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'E-mail',
+  'Endereço', 'Data de nascimento', 'Origem'
+];
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
@@ -543,6 +554,18 @@ function criarPresencaDeep() {
     (abaPresencaDeep(ss).getLastRow() - 2));
 }
 
+/** Aba da lista de espera do Deep, criada no primeiro envio. */
+function abaInteresseDeep(ss) {
+  var sheet = ss.getSheetByName(ABA_INTERESSE_DEEP);
+  if (!sheet) {
+    sheet = ss.insertSheet(ABA_INTERESSE_DEEP, ss.getSheets().length);
+    sheet.setColumnWidth(2, 260);
+    sheet.setColumnWidth(6, 320);
+  }
+  garantirCabecalho(sheet, COLUNAS_INTERESSE_DEEP);
+  return sheet;
+}
+
 /** Aba dos testemunhos, criada no primeiro envio. */
 function abaTestemunhos(ss) {
   var sheet = ss.getSheetByName(ABA_TESTEMUNHOS);
@@ -598,6 +621,24 @@ function doPost(e) {
 
     if (destino === 'deep' && DEEP_FECHADO) {
       return json({ ok: false, erro: 'deep-fechado' });
+    }
+
+    if (destino === 'deep-interesse') {
+      var listaEspera = abaInteresseDeep(ss);
+      if (jaInscrito(listaEspera, digitos)) {
+        return json({ ok: true, duplicado: true });
+      }
+      listaEspera.appendRow([
+        new Date(),
+        nome,
+        telefone,
+        "'" + digitos,
+        String(p.email || '').trim(),
+        String(p.endereco || '').trim(),
+        String(p.nascimento || '').trim(),
+        String(p.origem || 'site')
+      ]);
+      return json({ ok: true, duplicado: false });
     }
     var sheet = destino === 'deep' ? abaDeep(ss) : abaCeusAbertos(ss);
 
@@ -742,8 +783,9 @@ function doGet(e) {
       pratos: pratosAbertos(ss),
       sister: vagasSister(ss),
       deep: { aberto: !DEEP_FECHADO },
-      // diz ao site que esta implantação já sabe gravar testemunhos
-      aceitaTestemunho: true
+      // dizem ao site que esta implantação já sabe gravar cada coisa
+      aceitaTestemunho: true,
+      aceitaInteresseDeep: true
     };
     if (e && e.parameter && e.parameter.diag) {
       var aba = abaPratos(ss);
@@ -775,6 +817,8 @@ function doGet(e) {
       };
       var test = ss.getSheetByName(ABA_TESTEMUNHOS);
       resposta.testemunhos = test ? Math.max(test.getLastRow() - 1, 0) : 0;
+      var espera = ss.getSheetByName(ABA_INTERESSE_DEEP);
+      resposta.deep.interessados = espera ? Math.max(espera.getLastRow() - 1, 0) : 0;
     }
     return json(resposta);
   } catch (err) {

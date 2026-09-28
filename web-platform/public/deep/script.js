@@ -8,11 +8,11 @@
 
   var WHATSAPP = '5567998318450'; // número oficial (src/lib/site-data.ts)
 
-  /* Inscrições do Deep encerradas: a turma já começou. Com false, o
-     formulário fica escondido e no lugar dele aparece o aviso. O servidor
-     também recusa (DEEP_FECHADO no Apps Script). Para reabrir, true aqui e
-     false lá. */
-  var DEEP_ABERTO = false;
+  /* A turma atual já começou e as inscrições estão encerradas. O formulário
+     desta página é a LISTA DE ESPERA da próxima turma (destino=deep-interesse),
+     sem valor e sem pagamento. Ele só aparece depois que o servidor confirma
+     que sabe gravá-la; senão fica o aviso com o WhatsApp, para ninguém achar
+     que entrou na lista sem ter entrado. */
 
   /* Mesmo endpoint da conferência: o Apps Script escolhe a aba pelo
      parâmetro "destino". Enviamos form-urlencoded de propósito — é uma
@@ -58,9 +58,17 @@
 
     var form = document.getElementById('deepForm');
     var fechado = document.getElementById('deepFechado');
-    if (form) form.hidden = !DEEP_ABERTO;
-    if (fechado) fechado.hidden = DEEP_ABERTO;
-    if (!form || !DEEP_ABERTO) return;
+    if (!form) return;
+
+    fetch(INSCRICAO_URL)
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.aceitaInteresseDeep) {
+          form.hidden = false;
+          if (fechado) fechado.hidden = true;
+        }
+      })
+      .catch(function () { /* sem resposta: fica o aviso com o WhatsApp */ });
 
     var fNome = document.getElementById('dNome');
     var fZap = document.getElementById('dZap');
@@ -105,7 +113,7 @@
       if (!ok) return;
 
       var dados = new URLSearchParams();
-      dados.set('destino', 'deep');
+      dados.set('destino', 'deep-interesse');
       dados.set('nome', fNome.value.trim());
       dados.set('telefone', fZap.value.trim());
       dados.set('email', fEmail.value.trim());
@@ -146,7 +154,7 @@
       btn.disabled = estado;
       btn.style.opacity = estado ? '.6' : '';
       btn.style.cursor = estado ? 'progress' : '';
-      btn.textContent = estado ? 'Enviando...' : 'Fazer minha inscrição';
+      btn.textContent = estado ? 'Enviando...' : 'Entrar na lista de espera';
     }
 
     function msg(texto, classe) {
@@ -161,14 +169,14 @@
       var btn = form.querySelector('button[type="submit"]');
       if (btn) { btn.disabled = true; btn.textContent = 'Inscrição enviada'; btn.style.opacity = '.6'; }
       msg(duplicado
-        ? 'Você já estava inscrito com esse telefone. Para concluir, faça o PIX de R$ 50 e envie o comprovante no WhatsApp da igreja (veja os passos logo abaixo).'
-        : 'Inscrição registrada! Agora faltam dois passos: fazer o PIX de R$ 50 e enviar o comprovante no WhatsApp da igreja. Veja como logo abaixo.', 'form-ok');
+        ? 'Você já estava na lista com esse telefone. Pode ficar tranquilo: assim que a próxima turma abrir, a igreja fala com você.'
+        : 'Pronto! Você está na lista da próxima turma. Quando as inscrições abrirem, a igreja avisa você pelo WhatsApp.', 'form-ok');
     }
 
     function falhar() {
       enviando(false);
       var texto = [
-        'Olá! Quero me inscrever no Deep, o curso de membresia.',
+        'Olá! Quero entrar na lista da próxima turma do Deep.',
         '',
         '• Nome: ' + fNome.value.trim(),
         '• WhatsApp: ' + fZap.value.trim(),

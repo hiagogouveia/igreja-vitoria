@@ -6,7 +6,7 @@
 <!-- Meta Pixel · código base compartilhado com o app Next (fonte única) -->
 <script src="/meta-pixel.js" defer></script>
 <title>Conferência Céus Abertos 2026 · Igreja Vitória · Campo Grande</title>
-<meta name="description" content="Conferência Céus Abertos 2026. 25, 26 e 27 de setembro, Campo Grande. Três dias, cinco sessões e entrada gratuita. Faça sua inscrição.">
+<meta name="description" content="Conferência Céus Abertos 2026, na Igreja Vitória, em Campo Grande. Foram três dias e cinco sessões. Conte o seu testemunho.">
 <meta name="theme-color" content="#F0F0EE">
 <meta name="author" content="Igreja Vitória">
 <!-- Open Graph -->
@@ -29,7 +29,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/ceus-abertos/styles.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Event","url":"https://www.igrejavitoriacg.com.br/ceus-abertos","image":"https://www.igrejavitoriacg.com.br/ceus-abertos/assets/palestrantes.png","name":"Conferência Céus Abertos 2026","startDate":"2026-09-25","endDate":"2026-09-27","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Igreja Vitória","address":"Campo Grande - MS"},"description":"Três dias e cinco sessões na Igreja Vitória, em Campo Grande. Entrada gratuita.","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock","url":"https://www.igrejavitoriacg.com.br/ceus-abertos#inscricao"}}
+{"@context":"https://schema.org","@type":"Event","url":"https://www.igrejavitoriacg.com.br/ceus-abertos","image":"https://www.igrejavitoriacg.com.br/ceus-abertos/assets/palestrantes.png","name":"Conferência Céus Abertos 2026","startDate":"2026-09-25","endDate":"2026-09-27","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Igreja Vitória","address":"Campo Grande - MS"},"description":"Três dias e cinco sessões na Igreja Vitória, em Campo Grande. Entrada gratuita.","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock","url":"https://www.igrejavitoriacg.com.br/ceus-abertos#testemunhos"}}
 </script>
 </head>
 <body>
@@ -47,8 +47,8 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
     <a href="#participacoes">Participações</a>
     <a href="#sister">Sister</a>
     <a href="#programacao">Programação</a>
-    <a href="#testemunhos" id="navTestemunhos" hidden>Testemunhos</a>
-    <a class="nav-cta" href="#inscricao">Inscreva-se</a>
+    <a href="#testemunhos">Testemunhos</a>
+    <a class="nav-cta" href="#testemunhos">Conte seu testemunho</a>
   </nav>
 </header>
 
@@ -67,7 +67,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       </div>
       <div class="hero-place">Campo Grande</div>
       <div class="hero-actions">
-        <a class="btn btn-dark" href="#inscricao">Faça sua inscrição <span class="btn-arrow" aria-hidden="true">↓</span></a>
+        <a class="btn btn-dark" href="#testemunhos">Conte seu testemunho <span class="btn-arrow" aria-hidden="true">↓</span></a>
         <span class="hero-meta">3 dias · 5 sessões · entrada gratuita</span>
       </div>
       <div class="hero-welcome">Welcome to the victory</div>
@@ -95,13 +95,10 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
   </div>
 </div>
 
-<!-- Aviso de topo: as vagas do Sister acabaram -->
-<a class="aviso-topo" id="avisoTopoSister" href="#sister">
-  <span class="at-selo">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/></svg>
-    Sister · inscrições esgotadas
-  </span>
-  <span class="at-txt">As vagas da noite das mulheres acabaram. A inscrição para as outras sessões da conferência continua aberta.</span>
+<!-- A conferência passou: a faixa do topo agora chama o testemunho -->
+<a class="aviso-topo" href="#testemunhos">
+  <span class="at-selo">Conte seu testemunho</span>
+  <span class="at-txt">A Conferência Céus Abertos passou, mas o que Deus fez fica. Conte para a gente o que aconteceu na sua vida.</span>
 </a>
 
 <!-- ============ 02 · SOBRE ============ -->
@@ -154,7 +151,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 
   <div class="participacoes-foot">
     <p>Uma casa cheia, três dias de sessões e uma geração que se levanta em Campo Grande.</p>
-    <a class="btn btn-ghost-or" href="#inscricao">Quero participar <span class="btn-arrow" aria-hidden="true">↓</span></a>
+    <a class="btn btn-ghost-or" href="#testemunhos">O que Deus fez em você? <span class="btn-arrow" aria-hidden="true">↓</span></a>
   </div>
 </section>
 
@@ -178,18 +175,12 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 
     <!-- O Sister tem 160 vagas. O script pergunta ao servidor quantas
          sobraram e mostra um destes dois blocos. -->
-    <div class="sister-foot" id="sisterAberto">
-      <span class="sister-free" id="sisterVagas">Entrada gratuita · vagas limitadas</span>
-      <a class="btn btn-sister" href="#inscricao">Inscreva-se <span class="btn-arrow" aria-hidden="true">↓</span></a>
-    </div>
-
-    <div class="sister-fechado" id="sisterFechado" role="status" hidden>
+    <div class="sister-fechado" id="sisterFechado" role="status">
       <span class="sf-selo">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/></svg>
         Inscrições esgotadas
       </span>
       <p class="sf-txt">As vagas do Sister acabaram. Se você já se inscreveu, é só chegar: <strong>sábado, 26 de setembro, às 18h</strong>, com o seu prato para o brunch. Não deu tempo de se inscrever? Procure a equipe na entrada.</p>
-      <a class="sf-link" href="#inscricao">A inscrição para as outras sessões da conferência continua aberta →</a>
     </div>
   </div>
 </section>
@@ -229,164 +220,15 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <div class="eyebrow or">Três dias</div>
       <div class="prog-note-big">Cinco sessões</div>
     </div>
-    <p>Entrada gratuita. O Sister é só para mulheres e a sessão de domingo de manhã é só para os voluntários. Faça sua inscrição e marque na agenda os horários acima.</p>
+    <p>Foram cinco sessões, de 25 a 27 de setembro, com entrada gratuita. O Sister foi só para mulheres e a sessão de domingo de manhã, só para os voluntários.</p>
   </div>
 </section>
 
-<!-- ============ 06 · INSCRIÇÃO ============ -->
-<section class="sec inscricao" id="inscricao">
-  <div class="insc-grid">
-    <div>
-      <div class="eyebrow or">05 · Inscrições</div>
-      <h2 class="insc-title reveal">Sua<br>experiência<br>começa aqui</h2>
-      <div class="badge-free badge-free-lg">Entrada gratuita</div>
-      <p class="insc-lead">25, 26 e 27 de setembro de 2026 · Campo Grande. Garanta seu lugar. A inscrição não tem custo.</p>
-
-      <!-- Sempre visível nesta tela: as vagas do Sister acabaram -->
-      <div class="insc-aviso" id="avisoInscSister" role="status">
-        <span class="ia-selo">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/></svg>
-          Sister · inscrições esgotadas
-        </span>
-        <p>As vagas da noite das mulheres, no <strong>sábado às 18h</strong>, já acabaram. Este formulário vale para as <strong>outras sessões da conferência</strong>, que seguem com inscrições abertas.</p>
-      </div>
-    </div>
-
-    <form class="insc-form reveal" id="inscForm" novalidate>
-      <div class="fld">
-        <label for="fNome">Nome completo</label>
-        <input class="inp" type="text" id="fNome" name="nome" placeholder="Seu nome" autocomplete="name">
-        <span class="errmsg" data-err></span>
-      </div>
-      <div class="fld">
-        <label for="fZap">Telefone / WhatsApp</label>
-        <input class="inp" type="tel" id="fZap" name="telefone" placeholder="(67) 99999-9999" inputmode="numeric" maxlength="16" autocomplete="tel">
-        <span class="errmsg" data-err></span>
-      </div>
-      <div class="fld">
-        <label for="fSexo">Sexo</label>
-        <select class="inp" id="fSexo" name="sexo">
-          <option value="">Selecione</option>
-          <option value="Feminino">Feminino</option>
-          <option value="Masculino">Masculino</option>
-        </select>
-        <span class="errmsg" data-err></span>
-      </div>
-      <!-- Sister é exclusivo para mulheres: só aparece quando o sexo for feminino -->
-      <!-- As inscrições do Sister foram encerradas: no lugar da pergunta,
-           as mulheres veem o aviso abaixo (ver SISTER_ABERTO no script.js) -->
-      <div class="fld fld-cond" id="fldSisterFechado" hidden>
-        <div class="aviso-fechado">
-          <strong>Sister · inscrições esgotadas</strong>
-          As vagas da noite das mulheres acabaram. Sua inscrição segue valendo para as outras sessões da conferência.
-        </div>
-      </div>
-      <div class="fld fld-cond" id="fldSister" hidden>
-        <label for="fSister">Quer participar do Sister? <small>(sábado, 18h · só para mulheres)</small></label>
-        <select class="inp" id="fSister" name="sister">
-          <option value="">Selecione</option>
-          <option value="Sim">Sim, quero participar</option>
-          <option value="Não">Não</option>
-        </select>
-        <span class="errmsg" data-err></span>
-      </div>
-      <!-- Só para quem vai ao Sister. As opções abertas vêm da aba "Sister · Pratos"
-           da planilha: o que for desmarcado lá aparece aqui como esgotado. -->
-      <div class="fld fld-cond" id="fldPrato" hidden>
-        <label for="fPrato">Qual prato você vai levar? <small>(para o brunch do Sister)</small></label>
-        <select class="inp" id="fPrato" name="prato">
-          <option value="">Selecione</option>
-          <option value="Salgado">Salgado</option>
-          <option value="Doce">Doce</option>
-        </select>
-        <span class="fld-hint">Cada participante do Sister leva um prato para o brunch.</span>
-        <span class="errmsg" data-err></span>
-      </div>
-      <div class="fld">
-        <label for="fEndereco">Endereço <small>(rua e número)</small></label>
-        <input class="inp" type="text" id="fEndereco" name="endereco" placeholder="Rua, número" autocomplete="street-address">
-        <span class="errmsg" data-err></span>
-      </div>
-      <div class="fld-row">
-        <div class="fld">
-          <label for="fBairro">Bairro</label>
-          <input class="inp" type="text" id="fBairro" name="bairro" placeholder="Seu bairro">
-          <span class="errmsg" data-err></span>
-        </div>
-        <div class="fld">
-          <label for="fCidade">Cidade</label>
-          <input class="inp" type="text" id="fCidade" name="cidade" placeholder="Campo Grande" autocomplete="address-level2">
-          <span class="errmsg" data-err></span>
-        </div>
-      </div>
-      <div class="fld">
-        <label for="fCav">Já participa de alguma CAV?</label>
-        <select class="inp" id="fCav" name="cav">
-          <option value="">Selecione</option>
-          <option value="Sim">Sim</option>
-          <option value="Não">Ainda não</option>
-        </select>
-        <span class="errmsg" data-err></span>
-      </div>
-      <!-- Lista espelha as CAVs ativas hoje. Ao abrir/encerrar uma CAV,
-           basta acrescentar ou remover a opção aqui. -->
-      <div class="fld fld-cond" id="fldQualCav" hidden>
-        <label for="fQualCav">Qual CAV?</label>
-        <select class="inp" id="fQualCav" name="qualCav">
-          <option value="">Selecione</option>
-          <option value="CAV Centro">CAV Centro</option>
-          <option value="CAV Coophafe">CAV Coophafe</option>
-          <option value="CAV Joquei">CAV Joquei</option>
-          <option value="CAV Parati">CAV Parati</option>
-          <option value="CAV Rita Vieira">CAV Rita Vieira</option>
-          <option value="CAV São J. Lagoa">CAV São J. Lagoa</option>
-          <option value="CAV Sírio Libanês">CAV Sírio Libanês</option>
-          <option value="CAV Winners">CAV Winners</option>
-        </select>
-        <span class="errmsg" data-err></span>
-      </div>
-      <button class="btn btn-or btn-block" type="submit">Fazer minha inscrição</button>
-      <p class="form-note" id="formNote">Sua inscrição é gratuita. Usamos seus dados apenas para organizar a conferência.</p>
-
-      <!-- Tela de sucesso: cobre o formulário depois do envio. Os campos já
-           voltam limpos por baixo, prontos para uma nova inscrição. -->
-      <div class="insc-ok" id="inscOk" role="status" aria-live="polite" hidden>
-        <div class="insc-ok-inner">
-          <svg class="ok-check" viewBox="0 0 64 64" aria-hidden="true">
-            <circle cx="32" cy="32" r="29" pathLength="1"/>
-            <path d="M19 33.5l8.5 8.5L45.5 23" pathLength="1"/>
-          </svg>
-          <h3 class="ok-title" id="okTitle" tabindex="-1">Inscrição confirmada!</h3>
-          <p class="ok-msg" id="okMsg"></p>
-
-          <!-- Só para quem vai ao Sister. Cores tiradas da arte de referência. -->
-          <div class="ok-sister" id="okSister" hidden>
-            <div class="ok-sister-eyebrow">Sister · Sugestão de cores</div>
-            <ul class="paleta" aria-label="Paleta sugerida para o Sister">
-              <li class="cor" style="--c:#6B3712"><span class="cor-amostra"></span><span class="cor-nome">Café</span></li>
-              <li class="cor" style="--c:#A97C5B"><span class="cor-amostra"></span><span class="cor-nome">Caramelo</span></li>
-              <li class="cor" style="--c:#A65B28"><span class="cor-amostra"></span><span class="cor-nome">Cobre</span></li>
-              <li class="cor" style="--c:#7B2D0C"><span class="cor-amostra"></span><span class="cor-nome">Terracota</span></li>
-              <li class="cor" style="--c:#C4A283"><span class="cor-amostra"></span><span class="cor-nome">Areia</span></li>
-              <li class="cor" style="--c:#4B2613"><span class="cor-amostra"></span><span class="cor-nome">Chocolate</span></li>
-            </ul>
-            <p class="ok-sister-txt">Se quiser entrar no clima da noite, esta é a paleta que pensamos para o Sister. <strong>É só uma sugestão:</strong> venha com a roupa em que você se sentir bem. 🤎</p>
-            <p class="ok-prato" id="okPrato" hidden></p>
-          </div>
-
-          <button type="button" class="btn btn-or btn-block" id="okNova">Fazer outra inscrição</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</section>
-
-<!-- ============ 06 · TESTEMUNHOS ============ -->
-<!-- Só aparece quando o Apps Script souber gravar testemunhos (ver script.js) -->
-<section class="sec testemunhos" id="testemunhos" hidden>
+<!-- ============ 05 · TESTEMUNHOS ============ -->
+<section class="sec testemunhos" id="testemunhos">
   <div class="test-grid">
     <div>
-      <div class="eyebrow or">06 · Testemunhos</div>
+      <div class="eyebrow or">05 · Testemunhos</div>
       <h2 class="test-title reveal">O que Deus<br>fez em você?</h2>
       <p class="test-lead">Se você viveu algo na Conferência Céus Abertos, conte para a gente. Pode ser uma cura, uma resposta de oração, uma decisão, um recomeço. Seu relato anima a igreja inteira.</p>
     </div>
