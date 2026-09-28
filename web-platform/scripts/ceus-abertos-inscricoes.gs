@@ -741,7 +741,9 @@ function doGet(e) {
       servico: 'inscricoes-igreja-vitoria',
       pratos: pratosAbertos(ss),
       sister: vagasSister(ss),
-      deep: { aberto: !DEEP_FECHADO }
+      deep: { aberto: !DEEP_FECHADO },
+      // diz ao site que esta implantação já sabe gravar testemunhos
+      aceitaTestemunho: true
     };
     if (e && e.parameter && e.parameter.diag) {
       var aba = abaPratos(ss);

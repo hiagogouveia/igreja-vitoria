@@ -286,6 +286,15 @@
       .then(function (res) {
         if (res && Array.isArray(res.pratos)) pratosAbertos = res.pratos;
         else if (res && res.ok) pratosSuportado = false;
+        /* A seção de testemunhos só aparece quando o servidor sabe gravá-los.
+           Sem isso, um testemunho enviado para uma implantação antiga seria
+           recusado e o site mostraria sucesso sem ter gravado nada. */
+        if (res && res.aceitaTestemunho) {
+          var secao = document.getElementById('testemunhos');
+          var link = document.getElementById('navTestemunhos');
+          if (secao) secao.hidden = false;
+          if (link) link.hidden = false;
+        }
         if (res && res.sister) {
           sisterInfo = res.sister;
           SISTER_ABERTO = !SISTER_FECHADO_MANUAL && !!res.sister.aberto;
