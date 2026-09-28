@@ -443,15 +443,45 @@ function garantirColunaPagamento(pres) {
   }
   var ultima = pres.getLastRow();
   if (ultima < 3) return;
-  var atuais = pres.getRange(3, col, ultima - 2, 1).getFormulas();
+  var formulas = pres.getRange(3, col, ultima - 2, 1).getFormulas();
+  var valores = pres.getRange(3, col, ultima - 2, 1).getDisplayValues();
+
+  /* Só preenche onde está realmente vazio. Quem foi anotado à mão (por
+     exemplo alguém da turma anterior, repondo aula, que não está na aba Deep)
+     mantém o que foi escrito: a fórmula não passa por cima. */
+  function faltaFormula(i) {
+    return !formulas[i][0] && String(valores[i][0]).trim() === '';
+  }
   var primeira = -1;
-  for (var i = 0; i < atuais.length; i++) { if (!atuais[i][0]) { primeira = i; break; } }
+  for (var i = 0; i < formulas.length; i++) { if (faltaFormula(i)) { primeira = i; break; } }
   if (primeira === -1) return;
   // descobre o separador na primeira célula vazia e usa o mesmo no resto
   var sep = escreverFormulaLocal(pres.getRange(3 + primeira, col), formulaPagamento);
   if (!sep) return;
-  var novas = atuais.map(function (r) { return [r[0] || formulaPagamento(sep)]; });
-  pres.getRange(3, col, novas.length, 1).setFormulas(novas).setHorizontalAlignment('center');
+  for (var j = 0; j < formulas.length; j++) {
+    if (j !== primeira && faltaFormula(j)) {
+      pres.getRange(3 + j, col, 1, 1).setFormula(formulaPagamento(sep)).setHorizontalAlignment('center');
+    }
+  }
+  pres.getRange(3, col, formulas.length, 1).setHorizontalAlignment('center');
+}
+
+/**
+ * Garante a fórmula de "Presenças" em todas as linhas. Linhas digitadas à mão
+ * entram sem ela, e o total da pessoa fica em branco.
+ */
+function garantirTotalPresencas(pres) {
+  var colTotal = 3 + AULAS_DEEP.length;
+  var ultima = pres.getLastRow();
+  if (ultima < 3) return;
+  var letraFim = pres.getRange(1, colTotal - 1).getA1Notation().replace(/\d+/g, '');
+  var formula = '=SUMPRODUCT(INDIRECT("C"&ROW()&":' + letraFim + '"&ROW())*1)';
+  var atuais = pres.getRange(3, colTotal, ultima - 2, 1).getFormulas();
+  for (var i = 0; i < atuais.length; i++) {
+    if (!atuais[i][0]) {
+      pres.getRange(3 + i, colTotal, 1, 1).setFormula(formula).setHorizontalAlignment('center');
+    }
+  }
 }
 
 /** Nome comparável: sem acento, sem espaço sobrando, tudo minúsculo. */
@@ -515,6 +545,7 @@ function sincronizarPresencaDeep(ss, ordenar) {
     novos.push([nomeBonito(nome), String(r[1]).trim()]);
   });
   if (!novos.length) {
+    garantirTotalPresencas(pres);
     garantirColunaPagamento(pres);
     if (ordenar) ordenarPresencaDeep(pres);
     return 0;
@@ -531,6 +562,7 @@ function sincronizarPresencaDeep(ss, ordenar) {
     formulas.push(['=SUMPRODUCT(INDIRECT("C"&ROW()&":' + letraFim + '"&ROW())*1)']);
   }
   pres.getRange(inicio, colTotal, n, 1).setFormulas(formulas).setHorizontalAlignment('center');
+  garantirTotalPresencas(pres);
   garantirColunaPagamento(pres);
 
   if (ordenar) ordenarPresencaDeep(pres);
