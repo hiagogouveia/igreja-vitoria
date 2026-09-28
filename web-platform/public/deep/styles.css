@@ -69,6 +69,9 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .brand-sub{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tenue);margin-top:3px}
 .nav-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px clamp(12px,2.4vw,28px)}
 .nav-links a{font-size:clamp(10px,1.1vw,12px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+/* volta para o site da igreja */
+.nav-voltar{color:var(--tenue)}
+.nav-voltar:hover{color:var(--branco)}
 .nav-cta{background:var(--branco);color:var(--azul-deep);padding:11px 18px;border-radius:999px;transition:background .25s}
 .nav-cta:hover{background:var(--azul-brilho)}
 

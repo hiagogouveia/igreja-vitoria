@@ -16,7 +16,7 @@ export default function CeusAbertosFold() {
   return (
     <a
       href="/ceus-abertos"
-      aria-label="Conferência Céus Abertos 2026 · 25, 26 e 27 de setembro"
+      aria-label="Conferência Céus Abertos · conte seu testemunho"
       style={{ display: 'block', textDecoration: 'none', color: INK }}
     >
       <section
@@ -28,23 +28,8 @@ export default function CeusAbertosFold() {
         }}
       >
         <div style={{ ...wrap, padding: '0 28px', width: '100%' }}>
-          {/* faixa: datas + entrada gratuita */}
-          <div style={{
-            display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between',
-            gap: 14, borderBottom: `1px solid rgba(11,11,11,.18)`, paddingBottom: 16,
-          }}>
-            <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(14px,2vw,22px)', textTransform: 'uppercase', letterSpacing: '.01em' }}>
-              25, 26 e 27 de setembro
-            </span>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', padding: '8px 20px', borderRadius: 999,
-              background: `linear-gradient(90deg, ${ORANGE} 0%, #E08443 45%, #869893 100%)`,
-              color: INK, fontFamily: 'var(--head)', fontWeight: 900, fontSize: 'clamp(11px,1.4vw,14px)',
-              letterSpacing: '.04em', textTransform: 'uppercase',
-            }}>
-              Entrada gratuita
-            </span>
-          </div>
+          {/* a conferência passou: sem datas e sem "entrada gratuita" */}
+          <div style={{ borderBottom: '1px solid rgba(11,11,11,.18)' }} />
 
           <div style={{
             display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,320px),1fr))',

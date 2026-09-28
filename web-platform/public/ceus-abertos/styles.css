@@ -86,6 +86,9 @@ html.js-anim .reveal.in{animation:ca-rise .7s var(--ease) both}
 .nav-links a{font-size:clamp(10px,1.1vw,12px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
   transition:color .2s}
 .nav-links a:hover{color:var(--or)}
+/* volta para o site da igreja */
+.nav-voltar{color:var(--t-2)}
+.nav-voltar:hover{color:var(--or)}
 .nav-cta{background:var(--or);color:var(--ink);padding:12px 18px;font-weight:800;letter-spacing:.12em;transition:background .25s,color .25s}
 .nav-cta:hover{background:var(--ink);color:#fff}
 @media(max-width:560px){
