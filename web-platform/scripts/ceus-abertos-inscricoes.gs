@@ -81,7 +81,9 @@ var COLUNAS_INTERESSE_DEEP = [
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
-  'Data/Hora', 'Nome', 'Telefone', 'Testemunho', 'Pode compartilhar', 'Origem'
+  // coluna nova entra no FIM: as linhas já gravadas continuam alinhadas
+  'Data/Hora', 'Nome', 'Telefone', 'Testemunho', 'Pode compartilhar', 'Origem',
+  'Elogio ou sugestão'
 ];
 
 var LIMITE_SISTER = 160;
@@ -573,6 +575,7 @@ function abaTestemunhos(ss) {
     sheet = ss.insertSheet(ABA_TESTEMUNHOS, ss.getSheets().length);
     sheet.setColumnWidth(2, 240);
     sheet.setColumnWidth(4, 620);
+    sheet.setColumnWidth(7, 420);
   }
   garantirCabecalho(sheet, COLUNAS_TESTEMUNHO);
   return sheet;
@@ -606,7 +609,8 @@ function doPost(e) {
         telefone,
         texto,
         String(p.compartilhar || '').trim(),
-        String(p.origem || 'site')
+        String(p.origem || 'site'),
+        String(p.sugestao || '').trim()
       ]);
       return json({ ok: true, duplicado: false });
     }
@@ -785,6 +789,7 @@ function doGet(e) {
       deep: { aberto: !DEEP_FECHADO },
       // dizem ao site que esta implantação já sabe gravar cada coisa
       aceitaTestemunho: true,
+      aceitaSugestao: true,
       aceitaInteresseDeep: true
     };
     if (e && e.parameter && e.parameter.diag) {
