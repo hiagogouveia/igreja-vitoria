@@ -6,6 +6,7 @@ import Countdown from '@/components/site/Countdown';
 import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
+import CavFold from '@/components/site/CavFold';
 import CeusAbertosFold from '@/components/site/CeusAbertosFold';
 import DeepFold from '@/components/site/DeepFold';
 import EventArt from '@/components/site/EventArt';
@@ -69,6 +70,8 @@ export default async function Home() {
       </div>
 
       {/* ---------- CONFERÊNCIA 2026 (destaque) ---------- */}
+      <CavFold />
+
       <CeusAbertosFold />
 
       <DeepFold />
