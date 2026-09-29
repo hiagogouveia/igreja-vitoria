@@ -62,7 +62,6 @@
       var fNome = document.getElementById('tNome');
       var fZap = document.getElementById('tZap');
       var fTexto = document.getElementById('tTexto');
-      var fSugestao = document.getElementById('tSugestao');
       var fComp = document.getElementById('tCompartilhar');
       var nota = document.getElementById('testNote');
       var notaOriginal = nota ? nota.textContent : '';
@@ -72,14 +71,6 @@
       var botaoOutro = document.getElementById('testOutro');
       var btn = f.querySelector('button[type="submit"]');
       var campos = Array.prototype.filter.call(f.children, function (el) { return el !== tela; });
-
-      /* O campo de elogio/sugestão só aparece quando o servidor confirma que
-         tem onde guardá-lo; senão a pessoa escreveria e nada seria gravado. */
-      var campoSugestao = document.getElementById('fldSugestao');
-      fetch(INSCRICAO_URL)
-        .then(function (r) { return r.json(); })
-        .then(function (res) { if (res && res.aceitaSugestao && campoSugestao) campoSugestao.hidden = false; })
-        .catch(function () { /* sem resposta: o campo fica escondido */ });
 
       function erro(el, msg) {
         el.classList.toggle('err', !!msg);
@@ -175,7 +166,6 @@
         dados.set('telefone', fZap.value.trim());
         dados.set('testemunho', fTexto.value.trim());
         dados.set('compartilhar', fComp.value);
-        if (campoSugestao && !campoSugestao.hidden) dados.set('sugestao', fSugestao.value.trim());
         dados.set('origem', 'site');
 
         var nome = fNome.value.trim().split(/\s+/)[0];
