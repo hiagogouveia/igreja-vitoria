@@ -35,7 +35,7 @@ export default function DeepFold() {
             borderBottom: '1px solid rgba(255,255,255,.28)', paddingBottom: 14,
           }}>
             <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(11px,1.3vw,14px)', letterSpacing: '.2em', textTransform: 'uppercase' }}>
-              Turma em andamento
+              Curso de membresia
             </span>
             <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(11px,1.3vw,14px)', letterSpacing: '.2em', textTransform: 'uppercase', color: AZUL_CLARO, marginLeft: 'auto' }}>
               Lista da próxima turma
@@ -65,21 +65,12 @@ export default function DeepFold() {
                 marginTop: 'clamp(14px,2vw,22px)', maxWidth: 460, fontSize: 'clamp(15px,1.7vw,18px)',
                 lineHeight: 1.6, color: '#EAF3FA',
               }}>
-                A turma atual já começou. Entre na lista e a igreja avisa você quando
-                a próxima abrir.
+                As inscrições da turma atual estão encerradas. Entre na lista e a igreja
+                avisa você quando a próxima abrir.
               </p>
             </div>
 
             <div style={{ minWidth: 0, display: 'grid', gap: 18, justifyItems: 'start' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 13, letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.62)' }}>
-                  Início
-                </span>
-                <span style={{ fontFamily: 'var(--head)', fontWeight: 900, fontStretch: '118%', fontSize: 'clamp(40px,6vw,84px)', lineHeight: .85, letterSpacing: '-.03em' }}>
-                  21.09
-                </span>
-              </div>
-
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9 }}>
                 {['6 aulas', '1x por semana'].map((t) => (
                   <span key={t} style={{
