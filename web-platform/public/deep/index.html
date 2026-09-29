@@ -142,7 +142,15 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <p class="form-note" id="deepNote">Usamos seus dados apenas para avisar você sobre a próxima turma do Deep.</p>
     </form>
 
-    <div class="insc-fechado" id="deepFechado">
+    <!-- enquanto o servidor não responde, nem o formulário nem o aviso aparecem:
+         fica só este espaço, para não piscar "lista fora do ar" sem motivo -->
+    <div class="insc-carregando" id="deepCarregando" aria-hidden="true">
+      <span class="ic-barra"></span>
+      <span class="ic-barra"></span>
+      <span class="ic-barra"></span>
+    </div>
+
+    <div class="insc-fechado" id="deepFechado" hidden>
       <span class="df-selo">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/></svg>
         Lista indisponível
@@ -150,6 +158,12 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <p>A lista de espera está fora do ar por um instante. Fale com a gente pelo WhatsApp que anotamos seu nome.</p>
       <a class="btn btn-solid btn-block" href="https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20entrar%20na%20lista%20da%20pr%C3%B3xima%20turma%20do%20Deep." target="_blank" rel="noreferrer">Falar com a igreja</a>
     </div>
+    <noscript>
+      <div class="insc-fechado">
+        <p>Para entrar na lista da próxima turma, fale com a gente pelo WhatsApp.</p>
+        <a class="btn btn-solid btn-block" href="https://wa.me/5567998318450?text=Ol%C3%A1!%20Quero%20entrar%20na%20lista%20da%20pr%C3%B3xima%20turma%20do%20Deep." target="_blank" rel="noreferrer">Falar com a igreja</a>
+      </div>
+    </noscript>
   </div>
 </section>
 

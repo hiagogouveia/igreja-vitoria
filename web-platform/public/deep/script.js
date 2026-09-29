@@ -58,17 +58,26 @@
 
     var form = document.getElementById('deepForm');
     var fechado = document.getElementById('deepFechado');
+    var carregando = document.getElementById('deepCarregando');
     if (!form) return;
+
+    /* Mostra um dos dois só depois de saber a resposta, para o aviso de
+       "lista fora do ar" não piscar na abertura da página. */
+    var decidido = false;
+    function mostrar(temLista) {
+      if (decidido) return;
+      decidido = true;
+      if (carregando) carregando.hidden = true;
+      form.hidden = !temLista;
+      if (fechado) fechado.hidden = temLista;
+    }
+    // rede muito lenta: depois de 12s assume que não vai responder
+    var prazo = setTimeout(function () { mostrar(false); }, 12000);
 
     fetch(INSCRICAO_URL)
       .then(function (r) { return r.json(); })
-      .then(function (res) {
-        if (res && res.aceitaInteresseDeep) {
-          form.hidden = false;
-          if (fechado) fechado.hidden = true;
-        }
-      })
-      .catch(function () { /* sem resposta: fica o aviso com o WhatsApp */ });
+      .then(function (res) { clearTimeout(prazo); mostrar(!!(res && res.aceitaInteresseDeep)); })
+      .catch(function () { clearTimeout(prazo); mostrar(false); });
 
     var fNome = document.getElementById('dNome');
     var fZap = document.getElementById('dZap');
