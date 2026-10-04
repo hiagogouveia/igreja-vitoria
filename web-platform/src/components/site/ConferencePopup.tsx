@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * Pop-up institucional da Conferência Céus Abertos 2026 — só na home.
- * Aparece na 1ª visita; após fechar OU clicar em "Contar meu testemunho",
+ * Pop-up da home — agora convida para a Caravana Anastácio (ônibus para a
+ * Conferência Mercosul, 10/10), no lugar do convite de testemunho.
+ * Aparece na 1ª visita; após fechar OU clicar em "Reservar minha vaga",
  * não reaparece por 24h (controle via localStorage). Glassmorphism, fade +
- * scale, ESC/scroll-lock/focus-trap. Reutilizável para futuras campanhas
- * (passe título/texto/cta via props se necessário).
+ * scale, ESC/scroll-lock/focus-trap.
  */
-const KEY = 'vc26-popup-until';
+// chave nova: quem já fechou o pop-up do testemunho também vê o da caravana
+const KEY = 'caravana-popup-until';
+const AZUL = '#2F7BFF';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export default function ConferencePopup() {
@@ -88,7 +90,8 @@ export default function ConferencePopup() {
         aria-labelledby="vc-pop-title"
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: '100%', maxWidth: 440, position: 'relative', padding: 'clamp(26px,5vw,34px)', borderRadius: 22,
+          width: '100%', maxWidth: 440, maxHeight: '92vh', overflowY: 'auto', overflowX: 'hidden',
+          position: 'relative', padding: 'clamp(26px,5vw,34px)', paddingTop: 0, borderRadius: 22,
           background: 'rgba(16,16,18,.72)', border: '1px solid var(--border)',
           WebkitBackdropFilter: 'blur(22px) saturate(140%)', backdropFilter: 'blur(22px) saturate(140%)',
           boxShadow: '0 40px 90px -30px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.06)',
@@ -96,24 +99,50 @@ export default function ConferencePopup() {
           transition: 'transform .3s var(--ease), opacity .3s ease',
         }}
       >
-        <button onClick={dismiss} aria-label="Fechar" style={{ position: 'absolute', top: 14, right: 16, fontSize: 24, lineHeight: 1, color: 'var(--faint)', background: 'none', border: 'none', cursor: 'pointer' }}>×</button>
+        <button onClick={dismiss} aria-label="Fechar" style={{ position: 'absolute', zIndex: 3, top: 14, right: 16, fontSize: 24, lineHeight: 1, color: 'var(--text)', background: 'rgba(5,5,5,.45)', width: 34, height: 34, borderRadius: 99, border: 'none', cursor: 'pointer' }}>×</button>
 
-        <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--glow)', marginBottom: 12 }}>A conferência passou</div>
+        {/* Arte da Conferência Mercosul (a mesma da página da caravana). A foto é
+            recortada numa curva; o "planeta" com borda de luz cobre esse corte. */}
+        <div style={{
+          position: 'relative', overflow: 'hidden', margin: '0 calc(clamp(26px,5vw,34px) * -1) 18px',
+          padding: '22px 14px 0',
+          background: 'radial-gradient(80% 70% at 50% 100%, rgba(47,123,255,.55), transparent 70%), linear-gradient(180deg,#0B2A6B,#081A33)',
+        }}>
+          <div style={{ position: 'relative' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/caravana/assets/preletores-640.webp"
+              alt="Conferência Mercosul: Ap. Neila, Ap. Samuel, Pr. Geisson, Ap. Rayssa, Ap. Eberson Luiz e Pra. Jennefer Matos."
+              width={640} height={482}
+              style={{ position: 'relative', display: 'block', width: '100%', height: 'auto' }}
+            />
+            {/* mesmo círculo da página da caravana, em proporção à largura da arte */}
+            <span aria-hidden="true" style={{
+              position: 'absolute', left: '50%', top: '86.37%', width: '257.8%', aspectRatio: '1',
+              transform: 'translateX(-50%)', borderRadius: '50%', background: '#101012',
+              borderTop: '2px solid rgba(190,215,255,.95)',
+              boxShadow: '0 -4px 22px rgba(80,150,255,.9), 0 -2px 60px rgba(47,123,255,.55)',
+            }} />
+          </div>
+        </div>
+
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', color: AZUL, marginBottom: 12 }}>Caravana · Conferência Mercosul</div>
         <h2 id="vc-pop-title" style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(21px,4.4vw,25px)', lineHeight: 1.15, letterSpacing: '-.01em', color: 'var(--text)', marginBottom: 12 }}>
-Você esteve na Conferência Céus Abertos?
+          Vamos juntos de ônibus para Anastácio?
         </h2>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: 'var(--dim)', marginBottom: 26 }}>
-          Conte para a gente o que Deus fez na sua vida nesses dias. Seu testemunho anima a igreja inteira.
+          Sábado, 10 de outubro. Saída às 14h30 da Igreja Vitória, com ida e volta.
+          R$ 60,00 por poltrona. As vagas são limitadas: garanta a sua.
         </p>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <a
             ref={primaryRef}
-            href="/ceus-abertos#testemunhos"
+            href="/caravana#reserva"
             onClick={persist}
             className="vc-pop-cta"
-            style={{ flex: '1 1 180px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: '14px 22px', borderRadius: 99, textDecoration: 'none' }}
+            style={{ flex: '1 1 180px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: AZUL, color: '#fff', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: '14px 22px', borderRadius: 99, textDecoration: 'none' }}
           >
-            Contar meu testemunho →
+            Reservar minha vaga →
           </a>
           <button
             onClick={dismiss}
