@@ -93,9 +93,11 @@ var CELULA_RESTANTES_CARAVANA = 'R2';
 var ABA_CARAVANA = 'Caravana Anastácio';
 var COLUNAS_CARAVANA = [
   'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'CPF', 'Adultos',
-  'Leva crianças', 'Crianças (total)', 'Idades das crianças', 'Crianças no colo',
-  'Crianças com poltrona', 'Poltronas', 'Valor estimado (R$)', 'Pagamento', 'Origem'
+  'Leva crianças', 'Crianças (total)', 'Crianças (nome · idade · lugar)', 'Crianças no colo',
+  'Crianças com poltrona', 'Poltronas', 'Valor estimado (R$)', 'Pagamento', 'Origem',
+  'Acompanhantes adultos (nome · CPF)'
 ];
+var TITULO_ANTIGO_CRIANCAS = 'Idades das crianças';
 
 var ABA_INTERESSE_DEEP = 'Deep · Interessados';
 var COLUNAS_INTERESSE_DEEP = [
@@ -619,6 +621,13 @@ function criarPresencaDeep() {
 function abaCaravana(ss) {
   var sheet = ss.getSheetByName(ABA_CARAVANA);
   if (sheet) {
+    // aba criada antes dos acompanhantes: ganha a coluna nova e o título novo
+    var colCriancas = COLUNAS_CARAVANA.indexOf('Crianças (nome · idade · lugar)') + 1;
+    var tituloCriancas = sheet.getRange(1, colCriancas);
+    if (tituloCriancas.getValue() === TITULO_ANTIGO_CRIANCAS) {
+      tituloCriancas.setValue(COLUNAS_CARAVANA[colCriancas - 1]);
+    }
+    garantirCabecalho(sheet, COLUNAS_CARAVANA);
     garantirConfigCaravana(sheet);
     return sheet;
   }
@@ -643,6 +652,7 @@ function abaCaravana(ss) {
   sheet.setColumnWidth(2, 240);
   sheet.setColumnWidth(9, 160);
   sheet.setColumnWidth(14, 150);
+  sheet.setColumnWidth(16, 320);
   garantirConfigCaravana(sheet);
   return sheet;
 }
@@ -801,6 +811,25 @@ function doPost(e) {
       var poltronas = adultos + comPoltrona;
       var valor = poltronas * VALOR_POLTRONA;
 
+      /* Cada adulto além de quem reserva vem com nome completo e CPF válido,
+         um por pessoa e sem CPF repetido na mesma reserva. */
+      var acompanhantes;
+      try { acompanhantes = JSON.parse(p.acompanhantes || '[]'); } catch (errJson) { acompanhantes = null; }
+      if (!Array.isArray(acompanhantes) || acompanhantes.length !== adultos - 1) {
+        return json({ ok: false, erro: 'dados incompletos' });
+      }
+      var cpfsVistos = [String(p.cpf || '').replace(/\D/g, '')];
+      for (var ia = 0; ia < acompanhantes.length; ia++) {
+        var ac = acompanhantes[ia] || {};
+        var acNome = String(ac.nome || '').trim();
+        var acCpf = String(ac.cpf || '').replace(/\D/g, '');
+        if (acNome.length < 3 || !cpfValido(acCpf) || cpfsVistos.indexOf(acCpf) !== -1) {
+          return json({ ok: false, erro: 'dados incompletos' });
+        }
+        cpfsVistos.push(acCpf);
+        acompanhantes[ia] = acNome + ' · ' + String(ac.cpf).trim();
+      }
+
       var caravana = abaCaravana(ss);
       if (jaInscrito(caravana, digitos)) {
         return json({ ok: true, duplicado: true });
@@ -826,7 +855,8 @@ function doPost(e) {
         poltronas,
         valor,
         '', // Pagamento: a equipe preenche quando o comprovante chegar
-        String(p.origem || 'site')
+        String(p.origem || 'site'),
+        acompanhantes.join('\n')
       ]);
       return json({ ok: true, duplicado: false, poltronas: poltronas, valor: valor });
     }
@@ -994,6 +1024,7 @@ function doGet(e) {
       // dizem ao site que esta implantação já sabe gravar cada coisa
       aceitaTestemunho: true,
       aceitaCaravana: true,
+      aceitaAcompanhantes: true, // grava nome e CPF dos adultos acompanhantes
       caravana: vagasCaravana(ss),
       aceitaSugestao: true,
       aceitaInteresseDeep: true

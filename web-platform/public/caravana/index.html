@@ -43,43 +43,50 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 
 <!-- ============ 01 · HERO ============ -->
 <section class="hero" id="top">
-  <!-- arte oficial da Conferência Mercosul: aparece inteira, sem recorte de
-       pessoas; as laterais vazias do desktop são preenchidas por ela mesma, desfocada -->
-  <figure class="hero-arte">
-    <span class="hero-arte-fundo" aria-hidden="true"></span>
-    <img class="hero-arte-img"
-         src="/caravana/assets/mercosul-1672.jpg"
-         srcset="/caravana/assets/mercosul-960.jpg 960w, /caravana/assets/mercosul-1672.jpg 1672w"
-         sizes="100vw" width="1672" height="941" fetchpriority="high" decoding="async"
-         alt="Arte oficial da Conferência Mercosul da Igreja Vitória, de 09 a 11 de outubro, com Ap. Neila, Ap. Samuel, Pr. Geisson, Ap. Rayssa, Ap. Eberson Luiz e Pra. Jennefer Matos.">
-  </figure>
+  <!-- palco: holofotes e o arco de luz da arte oficial, feitos em CSS -->
+  <span class="palco-luz palco-luz-esq" aria-hidden="true"></span>
+  <span class="palco-luz palco-luz-dir" aria-hidden="true"></span>
 
-  <div class="hero-conteudo">
-  <div class="hero-top">
-    <span class="hero-tag">Conferência Mercosul</span>
-    <span class="hero-tag hero-tag-alt">Vagas limitadas</span>
-  </div>
+  <div class="hero-grade">
+    <figure class="hero-preletores">
+      <span class="palco-arco" aria-hidden="true"></span>
+      <img src="/caravana/assets/preletores-1536.webp"
+           srcset="/caravana/assets/preletores-900.webp 900w, /caravana/assets/preletores-1536.webp 1536w"
+           sizes="(min-width: 980px) 58vw, 100vw" width="1536" height="1024"
+           fetchpriority="high" decoding="async"
+           alt="Conferência Mercosul: Ap. Neila, Ap. Samuel, Pr. Geisson, Ap. Rayssa, Ap. Eberson Luiz e Pra. Jennefer Matos.">
+    </figure>
 
-  <h1 class="hero-title">Caravana<br><span class="destaque">Anastácio</span></h1>
+    <div class="hero-conteudo">
+      <div class="hero-top">
+        <span class="hero-tag">Conferência Mercosul</span>
+        <span class="hero-tag hero-tag-alt">Vagas limitadas</span>
+      </div>
 
-  <!-- rota, no espírito do mapa da arte -->
-  <div class="rota" aria-label="Campo Grande até Anastácio, Mato Grosso do Sul">
-    <span class="rota-ponto">Campo Grande</span>
-    <span class="rota-linha" aria-hidden="true"></span>
-    <span class="rota-ponto rota-destino">Anastácio · MS</span>
-  </div>
+      <h1 class="hero-title">Caravana<br><span class="destaque">Anastácio</span></h1>
 
-  <div class="hero-chips">
-    <span class="chip chip-forte">10 de outubro · sábado</span>
-    <span class="chip">Ônibus · ida e volta</span>
-    <span class="chip chip-valor">R$ 60,00 por poltrona</span>
-    <span class="chip chip-vagas" data-vagas hidden></span>
-  </div>
+      <!-- rota, no espírito do mapa da arte -->
+      <div class="rota" aria-label="Campo Grande até Anastácio, Mato Grosso do Sul">
+        <span class="rota-ponto">Campo Grande</span>
+        <span class="rota-linha" aria-hidden="true"></span>
+        <span class="rota-ponto rota-destino">Anastácio · MS</span>
+      </div>
 
-  <div class="hero-actions">
-    <a class="btn btn-solid" href="#reserva">Quero garantir minha vaga <span aria-hidden="true">↓</span></a>
-    <a class="btn btn-outline" href="#pagamento">Como pagar</a>
-  </div>
+      <div class="hero-chips">
+        <span class="chip chip-forte">10 de outubro · sábado</span>
+        <span class="chip">Ônibus · ida e volta</span>
+        <span class="chip chip-valor">R$ 60,00 por poltrona</span>
+        <span class="chip chip-vagas" data-vagas hidden></span>
+      </div>
+
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#reserva">Quero garantir minha vaga <span aria-hidden="true">↓</span></a>
+        <a class="btn btn-outline" href="#pagamento">Como pagar</a>
+      </div>
+
+      <p class="hero-preletores-nomes"><span>Preletores da conferência</span>
+        Ap. Neila · Ap. Samuel · Pr. Geisson · Ap. Rayssa · Ap. Eberson Luiz · Pra. Jennefer Matos</p>
+    </div>
   </div>
 </section>
 
@@ -199,9 +206,12 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <div class="fld">
         <label for="cAdultos">Quantas pessoas adultas vão na reserva? <small>(incluindo você)</small></label>
         <input class="inp" type="number" id="cAdultos" name="adultos" min="1" max="20" step="1" value="1" inputmode="numeric">
-        <span class="fld-hint">Cada pessoa adulta ocupa uma poltrona.</span>
+        <span class="fld-hint">Cada pessoa adulta ocupa uma poltrona. Para cada acompanhante, pedimos o nome completo e o CPF.</span>
         <span class="errmsg" data-err></span>
       </div>
+
+      <!-- um bloco por adulto acompanhante, montado pelo script -->
+      <div class="criancas-lista" id="listaAdultos" hidden></div>
 
       <div class="fld">
         <label for="cLevaCriancas">Você irá levar crianças?</label>

@@ -113,7 +113,9 @@
       .then(function (r) { return r.json(); })
       .then(function (res) {
         clearTimeout(prazo);
-        var aceita = !!(res && res.aceitaCaravana);
+        /* Só abre o formulário se esta implantação já grava os acompanhantes:
+           com o script antigo, os nomes e CPFs se perderiam sem aviso. */
+        var aceita = !!(res && res.aceitaCaravana && res.aceitaAcompanhantes);
         var lotado = aceita ? mostrarVagas(res.caravana) : false;
         mostrar(aceita, lotado);
       })
@@ -124,6 +126,7 @@
     var fCpf = document.getElementById('cCpf');
     var fAdultos = document.getElementById('cAdultos');
     var fLeva = document.getElementById('cLevaCriancas');
+    var listaAdultos = document.getElementById('listaAdultos');
     var fldQtd = document.getElementById('fldQtdCriancas');
     var fQtd = document.getElementById('cQtdCriancas');
     var lista = document.getElementById('listaCriancas');
@@ -151,6 +154,47 @@
     }
     fZap.addEventListener('input', function () { fZap.value = maskPhone(fZap.value); });
     fCpf.addEventListener('input', function () { fCpf.value = maskCpf(fCpf.value); });
+
+    /* ---------- adultos acompanhantes ----------
+       Quem reserva já é o adulto 1. Para cada adulto a mais, nome completo e
+       CPF: a lista do ônibus precisa de todos. Blocos já preenchidos ficam
+       quando a quantidade muda. */
+    function montarAdultos() {
+      var extras = Math.min(Math.max(inteiro(fAdultos.value, 1), 1), 20) - 1;
+      var atuais = listaAdultos.querySelectorAll('.crianca').length;
+      for (var i = atuais; i < extras; i++) listaAdultos.appendChild(blocoAdulto(i + 2));
+      for (var j = atuais; j > extras; j--) listaAdultos.removeChild(listaAdultos.lastElementChild);
+      listaAdultos.hidden = extras === 0;
+      limparAoDigitar(listaAdultos);
+    }
+
+    function blocoAdulto(n) {
+      var div = document.createElement('div');
+      div.className = 'crianca';
+      div.innerHTML =
+        '<div class="crianca-top"><span class="crianca-num">Adulto ' + n + '</span></div>' +
+        '<div class="crianca-campos">' +
+          '<div class="fld">' +
+            '<label for="aNome' + n + '">Nome completo</label>' +
+            '<input class="inp" type="text" id="aNome' + n + '" data-nome placeholder="Nome do acompanhante" autocomplete="off">' +
+            '<span class="errmsg" data-err></span>' +
+          '</div>' +
+          '<div class="fld">' +
+            '<label for="aCpf' + n + '">CPF</label>' +
+            '<input class="inp" type="text" id="aCpf' + n + '" data-cpf placeholder="000.000.000-00" inputmode="numeric" maxlength="14" autocomplete="off">' +
+            '<span class="errmsg" data-err></span>' +
+          '</div>' +
+        '</div>';
+      var cpf = div.querySelector('[data-cpf]');
+      cpf.addEventListener('input', function () { cpf.value = maskCpf(cpf.value); });
+      return div;
+    }
+
+    function acompanhantes() {
+      return Array.prototype.map.call(listaAdultos.querySelectorAll('.crianca'), function (div) {
+        return { nome: div.querySelector('[data-nome]').value.trim(), cpf: div.querySelector('[data-cpf]').value.trim() };
+      });
+    }
 
     /* CPF de verdade: 11 dígitos, não todos iguais, dois dígitos verificadores.
        Mesma checagem roda no servidor — aqui é só para avisar antes de enviar. */
@@ -212,6 +256,11 @@
         '<div class="crianca-top">' +
           '<span class="crianca-num">Criança ' + n + '</span>' +
           '<span class="crianca-tag" data-tag>—</span>' +
+        '</div>' +
+        '<div class="fld">' +
+          '<label for="cNomeCrianca' + n + '">Nome da criança</label>' +
+          '<input class="inp" type="text" id="cNomeCrianca' + n + '" data-nome placeholder="Nome completo" autocomplete="off">' +
+          '<span class="errmsg" data-err></span>' +
         '</div>' +
         '<div class="crianca-campos">' +
           '<div class="fld">' +
@@ -294,8 +343,8 @@
       if (resValor) resValor.textContent = dinheiro(c.valor);
     }
 
-    fAdultos.addEventListener('input', atualizarResumo);
-    fAdultos.addEventListener('change', atualizarResumo);
+    fAdultos.addEventListener('input', function () { montarAdultos(); atualizarResumo(); });
+    fAdultos.addEventListener('change', function () { montarAdultos(); atualizarResumo(); });
     fQtd.addEventListener('input', montarCriancas);
     fQtd.addEventListener('change', montarCriancas);
     fLeva.addEventListener('change', function () {
@@ -326,9 +375,25 @@
       req(fCpf, cpfValido(fCpf.value), 'Informe um CPF válido.');
       req(fAdultos, inteiro(fAdultos.value, 0) >= 1, 'Informe pelo menos uma pessoa adulta.');
 
+      var cpfsVistos = [fCpf.value.replace(/\D/g, '')];
+      listaAdultos.querySelectorAll('.crianca').forEach(function (div) {
+        var nomeAc = div.querySelector('[data-nome]');
+        var cpfAc = div.querySelector('[data-cpf]');
+        req(nomeAc, nomeAc.value.trim().length > 2, 'Informe o nome completo.');
+        var digitosAc = cpfAc.value.replace(/\D/g, '');
+        if (!cpfValido(cpfAc.value)) {
+          req(cpfAc, false, 'Informe um CPF válido.');
+        } else {
+          req(cpfAc, cpfsVistos.indexOf(digitosAc) === -1, 'Esse CPF já está nesta reserva.');
+          cpfsVistos.push(digitosAc);
+        }
+      });
+
       if (fLeva.value === 'Sim') {
         req(fQtd, inteiro(fQtd.value, 0) >= 1, 'Informe quantas crianças.');
         lista.querySelectorAll('.crianca').forEach(function (div) {
+          var nomeCri = div.querySelector('[data-nome]');
+          req(nomeCri, nomeCri.value.trim().length > 1, 'Informe o nome da criança.');
           var idade = div.querySelector('[data-idade]');
           var anos = idade.value === '' ? null : inteiro(idade.value, -1);
           req(idade, anos !== null && anos >= 0 && anos <= 17, 'Informe a idade da criança.');
@@ -346,9 +411,10 @@
       }
       var idades = [];
       lista.querySelectorAll('.crianca').forEach(function (div) {
+        var nomeCri = div.querySelector('[data-nome]').value.trim();
         var anos = div.querySelector('[data-idade]').value;
         var lugar = div.querySelector('[data-lugar]').value === 'poltrona' ? 'poltrona' : 'colo';
-        idades.push(anos + ' anos (' + lugar + ')');
+        idades.push(nomeCri + ', ' + anos + ' anos (' + lugar + ')');
       });
 
       var dados = new URLSearchParams();
@@ -359,6 +425,7 @@
       dados.set('adultos', String(c.adultos));
       dados.set('criancas', String(c.criancas));
       dados.set('criancasPoltrona', String(c.comPoltrona));
+      dados.set('acompanhantes', JSON.stringify(acompanhantes()));
       dados.set('idades', idades.join(' · '));
       dados.set('origem', 'site');
 
@@ -440,6 +507,8 @@
       fZap.value = '';
       fCpf.value = '';
       fAdultos.value = '1';
+      listaAdultos.innerHTML = '';
+      listaAdultos.hidden = true;
       fLeva.value = 'Não';
       fQtd.value = '';
       fldQtd.hidden = true;
@@ -476,6 +545,21 @@
       }
     }
 
+    /* Para a reserva feita à mão pela Dayane quando o envio falha. */
+    function listaAcompanhantesTexto() {
+      var lista = acompanhantes();
+      if (!lista.length) return [];
+      return ['', 'Acompanhantes:'].concat(lista.map(function (a) { return '• ' + a.nome + ' · CPF ' + a.cpf; }));
+    }
+    function listaCriancasTexto() {
+      var blocos = fLeva.value === 'Sim' ? lista.querySelectorAll('.crianca') : [];
+      if (!blocos.length) return [];
+      return ['', 'Crianças:'].concat(Array.prototype.map.call(blocos, function (div) {
+        return '• ' + div.querySelector('[data-nome]').value.trim() + ', ' + div.querySelector('[data-idade]').value +
+          ' anos (' + (div.querySelector('[data-lugar]').value === 'poltrona' ? 'poltrona' : 'colo') + ')';
+      }));
+    }
+
     function falhar() {
       enviando(false);
       var c = contagem();
@@ -489,7 +573,10 @@
         'Crianças: ' + c.criancas + (c.criancas ? ' (' + c.comPoltrona + ' em poltrona, ' + c.noColo + ' no colo)' : ''),
         'Poltronas: ' + c.poltronas,
         'Valor: ' + dinheiro(c.valor)
-      ].join('\n');
+      ].concat(
+        listaAcompanhantesTexto(),
+        listaCriancasTexto()
+      ).join('\n');
       msg('Não conseguimos enviar agora. Toque aqui para concluir pelo WhatsApp.', 'form-err');
       if (nota) {
         nota.style.cursor = 'pointer';

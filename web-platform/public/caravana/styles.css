@@ -75,25 +75,54 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 .btn-block{width:100%}
 
 /* ---------- 01 · HERO ---------- */
-.hero{padding:0}
-.hero-conteudo{padding:clamp(30px,6vw,72px) var(--pad-x) clamp(40px,7vw,86px)}
-
-/* Arte oficial. Tablet e desktop: inteira (contain), sem cortar ninguém; a
-   altura tem teto para o título da página ainda aparecer na primeira tela, e
-   as faixas que sobram nas laterais são a própria arte, desfocada. */
-.hero-arte{position:relative;overflow:hidden;margin:0;background:#061A4A;
+/* Palco: fundo azul com dois holofotes e o arco de luz da arte oficial.
+   Os preletores (recorte da arte) ficam por cima, apoiados no pé da seção. */
+.hero{position:relative;overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(70% 55% at 72% 100%, rgba(47,123,255,.45), transparent 62%),
+    radial-gradient(60% 50% at 10% 0%, rgba(20,86,199,.35), transparent 60%);
   border-bottom:1px solid var(--linha)}
-.hero-arte-fundo{position:absolute;inset:-60px;
-  background:url("/caravana/assets/mercosul-960.jpg") center/cover no-repeat;
-  filter:blur(46px) saturate(1.15);opacity:.75}
-.hero-arte-img{position:relative;display:block;width:100%;height:auto;
-  aspect-ratio:1672/941;max-height:min(74vh,941px);
-  object-fit:contain;object-position:center}
-/* Celular: a arte inteira ficaria pequena demais. O recorte 4:3 tira só as
-   laterais (holofotes e paisagem) e mantém o logo, MERCOSUL, as seis pessoas
-   com os nomes e as datas. */
-@media(max-width:600px){
-  .hero-arte-img{aspect-ratio:4/3;max-height:none;object-fit:cover;object-position:50% 50%}
+.palco-luz{position:absolute;top:-10%;z-index:-1;width:34vw;max-width:520px;height:115%;
+  background:linear-gradient(180deg,rgba(159,196,255,.5),rgba(47,123,255,.1) 55%,transparent 82%);
+  clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);filter:blur(34px);opacity:.42;pointer-events:none}
+.palco-luz-esq{left:4%;transform:rotate(-24deg);transform-origin:top center}
+.palco-luz-dir{right:4%;transform:rotate(24deg);transform-origin:top center}
+
+.hero-grade{display:grid;grid-template-columns:1fr}
+.hero-conteudo{padding:clamp(26px,5vw,56px) var(--pad-x) clamp(40px,7vw,80px)}
+.hero-preletores{position:relative;margin:0;padding-top:clamp(12px,3vw,28px)}
+.hero-preletores img{position:relative;z-index:1;display:block;width:100%;height:auto;
+  /* os preletores "saem" do pé da arte: o corte de baixo some num degradê */
+  -webkit-mask-image:linear-gradient(180deg,#000 80%,transparent 99%);
+          mask-image:linear-gradient(180deg,#000 80%,transparent 99%)}
+/* arco de luz atrás das pessoas, como o horizonte da arte */
+.palco-arco{position:absolute;z-index:0;left:-12%;right:-12%;bottom:-62%;height:100%;border-radius:50%;
+  border-top:2px solid rgba(159,196,255,.85);
+  box-shadow:0 -14px 60px rgba(47,123,255,.75),inset 0 22px 70px rgba(47,123,255,.45);
+  background:radial-gradient(60% 40% at 50% 0%, rgba(47,123,255,.35), transparent 70%)}
+.hero-preletores-nomes{margin-top:clamp(22px,3vw,32px);display:grid;gap:6px;max-width:46ch;
+  font-size:13px;line-height:1.6;color:var(--branco-suave)}
+.hero-preletores-nomes span{font-size:10.5px;font-weight:800;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--azul-claro)}
+
+/* Celular: o recorte tem sobra vazia nas laterais; um pouco mais largo que a
+   tela, os rostos crescem sem cortar o MERCOSUL */
+@media(max-width:979px){
+  .hero-preletores img{width:110%;max-width:none;margin-left:-5%}
+  .palco-luz{opacity:.28}
+}
+
+/* Desktop: texto à esquerda, preletores grandes à direita, encostados no pé */
+@media(min-width:980px){
+  .hero-grade{grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:end;
+    min-height:calc(100vh - 70px);max-width:1600px;margin:0 auto}
+  .hero-preletores{order:2;padding-top:clamp(24px,4vw,48px);align-self:end;margin-right:calc(var(--pad-x) * -.5)}
+  .hero-conteudo{order:1;align-self:center;padding-right:0}
+  .hero-conteudo .hero-title{font-size:clamp(44px,5.2vw,96px)}
+}
+@media(prefers-reduced-motion:no-preference){
+  .hero-preletores img{animation:preletores-in 1s var(--ease) both}
+  @keyframes preletores-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 }
 .hero-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px;
   border-bottom:1px solid var(--linha);padding-bottom:18px}
