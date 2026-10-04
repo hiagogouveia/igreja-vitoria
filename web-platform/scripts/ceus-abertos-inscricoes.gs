@@ -15,6 +15,11 @@
  *   célula Q2 (com o título "Vagas no ônibus" em Q1). É a única fonte desse
  *   número: o site lê dali, desconta as poltronas reservadas e trava sozinho
  *   quando lota. Q2 vazia = sem limite. R2 mostra quantas vagas restam.
+ *   PAGAMENTO: coluna N da aba das reservas, com a lista Pago / Não pago
+ *   (toda reserva nova entra como Não pago).
+ *   PASSAGEIROS: a aba "Caravana · Passageiros" tem uma linha por pessoa,
+ *   com caixinha de check-in e o pagamento puxado da reserva. Se as reservas
+ *   forem mexidas à mão, rode refazerPassageiros() para montar a lista de novo.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
@@ -98,6 +103,15 @@ var COLUNAS_CARAVANA = [
   'Acompanhantes adultos (nome · CPF)'
 ];
 var TITULO_ANTIGO_CRIANCAS = 'Idades das crianças';
+var PAGO = 'Pago';
+var NAO_PAGO = 'Não pago';
+
+/* Uma linha por pessoa (quem reserva, acompanhantes e crianças), para fazer
+   a chamada no embarque e contar quem vai. O pagamento vem da reserva. */
+var ABA_PASSAGEIROS = 'Caravana · Passageiros';
+var COLUNAS_PASSAGEIROS = [
+  'Check-in', 'Nome', 'Tipo', 'CPF', 'Idade', 'Lugar', 'Reserva de', 'WhatsApp da reserva', 'Pagamento'
+];
 
 var ABA_INTERESSE_DEEP = 'Deep · Interessados';
 var COLUNAS_INTERESSE_DEEP = [
@@ -661,7 +675,20 @@ function abaCaravana(ss) {
  * Bloco de configuração das vagas (Q1:R2). Só escreve os títulos e a conta
  * de restantes quando estão vazios: o número digitado em Q2 nunca é tocado.
  */
+function garantirPagamentoCaravana(sheet) {
+  var col = COLUNAS_CARAVANA.indexOf('Pagamento') + 1;
+  if (sheet.getRange(3, col).getDataValidation()) return;
+  var regra = SpreadsheetApp.newDataValidation()
+    .requireValueInList([PAGO, NAO_PAGO], true).setAllowInvalid(false).build();
+  sheet.getRange(3, col, Math.max(sheet.getMaxRows() - 2, 1), 1).setDataValidation(regra);
+  // N2: quantas reservas já estão pagas
+  escreverFormulaLocal(sheet.getRange(2, col), function (sep) {
+    return '=COUNTIF(N3:N' + sep + '"' + PAGO + '")';
+  });
+}
+
 function garantirConfigCaravana(sheet) {
+  garantirPagamentoCaravana(sheet);
   var titulo = sheet.getRange('Q1');
   if (titulo.getValue() !== '') return;
   titulo.setValue('Vagas no ônibus');
@@ -676,6 +703,93 @@ function garantirConfigCaravana(sheet) {
   sheet.getRange(CELULA_RESTANTES_CARAVANA).setFontWeight('bold');
   sheet.setColumnWidth(17, 130);
   sheet.setColumnWidth(18, 130);
+}
+
+/** Aba com uma linha por passageiro. A linha 2 conta pessoas, poltronas e check-ins. */
+function abaPassageiros(ss) {
+  var sheet = ss.getSheetByName(ABA_PASSAGEIROS);
+  if (sheet) return sheet;
+  try {
+    sheet = ss.insertSheet(ABA_PASSAGEIROS, ss.getSheets().length);
+  } catch (err) {
+    var criada = ss.getSheetByName(ABA_PASSAGEIROS);
+    if (criada) return criada;
+    throw err;
+  }
+  sheet.getRange(1, 1, 1, COLUNAS_PASSAGEIROS.length).setValues([COLUNAS_PASSAGEIROS]).setFontWeight('bold');
+  // totais sem separador de argumentos onde dá; o resto com o separador do idioma
+  sheet.getRange(2, 2).setFormula('=COUNTA(B3:B)');
+  escreverFormulaLocal(sheet.getRange(2, 1), function (sep) { return '=COUNTIF(A3:A' + sep + 'TRUE)'; });
+  escreverFormulaLocal(sheet.getRange(2, 6), function (sep) { return '=COUNTIF(F3:F' + sep + '"Poltrona")'; });
+  escreverFormulaLocal(sheet.getRange(2, 9), function (sep) { return '=COUNTIF(I3:I' + sep + '"' + PAGO + '")'; });
+  sheet.getRange(2, 3).setValue('← pessoas');
+  sheet.getRange(2, 7).setValue('← poltronas · check-ins em A2 · pagos em I2');
+  sheet.getRange(2, 1, 1, COLUNAS_PASSAGEIROS.length).setFontWeight('bold').setBackground('#E8F0FE');
+  sheet.setFrozenRows(2);
+  sheet.setColumnWidth(2, 260);
+  sheet.setColumnWidth(7, 220);
+  return sheet;
+}
+
+/**
+ * Grava as pessoas de uma reserva. `linhaReserva` é a linha na aba das
+ * reservas: o pagamento de cada passageiro é uma referência para a coluna N
+ * dela, então marcar Pago na reserva marca todo mundo junto.
+ */
+function gravarPassageiros(ss, linhaReserva, titular, pessoas) {
+  var sheet = abaPassageiros(ss);
+  var inicio = sheet.getLastRow() + 1;
+  var colPag = COLUNAS_CARAVANA.indexOf('Pagamento') + 1;
+  var letraPag = sheet.getRange(1, colPag).getA1Notation().replace(/\d+/g, '');
+  var ref = "='" + ABA_CARAVANA.replace(/'/g, "''") + "'!" + letraPag + linhaReserva;
+  var linhas = pessoas.map(function (pe) {
+    return [false, pe.nome, pe.tipo, pe.cpf || '', pe.idade === '' ? '' : pe.idade, pe.lugar,
+      titular.nome, titular.telefone, ref];
+  });
+  if (!linhas.length) return;
+  sheet.getRange(inicio, 1, linhas.length, COLUNAS_PASSAGEIROS.length).setValues(linhas);
+  sheet.getRange(inicio, 1, linhas.length, 1).insertCheckboxes();
+}
+
+/**
+ * Monta a aba de passageiros de novo a partir das reservas (para quando
+ * alguém apagar ou editar reservas à mão). Mantém os check-ins já marcados,
+ * procurando pelo nome.
+ */
+function refazerPassageiros() {
+  var ss = abrirPlanilha();
+  var res = abaCaravana(ss);
+  var pass = abaPassageiros(ss);
+  var feitos = {};
+  if (pass.getLastRow() >= 3) {
+    pass.getRange(3, 1, pass.getLastRow() - 2, 2).getValues().forEach(function (r) {
+      if (r[0] === true) feitos[String(r[1]).trim().toLowerCase()] = true;
+    });
+    pass.getRange(3, 1, pass.getLastRow() - 2, COLUNAS_PASSAGEIROS.length).clearContent().clearDataValidations();
+  }
+  var ultima = res.getLastRow();
+  if (ultima < 3) return;
+  var C = function (nome) { return COLUNAS_CARAVANA.indexOf(nome); };
+  res.getRange(3, 1, ultima - 2, COLUNAS_CARAVANA.length).getValues().forEach(function (r, i) {
+    if (!String(r[C('Nome')]).trim()) return;
+    var pessoas = [{ nome: String(r[C('Nome')]).trim(), tipo: 'Titular', cpf: r[C('CPF')], idade: '', lugar: 'Poltrona' }];
+    String(r[C('Acompanhantes adultos (nome · CPF)')] || '').split('\n').forEach(function (l) {
+      var partes = l.split(' · ');
+      if (partes[0] && partes[0].trim()) pessoas.push({ nome: partes[0].trim(), tipo: 'Acompanhante', cpf: (partes[1] || '').trim(), idade: '', lugar: 'Poltrona' });
+    });
+    String(r[C('Crianças (nome · idade · lugar)')] || '').split(' · ').forEach(function (l) {
+      var m = l.trim().match(/^(.*), (\d+) anos \((colo|poltrona)\)$/);
+      if (m) pessoas.push({ nome: m[1], tipo: 'Criança', cpf: '', idade: Number(m[2]), lugar: m[3] === 'poltrona' ? 'Poltrona' : 'Colo' });
+    });
+    gravarPassageiros(ss, i + 3, { nome: pessoas[0].nome, telefone: r[C('Telefone')] }, pessoas);
+  });
+  if (pass.getLastRow() >= 3) {
+    var nomes = pass.getRange(3, 2, pass.getLastRow() - 2, 1).getValues();
+    pass.getRange(3, 1, nomes.length, 1).setValues(nomes.map(function (n) {
+      return [!!feitos[String(n[0]).trim().toLowerCase()]];
+    }));
+  }
+  Logger.log('Passageiros: ' + Math.max(pass.getLastRow() - 2, 0));
 }
 
 /** Total de vagas digitado na planilha; 0 quando vazio ou inválido (= sem limite). */
@@ -807,6 +921,27 @@ function doPost(e) {
       var adultos = inteiro(p.adultos, 1);
       var criancas = inteiro(p.criancas, 0);
       var comPoltrona = Math.min(inteiro(p.criancasPoltrona, 0), criancas);
+
+      /* Crianças com nome, idade e lugar. A regra do colo vale aqui também:
+         acima de 5 anos, ocupa poltrona, diga o navegador o que disser. */
+      var listaCriancas = [];
+      if (p.criancasLista) {
+        try { listaCriancas = JSON.parse(p.criancasLista); } catch (errCri) { listaCriancas = null; }
+        if (!Array.isArray(listaCriancas) || listaCriancas.length !== criancas) {
+          return json({ ok: false, erro: 'dados incompletos' });
+        }
+        for (var ic = 0; ic < listaCriancas.length; ic++) {
+          var cr = listaCriancas[ic] || {};
+          var crNome = String(cr.nome || '').trim();
+          var crIdade = parseInt(cr.idade, 10);
+          if (crNome.length < 2 || isNaN(crIdade) || crIdade < 0 || crIdade > 17) {
+            return json({ ok: false, erro: 'dados incompletos' });
+          }
+          var crLugar = (crIdade > 5 || cr.lugar === 'poltrona') ? 'poltrona' : 'colo';
+          listaCriancas[ic] = { nome: crNome, idade: crIdade, lugar: crLugar };
+        }
+        comPoltrona = listaCriancas.filter(function (x) { return x.lugar === 'poltrona'; }).length;
+      }
       var noColo = criancas - comPoltrona;
       var poltronas = adultos + comPoltrona;
       var valor = poltronas * VALOR_POLTRONA;
@@ -818,6 +953,7 @@ function doPost(e) {
       if (!Array.isArray(acompanhantes) || acompanhantes.length !== adultos - 1) {
         return json({ ok: false, erro: 'dados incompletos' });
       }
+      var nomesAcompanhantes = [];
       var cpfsVistos = [String(p.cpf || '').replace(/\D/g, '')];
       for (var ia = 0; ia < acompanhantes.length; ia++) {
         var ac = acompanhantes[ia] || {};
@@ -827,6 +963,7 @@ function doPost(e) {
           return json({ ok: false, erro: 'dados incompletos' });
         }
         cpfsVistos.push(acCpf);
+        nomesAcompanhantes.push({ nome: acNome, cpf: String(ac.cpf).trim() });
         acompanhantes[ia] = acNome + ' · ' + String(ac.cpf).trim();
       }
 
@@ -849,15 +986,26 @@ function doPost(e) {
         adultos,
         criancas > 0 ? 'Sim' : 'Não',
         criancas,
-        String(p.idades || '').trim(),
+        listaCriancas.length
+          ? listaCriancas.map(function (x) { return x.nome + ', ' + x.idade + ' anos (' + x.lugar + ')'; }).join(' · ')
+          : String(p.idades || '').trim(),
         noColo,
         comPoltrona,
         poltronas,
         valor,
-        '', // Pagamento: a equipe preenche quando o comprovante chegar
+        NAO_PAGO, // a equipe troca para Pago quando o comprovante chegar
         String(p.origem || 'site'),
         acompanhantes.join('\n')
       ]);
+
+      var pessoas = [{ nome: nome, tipo: 'Titular', cpf: String(p.cpf || '').trim(), idade: '', lugar: 'Poltrona' }];
+      nomesAcompanhantes.forEach(function (a) {
+        pessoas.push({ nome: a.nome, tipo: 'Acompanhante', cpf: a.cpf, idade: '', lugar: 'Poltrona' });
+      });
+      listaCriancas.forEach(function (x) {
+        pessoas.push({ nome: x.nome, tipo: 'Criança', cpf: '', idade: x.idade, lugar: x.lugar === 'poltrona' ? 'Poltrona' : 'Colo' });
+      });
+      gravarPassageiros(ss, caravana.getLastRow(), { nome: nome, telefone: telefone }, pessoas);
       return json({ ok: true, duplicado: false, poltronas: poltronas, valor: valor });
     }
 
@@ -1025,6 +1173,7 @@ function doGet(e) {
       aceitaTestemunho: true,
       aceitaCaravana: true,
       aceitaAcompanhantes: true, // grava nome e CPF dos adultos acompanhantes
+      aceitaPassageiros: true,   // grava crianças com nome e a aba de passageiros
       caravana: vagasCaravana(ss),
       aceitaSugestao: true,
       aceitaInteresseDeep: true
@@ -1062,7 +1211,8 @@ function doGet(e) {
         abaExiste: !!carav,
         reservas: carav ? Math.max(carav.getLastRow() - 2, 0) : 0,
         poltronas: carav ? poltronasOcupadas(ss) : 0,
-        vagasNaPlanilha: carav ? limiteCaravana(ss) : 0
+        vagasNaPlanilha: carav ? limiteCaravana(ss) : 0,
+        passageiros: ss.getSheetByName(ABA_PASSAGEIROS) ? Math.max(ss.getSheetByName(ABA_PASSAGEIROS).getLastRow() - 2, 0) : 0
       };
       var test = ss.getSheetByName(ABA_TESTEMUNHOS);
       resposta.testemunhos = test ? Math.max(test.getLastRow() - 1, 0) : 0;

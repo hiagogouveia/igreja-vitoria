@@ -187,7 +187,19 @@
         '</div>';
       var cpf = div.querySelector('[data-cpf]');
       cpf.addEventListener('input', function () { cpf.value = maskCpf(cpf.value); });
+      conferirCpfAoSair(cpf);
       return div;
+    }
+
+    function criancasLista() {
+      if (fLeva.value !== 'Sim') return [];
+      return Array.prototype.map.call(lista.querySelectorAll('.crianca'), function (div) {
+        return {
+          nome: div.querySelector('[data-nome]').value.trim(),
+          idade: inteiro(div.querySelector('[data-idade]').value, 0),
+          lugar: div.querySelector('[data-lugar]').value === 'poltrona' ? 'poltrona' : 'colo'
+        };
+      });
     }
 
     function acompanhantes() {
@@ -214,8 +226,29 @@
     /* ---------- erros por campo ---------- */
     function setErr(input, msg) {
       input.classList.toggle('err', !!msg);
+      input.classList.remove('ok');
       var holder = input.parentNode.querySelector('[data-err]');
-      if (holder) holder.textContent = msg || '';
+      if (holder) { holder.textContent = msg || ''; holder.classList.remove('certo'); }
+    }
+
+    /* Ao sair do campo, o CPF já diz se está certo: verde com ✓ ou o erro.
+       Enquanto a pessoa digita, o aviso some. */
+    function conferirCpfAoSair(input) {
+      input.addEventListener('blur', function () {
+        var digitos = input.value.replace(/\D/g, '');
+        if (!digitos) return;
+        if (cpfValido(digitos)) {
+          setErr(input, '');
+          input.classList.add('ok');
+          var holder = input.parentNode.querySelector('[data-err]');
+          if (holder) { holder.textContent = '✓ CPF válido'; holder.classList.add('certo'); }
+        } else {
+          setErr(input, digitos.length < 11 ? 'CPF incompleto: são 11 números.' : 'CPF inválido. Confira os números.');
+        }
+      });
+      input.addEventListener('input', function () {
+        if (input.classList.contains('ok')) setErr(input, '');
+      });
     }
     function limparAoDigitar(escopo) {
       escopo.querySelectorAll('.inp').forEach(function (inp) {
@@ -227,6 +260,7 @@
       });
     }
     limparAoDigitar(form);
+    conferirCpfAoSair(fCpf);
 
     /* ---------- blocos de criança ---------- */
     function inteiro(v, padrao) {
@@ -426,8 +460,18 @@
       dados.set('criancas', String(c.criancas));
       dados.set('criancasPoltrona', String(c.comPoltrona));
       dados.set('acompanhantes', JSON.stringify(acompanhantes()));
+      dados.set('criancasLista', JSON.stringify(criancasLista()));
       dados.set('idades', idades.join(' · '));
       dados.set('origem', 'site');
+
+      // fotografia do que foi enviado, para o resumo da tela de sucesso
+      var resumo = {
+        titular: { nome: fNome.value.trim(), cpf: fCpf.value.trim() },
+        acompanhantes: acompanhantes(),
+        criancas: criancasLista(),
+        poltronas: c.poltronas,
+        valor: c.valor
+      };
 
       enviando(true);
       msg('Enviando sua reserva...', 'form-note');
@@ -439,7 +483,7 @@
             if (res.erro === 'caravana-lotada') return lotou(res.caravana);
             throw new Error(res.erro || 'falha');
           }
-          concluir(res && res.duplicado, c);
+          concluir(res && res.duplicado, c, resumo);
         })
         .catch(function () {
           /* Se o navegador bloquear a leitura da resposta (CORS no redirect do
@@ -447,7 +491,7 @@
              linha é gravada. A duplicidade é tratada no servidor, então
              reenviar não cria linha repetida. */
           return fetch(INSCRICAO_URL, { method: 'POST', mode: 'no-cors', body: dados })
-            .then(function () { concluir(false, c); })
+            .then(function () { concluir(false, c, resumo); })
             .catch(falhar);
         });
     });
@@ -470,7 +514,42 @@
     }
 
     /* ---------- tela de sucesso ---------- */
-    function concluir(duplicado, c) {
+    /* Resumo com todo mundo da reserva: é ele que vai no print para a Dayane.
+       Montado com textContent, nunca com HTML vindo do que a pessoa digitou. */
+    function montarResumo(resumo) {
+      var caixa = document.getElementById('okResumo');
+      if (!caixa) return;
+      caixa.textContent = '';
+      if (!resumo) return;
+      var el = function (tag, classe, texto) {
+        var e = document.createElement(tag);
+        if (classe) e.className = classe;
+        if (texto !== undefined) e.textContent = texto;
+        return e;
+      };
+      var agora = new Date();
+      var quando = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      caixa.appendChild(el('div', 'ok-resumo-lab', 'Caravana Anastácio · reserva de ' + quando));
+      var ul = el('ul');
+      var pessoa = function (nome, info) {
+        var li = el('li');
+        li.appendChild(el('span', 'rp-nome', nome));
+        li.appendChild(el('span', 'rp-info', info));
+        ul.appendChild(li);
+      };
+      pessoa(resumo.titular.nome, 'Responsável · CPF ' + resumo.titular.cpf + ' · poltrona');
+      resumo.acompanhantes.forEach(function (a) { pessoa(a.nome, 'Adulto · CPF ' + a.cpf + ' · poltrona'); });
+      resumo.criancas.forEach(function (k) {
+        pessoa(k.nome, 'Criança · ' + k.idade + (k.idade === 1 ? ' ano' : ' anos') + ' · ' + (k.lugar === 'poltrona' ? 'poltrona' : 'no colo'));
+      });
+      caixa.appendChild(ul);
+      var total = el('div', 'ok-resumo-total');
+      total.appendChild(el('span', '', resumo.poltronas + (resumo.poltronas === 1 ? ' poltrona' : ' poltronas')));
+      total.appendChild(el('strong', '', dinheiro(resumo.valor)));
+      caixa.appendChild(total);
+    }
+
+    function concluir(duplicado, c, resumo) {
       enviando(false);
       msg('Usamos seus dados apenas para organizar a caravana e falar com você pelo WhatsApp.', 'form-note');
 
@@ -479,7 +558,10 @@
       okMsg.textContent = duplicado
         ? 'Já existe uma reserva com esse WhatsApp. Não registramos de novo, para não duplicar. Se precisar mudar algo, fale com a Dayane.'
         : c.poltronas + ' poltrona' + plural + ' reservada' + plural + ' · ' + dinheiro(c.valor) +
-          '. A reserva fica confirmada quando o pagamento for feito e o comprovante chegar para a Dayane, com nome completo e CPF.';
+          '. A vaga fica confirmada quando o pagamento for feito e o comprovante chegar para a Dayane.';
+      // reserva repetida: o que está na tela não é o que ficou gravado, então sem resumo e sem print
+      document.getElementById('okPrint').hidden = !!duplicado;
+      montarResumo(duplicado ? null : resumo);
 
       var texto = [
         'Olá, Dayane! Fiz minha reserva na Caravana Anastácio pelo site.',
@@ -493,6 +575,8 @@
       ].join('\n');
       okZap.href = 'https://wa.me/' + ZAP_DAYANE + '?text=' + encodeURIComponent(texto);
 
+      // o formulário encolhe ao ser limpo; segura a altura para o resumo caber
+      form.style.minHeight = form.offsetHeight + 'px';
       telaOk.hidden = false;
       telaOk.classList.remove('saindo');
       okTitle.focus();
@@ -524,6 +608,7 @@
         setTimeout(function () {
           telaOk.hidden = true;
           telaOk.classList.remove('saindo');
+          form.style.minHeight = '';
           fNome.focus();
         }, 300);
       });
