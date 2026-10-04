@@ -7,6 +7,13 @@
  * O site escolhe a aba pelo parâmetro "destino" ("ceus-abertos" ou "deep").
  * Sem esse parâmetro, cai no Céus Abertos — mantém compatibilidade.
  *
+ * CARAVANA ANASTÁCIO (Conferência Mercosul · 10/10)
+ *   Reservas do ônibus, na aba "Caravana Anastácio" (destino=caravana).
+ *   O servidor recalcula poltronas e valor a partir dos números enviados,
+ *   em vez de confiar na conta feita no navegador. LIMITE_CARAVANA fica em 0
+ *   (sem limite): troque pelo número de poltronas para o site fechar sozinho
+ *   quando lotar.
+ *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
  *   avisado da próxima turma, na aba "Deep · Interessados" (destino=
@@ -72,6 +79,17 @@ var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
 /* Inscrições do Deep encerradas. Para reabrir, volte para false (e troque
    DEEP_ABERTO no /deep/script.js do site). */
 var DEEP_FECHADO = true;
+
+/* 0 = sem limite. Troque pelo total de poltronas do ônibus para travar. */
+var LIMITE_CARAVANA = 0;
+var VALOR_POLTRONA = 60;
+
+var ABA_CARAVANA = 'Caravana Anastácio';
+var COLUNAS_CARAVANA = [
+  'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'CPF', 'Adultos',
+  'Leva crianças', 'Crianças (total)', 'Idades das crianças', 'Crianças no colo',
+  'Crianças com poltrona', 'Poltronas', 'Valor estimado (R$)', 'Pagamento', 'Origem'
+];
 
 var ABA_INTERESSE_DEEP = 'Deep · Interessados';
 var COLUNAS_INTERESSE_DEEP = [
@@ -588,6 +606,65 @@ function criarPresencaDeep() {
     (abaPresencaDeep(ss).getLastRow() - 2));
 }
 
+/**
+ * Aba das reservas da caravana. A linha 2 soma os totais, para a equipe ver
+ * de uma olhada quantas poltronas já foram ocupadas.
+ */
+function abaCaravana(ss) {
+  var sheet = ss.getSheetByName(ABA_CARAVANA);
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet(ABA_CARAVANA, ss.getSheets().length);
+  sheet.getRange(1, 1, 1, COLUNAS_CARAVANA.length).setValues([COLUNAS_CARAVANA]).setFontWeight('bold');
+  sheet.getRange(2, 1).setValue('Totais');
+  // SUM de coluna inteira não usa separador de argumentos: vale em pt-BR e en-US
+  [6, 8, 10, 11, 12, 13].forEach(function (col) {
+    var letra = sheet.getRange(1, col).getA1Notation().replace(/\d+/g, '');
+    sheet.getRange(2, col).setFormula('=SUM(' + letra + '3:' + letra + ')');
+  });
+  sheet.getRange(2, 1, 1, COLUNAS_CARAVANA.length).setFontWeight('bold').setBackground('#E8F0FE');
+  sheet.setFrozenRows(2);
+  sheet.setColumnWidth(2, 240);
+  sheet.setColumnWidth(9, 160);
+  sheet.setColumnWidth(14, 150);
+  return sheet;
+}
+
+/** Poltronas já reservadas (coluna "Poltronas", a partir da linha 3). */
+function poltronasOcupadas(ss) {
+  var sheet = abaCaravana(ss);
+  var ultima = sheet.getLastRow();
+  if (ultima < 3) return 0;
+  var col = COLUNAS_CARAVANA.indexOf('Poltronas') + 1;
+  var total = 0;
+  sheet.getRange(3, col, ultima - 2, 1).getValues().forEach(function (r) {
+    var n = parseInt(r[0], 10);
+    if (!isNaN(n)) total += n;
+  });
+  return total;
+}
+
+/** Situação das vagas da caravana, do jeito que o site usa. */
+function vagasCaravana(ss) {
+  if (!LIMITE_CARAVANA) return { limite: 0, ocupadas: null, vagas: null, aberto: true };
+  var ocupadas = poltronasOcupadas(ss);
+  var vagas = Math.max(LIMITE_CARAVANA - ocupadas, 0);
+  return { limite: LIMITE_CARAVANA, ocupadas: ocupadas, vagas: vagas, aberto: vagas > 0 };
+}
+
+/** CPF válido (11 dígitos e os dois dígitos verificadores batendo). */
+function cpfValido(cpf) {
+  var d = String(cpf || '').replace(/\D/g, '');
+  if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+  for (var j = 9; j < 11; j++) {
+    var soma = 0;
+    for (var i = 0; i < j; i++) soma += parseInt(d.charAt(i), 10) * ((j + 1) - i);
+    var dig = (soma * 10) % 11 % 10;
+    if (dig !== parseInt(d.charAt(j), 10)) return false;
+  }
+  return true;
+}
+
 /** Aba da lista de espera do Deep, criada no primeiro envio. */
 function abaInteresseDeep(ss) {
   var sheet = ss.getSheetByName(ABA_INTERESSE_DEEP);
@@ -657,6 +734,55 @@ function doPost(e) {
 
     if (destino === 'deep' && DEEP_FECHADO) {
       return json({ ok: false, erro: 'deep-fechado' });
+    }
+
+    if (destino === 'caravana') {
+      if (nome.length < 3 || digitos.length < 10 || !cpfValido(p.cpf)) {
+        return json({ ok: false, erro: 'dados incompletos' });
+      }
+
+      /* A conta é refeita aqui: o navegador só manda os números, e quem decide
+         quantas poltronas e quanto custa é o servidor. */
+      var inteiro = function (v, minimo) {
+        var n = parseInt(v, 10);
+        if (isNaN(n) || n < minimo) return minimo;
+        return Math.min(n, 60);
+      };
+      var adultos = inteiro(p.adultos, 1);
+      var criancas = inteiro(p.criancas, 0);
+      var comPoltrona = Math.min(inteiro(p.criancasPoltrona, 0), criancas);
+      var noColo = criancas - comPoltrona;
+      var poltronas = adultos + comPoltrona;
+      var valor = poltronas * VALOR_POLTRONA;
+
+      var caravana = abaCaravana(ss);
+      if (jaInscrito(caravana, digitos)) {
+        return json({ ok: true, duplicado: true });
+      }
+
+      var situacao = vagasCaravana(ss);
+      if (situacao.limite && situacao.vagas < poltronas && p.envio !== 'cego') {
+        return json({ ok: false, erro: 'caravana-lotada', caravana: situacao });
+      }
+
+      caravana.appendRow([
+        new Date(),
+        nome,
+        telefone,
+        "'" + digitos,
+        String(p.cpf || '').trim(),
+        adultos,
+        criancas > 0 ? 'Sim' : 'Não',
+        criancas,
+        String(p.idades || '').trim(),
+        noColo,
+        comPoltrona,
+        poltronas,
+        valor,
+        '', // Pagamento: a equipe preenche quando o comprovante chegar
+        String(p.origem || 'site')
+      ]);
+      return json({ ok: true, duplicado: false, poltronas: poltronas, valor: valor });
     }
 
     if (destino === 'deep-interesse') {
@@ -821,6 +947,8 @@ function doGet(e) {
       deep: { aberto: !DEEP_FECHADO },
       // dizem ao site que esta implantação já sabe gravar cada coisa
       aceitaTestemunho: true,
+      aceitaCaravana: true,
+      caravana: vagasCaravana(ss),
       aceitaSugestao: true,
       aceitaInteresseDeep: true
     };
@@ -851,6 +979,12 @@ function doGet(e) {
         inscritos: deep ? Math.max(deep.getLastRow() - 1, 0) : 0,
         abaPresencaExiste: !!pres,
         naChamada: pres ? Math.max(pres.getLastRow() - 2, 0) : 0
+      };
+      var carav = ss.getSheetByName(ABA_CARAVANA);
+      resposta.caravanaDiag = {
+        abaExiste: !!carav,
+        reservas: carav ? Math.max(carav.getLastRow() - 2, 0) : 0,
+        poltronas: carav ? poltronasOcupadas(ss) : 0
       };
       var test = ss.getSheetByName(ABA_TESTEMUNHOS);
       resposta.testemunhos = test ? Math.max(test.getLastRow() - 1, 0) : 0;

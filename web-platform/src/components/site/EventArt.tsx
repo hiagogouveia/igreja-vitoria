@@ -28,6 +28,9 @@ export default function EventArt({ event, variant = 'row' }: { event: SiteEvent;
   }
 
   const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
+  // "Caravana" não cabe no mesmo corpo que "Deep" ou "Sister": nomes longos
+  // entram um degrau menores para não serem cortados na borda do bloco.
+  const nomeLongo = art.label.length > 6;
 
   return (
     <div
@@ -46,9 +49,10 @@ export default function EventArt({ event, variant = 'row' }: { event: SiteEvent;
           fontWeight: art.serif ? 400 : 900,
           fontStretch: art.serif ? undefined : '118%',
           fontSize: variant === 'card'
-            ? (art.serif ? 'clamp(38px,4.4vw,52px)' : 'clamp(34px,4vw,46px)')
-            : (art.serif ? 'clamp(46px,6vw,68px)' : 'clamp(42px,5.4vw,62px)'),
+            ? (art.serif ? 'clamp(38px,4.4vw,52px)' : nomeLongo ? 'clamp(26px,3vw,34px)' : 'clamp(34px,4vw,46px)')
+            : (art.serif ? 'clamp(46px,6vw,68px)' : nomeLongo ? 'clamp(30px,3.6vw,42px)' : 'clamp(42px,5.4vw,62px)'),
           lineHeight: .9,
+          maxWidth: '100%',
           letterSpacing: art.serif ? '.01em' : '-.045em',
         }}
       >

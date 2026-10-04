@@ -1,0 +1,457 @@
+/* ============================================================
+   CARAVANA ANASTÁCIO · Conferência Mercosul — Igreja Vitória
+   Vanilla JS, sem dependências. A reserva grava na aba
+   "Caravana Anastácio" da mesma planilha das outras inscrições
+   (parâmetro destino=caravana).
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var ZAP_DAYANE = '5567992382965'; // Dayane Felix · comprovantes e reservas
+  var VALOR_POLTRONA = 60;          // mesmo valor do servidor (VALOR_POLTRONA no .gs)
+  var IDADE_COLO = 5;               // até 5 anos pode ir no colo, sem poltrona
+
+  /* Mesmo endpoint das outras páginas: o Apps Script escolhe a aba pelo
+     parâmetro "destino". Enviamos form-urlencoded de propósito — é uma
+     simple request, então não dispara preflight CORS, que o Apps Script
+     não responde. Se a URL da implantação mudar, é só trocar aqui. */
+  var INSCRICAO_URL = 'https://script.google.com/macros/s/AKfycbwTMAjrbR4CH8uhM6WUmjAm1GFQmzPCudRzaszOUDgw3Ush8IHJYpNkdw-_Wi6WYDuicg/exec';
+
+  function ready(fn) {
+    if (document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  function dinheiro(v) {
+    return 'R$ ' + v.toFixed(2).replace('.', ',');
+  }
+
+  ready(function () {
+    /* ---------- copiar a chave PIX ---------- */
+    var pixBtn = document.getElementById('pixCopy');
+    var pixKey = document.getElementById('pixKey');
+    if (pixBtn && pixKey) {
+      pixBtn.addEventListener('click', function () {
+        var texto = pixKey.textContent.trim();
+        var feito = function () {
+          pixBtn.textContent = 'Copiado!';
+          pixBtn.classList.add('ok');
+          setTimeout(function () { pixBtn.textContent = 'Copiar'; pixBtn.classList.remove('ok'); }, 2200);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(texto).then(feito).catch(copiaAntiga);
+        } else { copiaAntiga(); }
+
+        function copiaAntiga() {
+          var ta = document.createElement('textarea');
+          ta.value = texto;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); feito(); } catch (e) { /* sem clipboard */ }
+          document.body.removeChild(ta);
+        }
+      });
+    }
+
+    var form = document.getElementById('caravForm');
+    var fora = document.getElementById('caravFora');
+    var carregando = document.getElementById('caravCarregando');
+    if (!form) return;
+
+    /* ---------- só mostra o formulário se o servidor souber gravar ----------
+       Mostra um dos dois depois da resposta, para o aviso de "fora do ar"
+       não piscar na abertura da página. */
+    var decidido = false;
+    function mostrar(aceita) {
+      if (decidido) return;
+      decidido = true;
+      if (carregando) carregando.hidden = true;
+      form.hidden = !aceita;
+      if (fora) fora.hidden = aceita;
+    }
+    // rede muito lenta: depois de 12s assume que não vai responder
+    var prazo = setTimeout(function () { mostrar(false); }, 12000);
+
+    fetch(INSCRICAO_URL)
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        clearTimeout(prazo);
+        mostrar(!!(res && res.aceitaCaravana));
+      })
+      .catch(function () { clearTimeout(prazo); mostrar(false); });
+
+    var fNome = document.getElementById('cNome');
+    var fZap = document.getElementById('cZap');
+    var fCpf = document.getElementById('cCpf');
+    var fAdultos = document.getElementById('cAdultos');
+    var fLeva = document.getElementById('cLevaCriancas');
+    var fldQtd = document.getElementById('fldQtdCriancas');
+    var fQtd = document.getElementById('cQtdCriancas');
+    var lista = document.getElementById('listaCriancas');
+    var resPoltronas = document.getElementById('resPoltronas');
+    var resValor = document.getElementById('resValor');
+    var nota = document.getElementById('caravNote');
+    var telaOk = document.getElementById('caravOk');
+    var okMsg = document.getElementById('okMsg');
+    var okTitle = document.getElementById('okTitle');
+    var okZap = document.getElementById('okZap');
+    var okOutra = document.getElementById('okOutra');
+
+    /* ---------- máscaras ---------- */
+    function maskPhone(v) {
+      v = v.replace(/\D/g, '').slice(0, 11);
+      if (v.length <= 10) return v.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d)/, '$1-$2');
+      return v.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
+    }
+    function maskCpf(v) {
+      v = v.replace(/\D/g, '').slice(0, 11);
+      return v
+        .replace(/^(\d{3})(\d)/, '$1.$2')
+        .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+        .replace(/\.(\d{3})(\d)/, '.$1-$2');
+    }
+    fZap.addEventListener('input', function () { fZap.value = maskPhone(fZap.value); });
+    fCpf.addEventListener('input', function () { fCpf.value = maskCpf(fCpf.value); });
+
+    /* CPF de verdade: 11 dígitos, não todos iguais, dois dígitos verificadores.
+       Mesma checagem roda no servidor — aqui é só para avisar antes de enviar. */
+    function cpfValido(valor) {
+      var cpf = String(valor || '').replace(/\D/g, '');
+      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+      for (var corte = 9; corte < 11; corte++) {
+        var soma = 0;
+        for (var i = 0; i < corte; i++) soma += parseInt(cpf.charAt(i), 10) * (corte + 1 - i);
+        var dig = (soma * 10) % 11;
+        if (dig === 10) dig = 0;
+        if (dig !== parseInt(cpf.charAt(corte), 10)) return false;
+      }
+      return true;
+    }
+
+    /* ---------- erros por campo ---------- */
+    function setErr(input, msg) {
+      input.classList.toggle('err', !!msg);
+      var holder = input.parentNode.querySelector('[data-err]');
+      if (holder) holder.textContent = msg || '';
+    }
+    function limparAoDigitar(escopo) {
+      escopo.querySelectorAll('.inp').forEach(function (inp) {
+        if (inp.dataset.limpaErro) return;
+        inp.dataset.limpaErro = '1';
+        var limpa = function () { if (inp.classList.contains('err')) setErr(inp, ''); };
+        inp.addEventListener('input', limpa);
+        inp.addEventListener('change', limpa);
+      });
+    }
+    limparAoDigitar(form);
+
+    /* ---------- blocos de criança ---------- */
+    function inteiro(v, padrao) {
+      var n = parseInt(String(v).replace(/\D/g, ''), 10);
+      return isNaN(n) ? padrao : n;
+    }
+
+    /* Mantém na tela um bloco por criança: idade e como ela viaja.
+       Blocos já preenchidos são preservados quando a quantidade muda. */
+    function montarCriancas() {
+      var quantas = fLeva.value === 'Sim' ? Math.min(Math.max(inteiro(fQtd.value, 0), 0), 10) : 0;
+      var atuais = lista.querySelectorAll('.crianca').length;
+
+      for (var i = atuais; i < quantas; i++) lista.appendChild(blocoCrianca(i));
+      for (var j = atuais; j > quantas; j--) lista.removeChild(lista.lastElementChild);
+
+      lista.hidden = quantas === 0;
+      limparAoDigitar(lista);
+      atualizarResumo();
+    }
+
+    function blocoCrianca(indice) {
+      var div = document.createElement('div');
+      div.className = 'crianca';
+      var n = indice + 1;
+      div.innerHTML =
+        '<div class="crianca-top">' +
+          '<span class="crianca-num">Criança ' + n + '</span>' +
+          '<span class="crianca-tag" data-tag>—</span>' +
+        '</div>' +
+        '<div class="crianca-campos">' +
+          '<div class="fld">' +
+            '<label for="cIdade' + n + '">Idade</label>' +
+            '<input class="inp" type="number" id="cIdade' + n + '" data-idade min="0" max="17" step="1" inputmode="numeric" placeholder="anos">' +
+            '<span class="errmsg" data-err></span>' +
+          '</div>' +
+          '<div class="fld">' +
+            '<label for="cLugar' + n + '">Como vai viajar?</label>' +
+            '<select class="inp" id="cLugar' + n + '" data-lugar>' +
+              '<option value="colo">No colo (sem poltrona)</option>' +
+              '<option value="poltrona">Em poltrona (R$ 60,00)</option>' +
+            '</select>' +
+            '<span class="errmsg" data-err></span>' +
+          '</div>' +
+        '</div>';
+
+      var idade = div.querySelector('[data-idade]');
+      var lugar = div.querySelector('[data-lugar]');
+      idade.addEventListener('input', function () { aplicarRegra(div); });
+      idade.addEventListener('change', function () { aplicarRegra(div); });
+      lugar.addEventListener('change', function () { aplicarRegra(div); });
+      return div;
+    }
+
+    /* A regra oficial: até 5 anos pode ir no colo; acima disso a criança
+       ocupa poltrona e paga, então a opção "no colo" sai do ar. */
+    function aplicarRegra(div) {
+      var idade = div.querySelector('[data-idade]');
+      var lugar = div.querySelector('[data-lugar]');
+      var tag = div.querySelector('[data-tag]');
+      var opColo = lugar.querySelector('option[value="colo"]');
+      var anos = idade.value === '' ? null : inteiro(idade.value, -1);
+
+      var precisaPoltrona = anos !== null && anos > IDADE_COLO;
+      opColo.disabled = precisaPoltrona;
+      if (precisaPoltrona) lugar.value = 'poltrona';
+
+      tag.className = 'crianca-tag';
+      if (anos === null) {
+        tag.textContent = '—';
+      } else if (precisaPoltrona) {
+        tag.textContent = 'Poltrona · R$ 60,00';
+        tag.classList.add('paga');
+      } else if (lugar.value === 'poltrona') {
+        tag.textContent = 'Poltrona · R$ 60,00';
+        tag.classList.add('paga');
+      } else {
+        tag.textContent = 'No colo · grátis';
+        tag.classList.add('gratis');
+      }
+      atualizarResumo();
+    }
+
+    /* ---------- resumo ---------- */
+    function contagem() {
+      var adultos = Math.min(Math.max(inteiro(fAdultos.value, 1), 1), 20);
+      var blocos = lista.querySelectorAll('.crianca');
+      var criancas = fLeva.value === 'Sim' ? blocos.length : 0;
+      var comPoltrona = 0;
+      if (fLeva.value === 'Sim') {
+        blocos.forEach(function (div) {
+          if (div.querySelector('[data-lugar]').value === 'poltrona') comPoltrona++;
+        });
+      }
+      var poltronas = adultos + comPoltrona;
+      return {
+        adultos: adultos,
+        criancas: criancas,
+        comPoltrona: comPoltrona,
+        noColo: criancas - comPoltrona,
+        poltronas: poltronas,
+        valor: poltronas * VALOR_POLTRONA
+      };
+    }
+
+    function atualizarResumo() {
+      var c = contagem();
+      if (resPoltronas) resPoltronas.textContent = String(c.poltronas);
+      if (resValor) resValor.textContent = dinheiro(c.valor);
+    }
+
+    fAdultos.addEventListener('input', atualizarResumo);
+    fAdultos.addEventListener('change', atualizarResumo);
+    fQtd.addEventListener('input', montarCriancas);
+    fQtd.addEventListener('change', montarCriancas);
+    fLeva.addEventListener('change', function () {
+      var leva = fLeva.value === 'Sim';
+      fldQtd.hidden = !leva;
+      if (leva) {
+        if (!fQtd.value) fQtd.value = '1';
+      } else {
+        fQtd.value = '';
+        setErr(fQtd, '');
+      }
+      montarCriancas();
+      if (leva) fQtd.focus();
+    });
+    atualizarResumo();
+
+    /* ---------- envio ---------- */
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ok = true;
+      function req(el, cond, msg) {
+        var bad = !cond;
+        setErr(el, bad ? msg : '');
+        if (bad) { if (ok) el.focus(); ok = false; }
+      }
+      req(fNome, fNome.value.trim().length > 2, 'Informe seu nome completo.');
+      req(fZap, fZap.value.replace(/\D/g, '').length >= 10, 'Informe um WhatsApp válido.');
+      req(fCpf, cpfValido(fCpf.value), 'Informe um CPF válido.');
+      req(fAdultos, inteiro(fAdultos.value, 0) >= 1, 'Informe pelo menos uma pessoa adulta.');
+
+      if (fLeva.value === 'Sim') {
+        req(fQtd, inteiro(fQtd.value, 0) >= 1, 'Informe quantas crianças.');
+        lista.querySelectorAll('.crianca').forEach(function (div) {
+          var idade = div.querySelector('[data-idade]');
+          var anos = idade.value === '' ? null : inteiro(idade.value, -1);
+          req(idade, anos !== null && anos >= 0 && anos <= 17, 'Informe a idade da criança.');
+        });
+      }
+      if (!ok) return;
+
+      var c = contagem();
+      var idades = [];
+      lista.querySelectorAll('.crianca').forEach(function (div) {
+        var anos = div.querySelector('[data-idade]').value;
+        var lugar = div.querySelector('[data-lugar]').value === 'poltrona' ? 'poltrona' : 'colo';
+        idades.push(anos + ' anos (' + lugar + ')');
+      });
+
+      var dados = new URLSearchParams();
+      dados.set('destino', 'caravana');
+      dados.set('nome', fNome.value.trim());
+      dados.set('telefone', fZap.value.trim());
+      dados.set('cpf', fCpf.value.trim());
+      dados.set('adultos', String(c.adultos));
+      dados.set('criancas', String(c.criancas));
+      dados.set('criancasPoltrona', String(c.comPoltrona));
+      dados.set('idades', idades.join(' · '));
+      dados.set('origem', 'site');
+
+      enviando(true);
+      msg('Enviando sua reserva...', 'form-note');
+
+      fetch(INSCRICAO_URL, { method: 'POST', body: dados })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res && res.ok === false) {
+            if (res.erro === 'caravana-lotada') return lotou(res.caravana);
+            throw new Error(res.erro || 'falha');
+          }
+          concluir(res && res.duplicado, c);
+        })
+        .catch(function () {
+          /* Se o navegador bloquear a leitura da resposta (CORS no redirect do
+             Google), reenviamos em no-cors: não dá para ler o retorno, mas a
+             linha é gravada. A duplicidade é tratada no servidor, então
+             reenviar não cria linha repetida. */
+          return fetch(INSCRICAO_URL, { method: 'POST', mode: 'no-cors', body: dados })
+            .then(function () { concluir(false, c); })
+            .catch(falhar);
+        });
+    });
+
+    function enviando(estado) {
+      var btn = form.querySelector('button[type="submit"]');
+      if (!btn) return;
+      btn.disabled = estado;
+      btn.style.opacity = estado ? '.6' : '';
+      btn.style.cursor = estado ? 'progress' : '';
+      btn.textContent = estado ? 'Enviando...' : 'Reservar minha vaga';
+    }
+
+    function msg(texto, classe) {
+      if (!nota) return;
+      nota.className = classe;
+      nota.textContent = texto;
+      nota.onclick = null;
+      nota.style.cursor = '';
+    }
+
+    /* ---------- tela de sucesso ---------- */
+    function concluir(duplicado, c) {
+      enviando(false);
+      msg('Usamos seus dados apenas para organizar a caravana e falar com você pelo WhatsApp.', 'form-note');
+
+      var plural = c.poltronas > 1 ? 's' : '';
+      okTitle.textContent = duplicado ? 'Você já tinha reservado' : 'Reserva registrada!';
+      okMsg.textContent = duplicado
+        ? 'Já existe uma reserva com esse WhatsApp. Não registramos de novo, para não duplicar. Se precisar mudar algo, fale com a Dayane.'
+        : c.poltronas + ' poltrona' + plural + ' reservada' + plural + ' · ' + dinheiro(c.valor) +
+          '. A reserva fica confirmada quando o pagamento for feito e o comprovante chegar para a Dayane, com nome completo e CPF.';
+
+      var texto = [
+        'Olá, Dayane! Fiz minha reserva na Caravana Anastácio pelo site.',
+        '',
+        'Nome completo: ' + fNome.value.trim(),
+        'CPF: ' + fCpf.value.trim(),
+        'Poltronas: ' + c.poltronas,
+        'Valor: ' + dinheiro(c.valor),
+        '',
+        'Segue o comprovante de pagamento.'
+      ].join('\n');
+      okZap.href = 'https://wa.me/' + ZAP_DAYANE + '?text=' + encodeURIComponent(texto);
+
+      telaOk.hidden = false;
+      telaOk.classList.remove('saindo');
+      okTitle.focus();
+      limpar();
+    }
+
+    /* Campos limpos por trás da tela de sucesso: quem for reservar outra
+       vaga já encontra o formulário em branco. */
+    function limpar() {
+      fNome.value = '';
+      fZap.value = '';
+      fCpf.value = '';
+      fAdultos.value = '1';
+      fLeva.value = 'Não';
+      fQtd.value = '';
+      fldQtd.hidden = true;
+      lista.innerHTML = '';
+      lista.hidden = true;
+      form.querySelectorAll('.inp').forEach(function (i) { setErr(i, ''); });
+      atualizarResumo();
+    }
+
+    if (okOutra) {
+      okOutra.addEventListener('click', function () {
+        telaOk.classList.add('saindo');
+        setTimeout(function () {
+          telaOk.hidden = true;
+          telaOk.classList.remove('saindo');
+          fNome.focus();
+        }, 300);
+      });
+    }
+
+    /* ---------- ônibus cheio ---------- */
+    function lotou(caravana) {
+      enviando(false);
+      var vagas = caravana && typeof caravana.vagas === 'number' ? caravana.vagas : 0;
+      msg(vagas > 0
+        ? 'Só restam ' + vagas + ' poltrona(s) no ônibus. Ajuste a quantidade ou fale com a Dayane.'
+        : 'As poltronas do ônibus acabaram. Fale com a Dayane para entrar na lista de espera.', 'form-err');
+      if (nota) {
+        nota.style.cursor = 'pointer';
+        nota.onclick = function () {
+          window.open('https://wa.me/' + ZAP_DAYANE, '_blank', 'noopener');
+        };
+      }
+    }
+
+    function falhar() {
+      enviando(false);
+      var c = contagem();
+      var texto = [
+        'Olá, Dayane! Quero reservar minha vaga na Caravana Anastácio.',
+        '',
+        'Nome completo: ' + fNome.value.trim(),
+        'WhatsApp: ' + fZap.value.trim(),
+        'CPF: ' + fCpf.value.trim(),
+        'Adultos: ' + c.adultos,
+        'Crianças: ' + c.criancas + (c.criancas ? ' (' + c.comPoltrona + ' em poltrona, ' + c.noColo + ' no colo)' : ''),
+        'Poltronas: ' + c.poltronas,
+        'Valor: ' + dinheiro(c.valor)
+      ].join('\n');
+      msg('Não conseguimos enviar agora. Toque aqui para concluir pelo WhatsApp.', 'form-err');
+      if (nota) {
+        nota.style.cursor = 'pointer';
+        nota.onclick = function () {
+          window.open('https://wa.me/' + ZAP_DAYANE + '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
+        };
+      }
+    }
+  });
+})();
