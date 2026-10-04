@@ -43,6 +43,18 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 
 <!-- ============ 01 · HERO ============ -->
 <section class="hero" id="top">
+  <!-- arte oficial da Conferência Mercosul: aparece inteira, sem recorte de
+       pessoas; as laterais vazias do desktop são preenchidas por ela mesma, desfocada -->
+  <figure class="hero-arte">
+    <span class="hero-arte-fundo" aria-hidden="true"></span>
+    <img class="hero-arte-img"
+         src="/caravana/assets/mercosul-1672.jpg"
+         srcset="/caravana/assets/mercosul-960.jpg 960w, /caravana/assets/mercosul-1672.jpg 1672w"
+         sizes="100vw" width="1672" height="941" fetchpriority="high" decoding="async"
+         alt="Arte oficial da Conferência Mercosul da Igreja Vitória, de 09 a 11 de outubro, com Ap. Neila, Ap. Samuel, Pr. Geisson, Ap. Rayssa, Ap. Eberson Luiz e Pra. Jennefer Matos.">
+  </figure>
+
+  <div class="hero-conteudo">
   <div class="hero-top">
     <span class="hero-tag">Conferência Mercosul</span>
     <span class="hero-tag hero-tag-alt">Vagas limitadas</span>
@@ -61,11 +73,13 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
     <span class="chip chip-forte">10 de outubro · sábado</span>
     <span class="chip">Ônibus · ida e volta</span>
     <span class="chip chip-valor">R$ 60,00 por poltrona</span>
+    <span class="chip chip-vagas" data-vagas hidden></span>
   </div>
 
   <div class="hero-actions">
     <a class="btn btn-solid" href="#reserva">Quero garantir minha vaga <span aria-hidden="true">↓</span></a>
     <a class="btn btn-outline" href="#pagamento">Como pagar</a>
+  </div>
   </div>
 </section>
 
@@ -156,6 +170,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <p class="sec-lead">Preencha os dados abaixo para reservar. Depois é só pagar e enviar o comprovante: a reserva só fica confirmada com o pagamento.</p>
       <div class="res-aviso">
         <span class="ra-selo">Vagas limitadas</span>
+        <strong class="ra-vagas" data-vagas hidden></strong>
         <p>O ônibus tem um número limitado de poltronas. Quanto antes você reservar e enviar o comprovante, melhor.</p>
       </div>
     </div>
@@ -240,6 +255,12 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <span class="ff-selo">Reserva pelo WhatsApp</span>
       <p>O formulário está fora do ar por um instante. Fale com a Dayane que ela registra a sua reserva.</p>
       <a class="btn btn-solid btn-block" href="https://wa.me/5567992382965?text=Ol%C3%A1%2C%20Dayane!%20Quero%20reservar%20minha%20vaga%20na%20Caravana%20Anast%C3%A1cio." target="_blank" rel="noreferrer">Falar com a Dayane</a>
+    </div>
+
+    <div class="form-fora" id="caravEsgotado" hidden>
+      <span class="ff-selo ff-selo-esgotado">Vagas esgotadas</span>
+      <p>Todas as poltronas do ônibus já foram reservadas. Se alguém desistir, a vaga volta a aparecer aqui. Para entrar na lista de espera, fale com a Dayane.</p>
+      <a class="btn btn-solid btn-block" href="https://wa.me/5567992382965?text=Ol%C3%A1%2C%20Dayane!%20Vi%20que%20as%20vagas%20da%20Caravana%20Anast%C3%A1cio%20esgotaram.%20Quero%20entrar%20na%20lista%20de%20espera." target="_blank" rel="noreferrer">Entrar na lista de espera</a>
     </div>
 
     <noscript>

@@ -10,9 +10,11 @@
  * CARAVANA ANASTÁCIO (Conferência Mercosul · 10/10)
  *   Reservas do ônibus, na aba "Caravana Anastácio" (destino=caravana).
  *   O servidor recalcula poltronas e valor a partir dos números enviados,
- *   em vez de confiar na conta feita no navegador. LIMITE_CARAVANA fica em 0
- *   (sem limite): troque pelo número de poltronas para o site fechar sozinho
- *   quando lotar.
+ *   em vez de confiar na conta feita no navegador.
+ *   O TOTAL DE VAGAS fica na própria planilha, na aba "Caravana Anastácio",
+ *   célula Q2 (com o título "Vagas no ônibus" em Q1). É a única fonte desse
+ *   número: o site lê dali, desconta as poltronas reservadas e trava sozinho
+ *   quando lota. Q2 vazia = sem limite. R2 mostra quantas vagas restam.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
@@ -80,9 +82,13 @@ var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
    DEEP_ABERTO no /deep/script.js do site). */
 var DEEP_FECHADO = true;
 
-/* 0 = sem limite. Troque pelo total de poltronas do ônibus para travar. */
-var LIMITE_CARAVANA = 0;
 var VALOR_POLTRONA = 60;
+
+/* Onde a equipe digita o total de vagas do ônibus (aba da caravana).
+   Fica à direita das colunas das reservas, nas duas linhas congeladas,
+   então aparece sempre no topo da aba. */
+var CELULA_VAGAS_CARAVANA = 'Q2';
+var CELULA_RESTANTES_CARAVANA = 'R2';
 
 var ABA_CARAVANA = 'Caravana Anastácio';
 var COLUNAS_CARAVANA = [
@@ -612,9 +618,19 @@ function criarPresencaDeep() {
  */
 function abaCaravana(ss) {
   var sheet = ss.getSheetByName(ABA_CARAVANA);
-  if (sheet) return sheet;
+  if (sheet) {
+    garantirConfigCaravana(sheet);
+    return sheet;
+  }
 
-  sheet = ss.insertSheet(ABA_CARAVANA, ss.getSheets().length);
+  try {
+    sheet = ss.insertSheet(ABA_CARAVANA, ss.getSheets().length);
+  } catch (err) {
+    // duas visitas ao mesmo tempo logo após a implantação: a outra já criou
+    var criada = ss.getSheetByName(ABA_CARAVANA);
+    if (criada) return criada;
+    throw err;
+  }
   sheet.getRange(1, 1, 1, COLUNAS_CARAVANA.length).setValues([COLUNAS_CARAVANA]).setFontWeight('bold');
   sheet.getRange(2, 1).setValue('Totais');
   // SUM de coluna inteira não usa separador de argumentos: vale em pt-BR e en-US
@@ -627,7 +643,36 @@ function abaCaravana(ss) {
   sheet.setColumnWidth(2, 240);
   sheet.setColumnWidth(9, 160);
   sheet.setColumnWidth(14, 150);
+  garantirConfigCaravana(sheet);
   return sheet;
+}
+
+/**
+ * Bloco de configuração das vagas (Q1:R2). Só escreve os títulos e a conta
+ * de restantes quando estão vazios: o número digitado em Q2 nunca é tocado.
+ */
+function garantirConfigCaravana(sheet) {
+  var titulo = sheet.getRange('Q1');
+  if (titulo.getValue() !== '') return;
+  titulo.setValue('Vagas no ônibus');
+  sheet.getRange('R1').setValue('Vagas restantes');
+  sheet.getRange('Q1:R1').setFontWeight('bold');
+  sheet.getRange(CELULA_VAGAS_CARAVANA).setBackground('#FFF2CC').setFontWeight('bold')
+    .setNote('Digite aqui o total de vagas (poltronas) do ônibus. O site lê este número. Vazio = sem limite.');
+  // L2 = total de poltronas reservadas (linha de totais)
+  escreverFormulaLocal(sheet.getRange(CELULA_RESTANTES_CARAVANA), function (sep) {
+    return '=IF(Q2=""' + sep + '""' + sep + 'MAX(0' + sep + 'Q2-L2))';
+  });
+  sheet.getRange(CELULA_RESTANTES_CARAVANA).setFontWeight('bold');
+  sheet.setColumnWidth(17, 130);
+  sheet.setColumnWidth(18, 130);
+}
+
+/** Total de vagas digitado na planilha; 0 quando vazio ou inválido (= sem limite). */
+function limiteCaravana(ss) {
+  var valor = abaCaravana(ss).getRange(CELULA_VAGAS_CARAVANA).getValue();
+  var n = parseInt(valor, 10);
+  return isNaN(n) || n < 0 ? 0 : n;
 }
 
 /** Poltronas já reservadas (coluna "Poltronas", a partir da linha 3). */
@@ -646,10 +691,11 @@ function poltronasOcupadas(ss) {
 
 /** Situação das vagas da caravana, do jeito que o site usa. */
 function vagasCaravana(ss) {
-  if (!LIMITE_CARAVANA) return { limite: 0, ocupadas: null, vagas: null, aberto: true };
-  var ocupadas = poltronasOcupadas(ss);
-  var vagas = Math.max(LIMITE_CARAVANA - ocupadas, 0);
-  return { limite: LIMITE_CARAVANA, ocupadas: ocupadas, vagas: vagas, aberto: vagas > 0 };
+  var limite = limiteCaravana(ss);
+  if (!limite) return { limite: 0, vagas: null, aberto: true };
+  var vagas = Math.max(limite - poltronasOcupadas(ss), 0);
+  // só números agregados: nada de quem reservou
+  return { limite: limite, vagas: vagas, aberto: vagas > 0 };
 }
 
 /** CPF válido (11 dígitos e os dois dígitos verificadores batendo). */
@@ -761,7 +807,7 @@ function doPost(e) {
       }
 
       var situacao = vagasCaravana(ss);
-      if (situacao.limite && situacao.vagas < poltronas && p.envio !== 'cego') {
+      if (situacao.limite && situacao.vagas < poltronas) {
         return json({ ok: false, erro: 'caravana-lotada', caravana: situacao });
       }
 
@@ -984,7 +1030,8 @@ function doGet(e) {
       resposta.caravanaDiag = {
         abaExiste: !!carav,
         reservas: carav ? Math.max(carav.getLastRow() - 2, 0) : 0,
-        poltronas: carav ? poltronasOcupadas(ss) : 0
+        poltronas: carav ? poltronasOcupadas(ss) : 0,
+        vagasNaPlanilha: carav ? limiteCaravana(ss) : 0
       };
       var test = ss.getSheetByName(ABA_TESTEMUNHOS);
       resposta.testemunhos = test ? Math.max(test.getLastRow() - 1, 0) : 0;

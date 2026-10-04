@@ -58,19 +58,53 @@
 
     var form = document.getElementById('caravForm');
     var fora = document.getElementById('caravFora');
+    var esgotado = document.getElementById('caravEsgotado');
     var carregando = document.getElementById('caravCarregando');
     if (!form) return;
+
+    /* ---------- vagas ----------
+       O total de vagas mora na planilha (aba "Caravana Anastácio", célula Q2)
+       e o servidor desconta as poltronas já reservadas. Aqui não existe
+       número nenhum: sem resposta do servidor, a página fica só com
+       "Vagas limitadas". */
+    var vagasRestantes = null; // null = planilha sem limite configurado
+
+    function mostrarVagas(caravana) {
+      var temLimite = !!(caravana && caravana.limite > 0 && typeof caravana.vagas === 'number');
+      vagasRestantes = temLimite ? caravana.vagas : null;
+      var texto = '';
+      if (temLimite) {
+        texto = caravana.vagas === 0 ? 'Vagas esgotadas'
+          : caravana.vagas === 1 ? 'Resta 1 vaga'
+          : 'Restam ' + caravana.vagas + ' vagas';
+      }
+      document.querySelectorAll('[data-vagas]').forEach(function (el) {
+        el.textContent = texto;
+        el.hidden = !temLimite;
+      });
+      return temLimite && caravana.vagas === 0;
+    }
+
+    /* Depois de uma reserva, pergunta de novo ao servidor em vez de
+       descontar aqui: a conta certa é sempre a da planilha. */
+    function atualizarVagas() {
+      fetch(INSCRICAO_URL)
+        .then(function (r) { return r.json(); })
+        .then(function (res) { if (res && res.aceitaCaravana) mostrarVagas(res.caravana); })
+        .catch(function () { /* mantém o que está na tela */ });
+    }
 
     /* ---------- só mostra o formulário se o servidor souber gravar ----------
        Mostra um dos dois depois da resposta, para o aviso de "fora do ar"
        não piscar na abertura da página. */
     var decidido = false;
-    function mostrar(aceita) {
+    function mostrar(aceita, lotado) {
       if (decidido) return;
       decidido = true;
       if (carregando) carregando.hidden = true;
-      form.hidden = !aceita;
+      form.hidden = !aceita || lotado;
       if (fora) fora.hidden = aceita;
+      if (esgotado) esgotado.hidden = !(aceita && lotado);
     }
     // rede muito lenta: depois de 12s assume que não vai responder
     var prazo = setTimeout(function () { mostrar(false); }, 12000);
@@ -79,7 +113,9 @@
       .then(function (r) { return r.json(); })
       .then(function (res) {
         clearTimeout(prazo);
-        mostrar(!!(res && res.aceitaCaravana));
+        var aceita = !!(res && res.aceitaCaravana);
+        var lotado = aceita ? mostrarVagas(res.caravana) : false;
+        mostrar(aceita, lotado);
       })
       .catch(function () { clearTimeout(prazo); mostrar(false); });
 
@@ -301,6 +337,13 @@
       if (!ok) return;
 
       var c = contagem();
+      if (vagasRestantes !== null && c.poltronas > vagasRestantes) {
+        msg(vagasRestantes === 0
+          ? 'As poltronas do ônibus acabaram. Fale com a Dayane para entrar na lista de espera.'
+          : 'Esta reserva soma ' + c.poltronas + ' poltronas, mas ' +
+            (vagasRestantes === 1 ? 'resta só 1' : 'restam só ' + vagasRestantes) + '. Ajuste a quantidade.', 'form-err');
+        return;
+      }
       var idades = [];
       lista.querySelectorAll('.crianca').forEach(function (div) {
         var anos = div.querySelector('[data-idade]').value;
@@ -387,6 +430,7 @@
       telaOk.classList.remove('saindo');
       okTitle.focus();
       limpar();
+      atualizarVagas();
     }
 
     /* Campos limpos por trás da tela de sucesso: quem for reservar outra
@@ -419,9 +463,10 @@
     /* ---------- ônibus cheio ---------- */
     function lotou(caravana) {
       enviando(false);
+      mostrarVagas(caravana);
       var vagas = caravana && typeof caravana.vagas === 'number' ? caravana.vagas : 0;
       msg(vagas > 0
-        ? 'Só restam ' + vagas + ' poltrona(s) no ônibus. Ajuste a quantidade ou fale com a Dayane.'
+        ? (vagas === 1 ? 'Resta só 1 poltrona' : 'Restam só ' + vagas + ' poltronas') + ' no ônibus. Ajuste a quantidade ou fale com a Dayane.'
         : 'As poltronas do ônibus acabaram. Fale com a Dayane para entrar na lista de espera.', 'form-err');
       if (nota) {
         nota.style.cursor = 'pointer';

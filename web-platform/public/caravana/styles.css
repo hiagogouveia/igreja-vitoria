@@ -75,7 +75,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 .btn-block{width:100%}
 
 /* ---------- 01 · HERO ---------- */
-.hero{padding:clamp(30px,6vw,72px) var(--pad-x) clamp(40px,7vw,86px)}
+.hero{padding:0}
+.hero-conteudo{padding:clamp(30px,6vw,72px) var(--pad-x) clamp(40px,7vw,86px)}
+
+/* Arte oficial. Tablet e desktop: inteira (contain), sem cortar ninguém; a
+   altura tem teto para o título da página ainda aparecer na primeira tela, e
+   as faixas que sobram nas laterais são a própria arte, desfocada. */
+.hero-arte{position:relative;overflow:hidden;margin:0;background:#061A4A;
+  border-bottom:1px solid var(--linha)}
+.hero-arte-fundo{position:absolute;inset:-60px;
+  background:url("/caravana/assets/mercosul-960.jpg") center/cover no-repeat;
+  filter:blur(46px) saturate(1.15);opacity:.75}
+.hero-arte-img{position:relative;display:block;width:100%;height:auto;
+  aspect-ratio:1672/941;max-height:min(74vh,941px);
+  object-fit:contain;object-position:center}
+/* Celular: a arte inteira ficaria pequena demais. O recorte 4:3 tira só as
+   laterais (holofotes e paisagem) e mantém o logo, MERCOSUL, as seis pessoas
+   com os nomes e as datas. */
+@media(max-width:600px){
+  .hero-arte-img{aspect-ratio:4/3;max-height:none;object-fit:cover;object-position:50% 50%}
+}
 .hero-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px;
   border-bottom:1px solid var(--linha);padding-bottom:18px}
 .hero-tag{font-size:clamp(11px,1.3vw,14px);font-weight:800;letter-spacing:.2em;text-transform:uppercase}
@@ -102,6 +121,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
   font-size:clamp(11px,1.2vw,13px);font-weight:800;letter-spacing:.12em;text-transform:uppercase}
 .chip-forte{background:rgba(47,123,255,.2);border-color:rgba(47,123,255,.5)}
 .chip-valor{background:var(--branco);color:var(--azul-escuro);border-color:var(--branco)}
+.chip-vagas{background:rgba(255,77,77,.16);border-color:rgba(255,77,77,.55)}
+.chip[hidden]{display:none}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(26px,4vw,40px)}
 
 /* ---------- seções ---------- */
@@ -166,6 +187,9 @@ section[id]{scroll-margin-top:84px}
 .ra-selo{background:var(--vermelho);color:#fff;border-radius:999px;padding:8px 16px;
   font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 .res-aviso p{font-size:13.5px;line-height:1.55;color:var(--branco-suave)}
+.ra-vagas{font-size:clamp(22px,2.8vw,30px);font-weight:900;font-stretch:112%;
+  letter-spacing:-.01em;line-height:1.05;text-transform:uppercase}
+.ra-vagas[hidden]{display:none}
 
 .form{position:relative;display:grid;gap:clamp(14px,2vw,20px);border:1px solid var(--linha);
   border-radius:20px;padding:clamp(20px,3vw,34px);background:rgba(255,255,255,.06)}
@@ -231,6 +255,7 @@ select.inp option{background-color:#0A1F3D;color:var(--branco)}
 .form-fora p{font-size:14.5px;line-height:1.6;color:var(--branco-suave)}
 .ff-selo{background:var(--branco);color:var(--azul-escuro);border-radius:999px;padding:10px 18px;
   font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.ff-selo-esgotado{background:var(--vermelho);color:#fff}
 
 /* tela de sucesso */
 .tela-ok{position:absolute;inset:0;z-index:5;background:var(--azul-escuro);border-radius:20px;
