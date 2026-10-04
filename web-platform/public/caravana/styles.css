@@ -130,7 +130,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 .hero-tag{font-size:clamp(11px,1.3vw,14px);font-weight:800;letter-spacing:.2em;text-transform:uppercase}
 .hero-tag-alt{margin-left:auto;color:var(--vermelho)}
 .hero-title{margin-top:clamp(16px,3vw,34px);font-size:clamp(54px,13vw,170px);font-weight:900;
-  font-stretch:118%;line-height:.84;letter-spacing:-.04em;text-transform:uppercase}
+  font-stretch:118%;line-height:.98;letter-spacing:-.04em;text-transform:uppercase}
 .destaque{color:var(--azul-claro)}
 
 .rota{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:clamp(20px,3vw,32px)}
@@ -341,7 +341,7 @@ select.inp option{background-color:#0A1F3D;color:var(--branco)}
 /* ---------- FOOTER ---------- */
 .foot{border-top:1px solid var(--linha);padding:clamp(32px,5vw,58px) var(--pad-x);
   display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
-.foot-logo{font-size:clamp(26px,5vw,52px);font-weight:900;font-stretch:118%;line-height:.86;
+.foot-logo{font-size:clamp(26px,5vw,52px);font-weight:900;font-stretch:118%;line-height:.98;
   letter-spacing:-.03em;text-transform:uppercase}
 .foot-info{display:grid;gap:6px;font-size:12px;font-weight:700;letter-spacing:.12em;
   text-transform:uppercase;color:var(--tenue)}

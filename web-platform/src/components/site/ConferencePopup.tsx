@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 /**
  * Pop-up da home — agora convida para a Caravana Anastácio (ônibus para a
  * Conferência Mercosul, 10/10), no lugar do convite de testemunho.
- * Aparece na 1ª visita; após fechar OU clicar em "Reservar minha vaga",
+ * Aparece na 1ª visita; após fechar OU clicar em "Ir na Caravana",
  * não reaparece por 24h (controle via localStorage). Glassmorphism, fade +
  * scale, ESC/scroll-lock/focus-trap.
  */
@@ -140,13 +140,14 @@ export default function ConferencePopup() {
             href="/caravana#reserva"
             onClick={persist}
             className="vc-pop-cta"
-            style={{ flex: '1 1 180px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: AZUL, color: '#fff', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: '14px 22px', borderRadius: 99, textDecoration: 'none' }}
+            // nowrap: a seta não pode cair sozinha para a linha de baixo
+            style={{ flex: '1 1 180px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, whiteSpace: 'nowrap', background: AZUL, color: '#fff', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: '14px 22px', borderRadius: 99, textDecoration: 'none' }}
           >
-            Reservar minha vaga →
+            Ir na Caravana <span aria-hidden="true">→</span>
           </a>
           <button
             onClick={dismiss}
-            style={{ flex: '1 1 120px', background: 'transparent', border: '1px solid var(--border)', color: 'var(--dim)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 14.5, padding: '14px 22px', borderRadius: 99, cursor: 'pointer' }}
+            style={{ flex: '1 1 120px', whiteSpace: 'nowrap', background: 'transparent', border: '1px solid var(--border)', color: 'var(--dim)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 14.5, padding: '14px 22px', borderRadius: 99, cursor: 'pointer' }}
           >
             Talvez depois
           </button>
