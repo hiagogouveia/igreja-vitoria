@@ -11,17 +11,18 @@ import CavFold from '@/components/site/CavFold';
 import CeusAbertosFold from '@/components/site/CeusAbertosFold';
 import DeepFold from '@/components/site/DeepFold';
 import EventArt from '@/components/site/EventArt';
-import ConferencePopup from '@/components/site/ConferencePopup';
-import { beliefs, fallbackEvents, messages, ministries, site } from '@/lib/site-data';
+import { beliefs, eventosAtuais, messages, ministries, site } from '@/lib/site-data';
+import { caravanaNoAr } from '@/lib/caravana';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
 
 export default async function Home() {
   // Eventos em destaque (curados): Conferência + Campanha do Agasalho.
-  const events = fallbackEvents;
+  const events = eventosAtuais();
+  const caravana = caravanaNoAr();
 
   return (
     <SiteShell>
-      <ConferencePopup />
+      {/* pop-up da caravana fora: as vagas do ônibus esgotaram */}
       {/* ---------- HERO ---------- */}
       <header style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 64px' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
@@ -71,7 +72,7 @@ export default async function Home() {
       </div>
 
       {/* ---------- EVENTO MAIS PRÓXIMO: CARAVANA / MERCOSUL ---------- */}
-      <CaravanaFold />
+      {caravana && <CaravanaFold />}
 
       <CavFold />
 

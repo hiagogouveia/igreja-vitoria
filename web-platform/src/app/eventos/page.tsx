@@ -4,13 +4,13 @@ import type { Metadata } from 'next';
 import SiteShell from '@/components/site/SiteShell';
 import RegisterModal from '@/components/site/RegisterModal';
 import EventArt from '@/components/site/EventArt';
-import { fallbackEvents } from '@/lib/site-data';
+import { eventosAtuais } from '@/lib/site-data';
 import { display, eyebrowLine, wrap } from '@/lib/site-ui';
 
 export const metadata: Metadata = { title: 'Eventos · Igreja Vitória', description: 'Agenda de eventos e conferências da Igreja Vitória.' };
 
 export default async function Eventos() {
-  const events = fallbackEvents;
+  const events = eventosAtuais();
 
   return (
     <SiteShell>

@@ -26,7 +26,7 @@ export default function CaravanaFold() {
   return (
     <a
       href="/caravana"
-      aria-label="Caravana Anastácio para a Conferência Mercosul · 10 de outubro · garantir vaga"
+      aria-label="Caravana Anastácio para a Conferência Mercosul · 10 de outubro · vagas esgotadas"
       style={{ display: 'block', textDecoration: 'none', color: '#fff' }}
     >
       <style>{css}</style>
@@ -51,7 +51,7 @@ export default function CaravanaFold() {
               Conferência Mercosul
             </span>
             <span style={{ fontFamily: 'var(--head)', fontWeight: 800, fontSize: 'clamp(11px,1.3vw,14px)', letterSpacing: '.2em', textTransform: 'uppercase', color: AZUL_CLARO, marginLeft: 'auto' }}>
-              Vagas limitadas
+              Vagas esgotadas
             </span>
           </div>
 
@@ -71,8 +71,8 @@ export default function CaravanaFold() {
                 marginTop: 'clamp(14px,2vw,22px)', maxWidth: 460, fontSize: 'clamp(15px,1.7vw,18px)',
                 lineHeight: 1.6, color: '#E6EEFB',
               }}>
-                Vamos juntos de Campo Grande até Anastácio para a Conferência
-                Mercosul. Ônibus com ida e volta: reserve a sua poltrona.
+                A caravana da igreja de Campo Grande até Anastácio para a
+                Conferência Mercosul está completa: as vagas do ônibus esgotaram.
               </p>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 9, marginTop: 'clamp(16px,2.2vw,24px)' }}>
@@ -90,7 +90,7 @@ export default function CaravanaFold() {
                 letterSpacing: '.08em', textTransform: 'uppercase', padding: '15px 28px', borderRadius: 999,
                 marginTop: 'clamp(18px,2.4vw,26px)',
               }}>
-                <span>Quero garantir minha <span style={{ whiteSpace: 'nowrap' }}>vaga <span aria-hidden="true">→</span></span></span>
+                <span>Ver detalhes <span aria-hidden="true">→</span></span>
               </span>
             </div>
 
