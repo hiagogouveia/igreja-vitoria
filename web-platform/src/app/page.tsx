@@ -6,19 +6,16 @@ import Countdown from '@/components/site/Countdown';
 import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
-import CaravanaFold from '@/components/site/CaravanaFold';
 import CavFold from '@/components/site/CavFold';
 import CeusAbertosFold from '@/components/site/CeusAbertosFold';
 import DeepFold from '@/components/site/DeepFold';
 import EventArt from '@/components/site/EventArt';
 import { beliefs, eventosAtuais, messages, ministries, site } from '@/lib/site-data';
-import { caravanaNoAr } from '@/lib/caravana';
 import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
 
 export default async function Home() {
   // Eventos em destaque (curados): Conferência + Campanha do Agasalho.
   const events = eventosAtuais();
-  const caravana = caravanaNoAr();
 
   return (
     <SiteShell>
@@ -70,9 +67,6 @@ export default async function Home() {
           <Link href="/contato" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Como chegar →</Link>
         </div>
       </div>
-
-      {/* ---------- EVENTO MAIS PRÓXIMO: CARAVANA / MERCOSUL ---------- */}
-      {caravana && <CaravanaFold />}
 
       <CavFold />
 
