@@ -66,10 +66,16 @@ export default async function Home() {
       {/* ---------- QUEM SOMOS (manifesto) ---------- */}
       <section className="reveal secao">
         <div style={wrap}>
-          <Rotulo>Quem somos</Rotulo>
-          <p className="manifesto">
-            Somos uma igreja apaixonada por Jesus. Aqui a gente adora, aprende a Palavra e <span className="luz">caminha junto.</span>
-          </p>
+          <div className="quem-grade">
+            <div>
+              <Rotulo>Quem somos</Rotulo>
+              <p className="manifesto">
+                Somos uma igreja apaixonada por Jesus. Aqui a gente adora, aprende a Palavra e <span className="luz">caminha junto.</span>
+              </p>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/welcome-stage.webp" alt="Boas-vindas no palco durante o culto da Igreja Vitória" loading="lazy" decoding="async" width={1600} height={1067} className="quem-foto" />
+          </div>
           <ol className="marcas">
             {beliefs.map((b) => (
               <li key={b.n}>
