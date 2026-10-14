@@ -60,6 +60,9 @@ export default async function Home() {
         </div>
       </header>
 
+      {/* ---------- CASA DE VITÓRIA (destaque logo depois da hero) ---------- */}
+      <CavFold />
+
       {/* ---------- QUEM SOMOS (manifesto) ---------- */}
       <section className="reveal secao">
         <div style={wrap}>
@@ -122,9 +125,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {/* ---------- CASA DE VITÓRIA ---------- */}
-      <CavFold />
 
       {/* ---------- AGENDA ---------- */}
       {events.length > 0 && (
