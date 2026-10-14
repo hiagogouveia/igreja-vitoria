@@ -4,7 +4,7 @@ import { site } from '@/lib/site-data';
 
 const colHead: CSSProperties = { fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 16 };
 const navLink: CSSProperties = { fontSize: 14, color: 'var(--dim)', cursor: 'pointer', textDecoration: 'none' };
-const socialBox: CSSProperties = { width: 40, height: 40, borderRadius: 11, border: '1px solid var(--border)', background: 'var(--s1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--dim)', textDecoration: 'none' };
+const socialBox: CSSProperties = { width: 44, height: 44, borderRadius: 11, border: '1px solid var(--border)', background: 'var(--s1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--dim)', textDecoration: 'none' };
 
 export default function SiteFooter() {
   return (
@@ -19,8 +19,18 @@ export default function SiteFooter() {
             </div>
             <p style={{ fontSize: 14.5, color: 'var(--dim)', lineHeight: 1.6, maxWidth: 300 }}>Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. {site.city}.</p>
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <a href={site.instagram} target="_blank" rel="noreferrer" className="icon-box" style={socialBox}>IG</a>
-              <a href={site.youtube} target="_blank" rel="noreferrer" className="icon-box" style={socialBox}>YT</a>
+              <a href={site.instagram} target="_blank" rel="noreferrer" className="icon-box" style={socialBox} aria-label="Instagram da Igreja Vitória">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4.2" />
+                  <circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a href={site.youtube} target="_blank" rel="noreferrer" className="icon-box" style={socialBox} aria-label="YouTube da Igreja Vitória">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.4 3.1-5.4 3.1Z" />
+                </svg>
+              </a>
             </div>
           </div>
 
