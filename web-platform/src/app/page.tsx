@@ -10,7 +10,7 @@ import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import CavFold from '@/components/site/CavFold';
 import EventArt from '@/components/site/EventArt';
-import { beliefs, eventosAtuais, ministries, site } from '@/lib/site-data';
+import { beliefs, eventosAtuais, site } from '@/lib/site-data';
 import { ultimosVideos, dataCurta } from '@/lib/youtube';
 import { btnGhost, btnPrimary, display, wrap } from '@/lib/site-ui';
 
@@ -125,31 +125,6 @@ export default async function Home() {
 
       {/* ---------- CASA DE VITÓRIA ---------- */}
       <CavFold />
-
-      {/* ---------- MINISTÉRIOS ---------- */}
-      <section className="reveal secao">
-        <div style={wrap}>
-          <div className="cabeca">
-            <div>
-              <Rotulo>Ministérios</Rotulo>
-              <h2 className="titulo-secao">Sirva com a gente.</h2>
-            </div>
-            <Link href="/ministerios" className="link-seta">Ver todos</Link>
-          </div>
-          <div className="grade-ministerios">
-            {ministries.map((m) => (
-              <Link key={m.id} href={`/ministerios/${m.id}`} className="ministerio zoom-parent">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={m.photo} alt="" loading="lazy" decoding="async" className="zoom-img" />
-                <span className="ministerio-texto">
-                  <strong>{m.name}</strong>
-                  <span>{m.leaders}</span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ---------- AGENDA ---------- */}
       {events.length > 0 && (
