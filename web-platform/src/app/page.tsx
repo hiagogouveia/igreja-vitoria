@@ -23,9 +23,13 @@ export default async function Home() {
       {/* ---------- HERO ---------- */}
       <header style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 64px' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/worship-arms.jpg" alt="Adoração na Igreja Vitória" fetchPriority="high" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 28%', animation: 'kenburns 18s var(--ease) infinite alternate' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.72) 0%,rgba(5,5,5,.28) 35%,rgba(5,5,5,.55) 70%,rgba(5,5,5,.96) 100%)' }} />
+          {/* Foto vertical do culto (palco, luzes e a igreja adorando). O enquadramento
+              por tamanho de tela fica em .hero-foto, no globals.css. */}
+          <div className="hero-foto-box">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/hero-vitoria.webp" alt="Momento de adoração no culto da Igreja Vitória, com a banda no palco e a igreja de mãos levantadas" width={941} height={1672} fetchPriority="high" decoding="async" className="hero-foto" style={{ animation: 'kenburns 18s var(--ease) infinite alternate' }} />
+          </div>
+          <div className="hero-veu" />
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(70% 50% at 50% 38%, rgba(240,168,72,.16), transparent 70%)' }} />
         </div>
         <div style={{ position: 'absolute', top: 0, left: '50%', width: 2, height: '60%', transform: 'rotate(-20deg)', transformOrigin: 'top', background: 'linear-gradient(180deg,rgba(240,168,72,.5),transparent 75%)', animation: 'beamSweep 7s var(--ease) infinite', zIndex: 1 }} />
