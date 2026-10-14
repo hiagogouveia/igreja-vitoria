@@ -49,11 +49,11 @@ export default async function CavFold() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/assets/community-prayer.webp"
+        src="/assets/igreja-adorando.webp"
         alt=""
         aria-hidden="true"
         loading="lazy"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 35%' }}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '60% 62%' }}
       />
       <div style={{
         position: 'absolute', inset: 0,
