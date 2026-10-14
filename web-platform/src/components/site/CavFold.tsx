@@ -12,7 +12,7 @@ import { wrap } from '@/lib/site-ui';
  * Os nomes vêm do banco (mesma fonte do mapa), então a faixa acompanha
  * sozinha quando uma CAV é criada ou desativada no admin.
  */
-const AZUL = '#5B8DEF';
+const AZUL = 'var(--glow)';
 
 async function nomesDasCavs(): Promise<string[]> {
   try {
@@ -44,12 +44,12 @@ export default async function CavFold() {
       style={{
         position: 'relative', overflow: 'hidden',
         borderTop: '1px solid var(--border-soft)', borderBottom: '1px solid var(--border-soft)',
-        padding: 'clamp(40px,6vw,76px) 28px',
+        padding: 'clamp(88px,11vw,150px) 28px',
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/assets/community-prayer.jpg"
+        src="/assets/community-prayer.webp"
         alt=""
         aria-hidden="true"
         loading="lazy"
@@ -57,29 +57,27 @@ export default async function CavFold() {
       />
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(100deg,rgba(5,5,5,.95) 30%,rgba(5,5,5,.72) 70%,rgba(91,141,239,.22))',
+        background: 'linear-gradient(100deg,rgba(5,5,5,.96) 32%,rgba(5,5,5,.7) 72%,rgb(var(--glow-rgb) / .2))',
       }} />
 
       <div style={{ ...wrap, position: 'relative', width: '100%' }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 9, fontFamily: 'var(--mono)', fontSize: 11,
-          letterSpacing: '.16em', textTransform: 'uppercase', color: AZUL,
-          background: 'rgba(91,141,239,.12)', border: '1px solid rgba(91,141,239,.3)',
-          padding: '7px 14px', borderRadius: 99,
+          letterSpacing: '.24em', textTransform: 'uppercase', color: AZUL,
         }}>
           Casa de Vitória · perto de você
         </div>
 
         <h2 style={{
           margin: '18px 0 0', fontFamily: 'var(--head)', fontWeight: 800,
-          fontSize: 'clamp(28px,4.6vw,54px)', lineHeight: 1.05, letterSpacing: '-.02em', maxWidth: '18ch',
+          fontSize: 'clamp(34px,5vw,64px)', lineHeight: 1, letterSpacing: '-.03em', maxWidth: '16ch',
         }}>
           Encontre uma CAV<br />perto de você
         </h2>
 
         <p style={{ marginTop: 16, maxWidth: 520, fontSize: 'clamp(15px,1.7vw,18px)', lineHeight: 1.6, color: 'var(--dim)' }}>
-          Durante a semana a igreja se reúne nas casas. Digite seu endereço no mapa
-          e veja qual é a mais próxima, com dia e horário.
+          Durante a semana, a igreja se encontra nas casas. Veja no mapa a mais
+          perto de você, com dia e horário.
         </p>
 
         {nomes.length > 0 && (
@@ -98,7 +96,7 @@ export default async function CavFold() {
             href="/cav-enderecos"
             className="cav-cta"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 10, background: AZUL, color: '#050505',
+              display: 'inline-flex', alignItems: 'center', gap: 10, background: 'var(--text)', color: '#050505',
               fontFamily: 'var(--head)', fontWeight: 700, fontSize: 'clamp(14px,1.6vw,16px)',
               padding: '15px 28px', borderRadius: 99, textDecoration: 'none',
             }}

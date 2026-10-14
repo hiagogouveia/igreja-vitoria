@@ -14,7 +14,7 @@ export default function SiteFooter() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 18 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/logo-white.png" alt="Igreja Vitória" style={{ width: 26, filter: 'brightness(0) invert(1) drop-shadow(0 0 14px rgba(240,168,72,.4))' }} />
+              <img src="/assets/logo-white.png" alt="Igreja Vitória" style={{ width: 26, filter: 'brightness(0) invert(1) drop-shadow(0 0 14px rgb(var(--glow-rgb) / .4))' }} />
               <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 17, letterSpacing: '.05em', textTransform: 'uppercase' }}>Vitória</span>
             </div>
             <p style={{ fontSize: 14.5, color: 'var(--dim)', lineHeight: 1.6, maxWidth: 300 }}>Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. {site.city}.</p>

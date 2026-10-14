@@ -4,18 +4,18 @@ import PixCopy from '@/components/site/PixCopy';
 import { site } from '@/lib/site-data';
 import { display, eyebrowLine, wrap } from '@/lib/site-ui';
 
-export const metadata: Metadata = { title: 'Contribua · Igreja Vitória', description: 'Dízimos, ofertas e projetos sociais. Faça parte da missão da Igreja Vitória.' };
+export const metadata: Metadata = { title: 'Contribua · Igreja Vitória', description: 'Dízimos e ofertas para a Igreja Vitória pelo PIX.' };
 
 export default function Contribua() {
   return (
     <SiteShell>
       <header style={{ position: 'relative', minHeight: '48vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', padding: '0 0 46px' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/altar-prayer.jpg" alt="Generosidade" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 28%' }} />
+        <img src="/assets/altar-prayer.webp" alt="Oração no altar da Igreja Vitória" fetchPriority="high" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 28%' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.82) 0%,rgba(5,5,5,.4) 45%,rgba(5,5,5,.97) 100%)' }} />
         <div style={{ position: 'relative', zIndex: 2, ...wrap, padding: '0 28px', width: '100%' }}>
-          <div style={{ ...eyebrowLine, marginTop: 90 }}><span style={{ width: 24, height: 1, background: 'var(--glow)' }} />Generosidade</div>
-          <h1 style={{ ...display, fontSize: 'clamp(38px,7vw,90px)' }}>Faça parte<br />da missão.</h1>
+          <div style={{ ...eyebrowLine, marginTop: 90 }}><span style={{ width: 24, height: 1, background: 'var(--glow)' }} />Contribua</div>
+          <h1 style={{ ...display, fontSize: 'clamp(38px,7vw,90px)' }}>Dízimos<br /><span className="luz">e ofertas.</span></h1>
         </div>
       </header>
 
@@ -24,7 +24,7 @@ export default function Contribua() {
           <div>
             <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 10 }}>PIX · CNPJ (geral)</div>
             <div style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 24, letterSpacing: '-.01em' }}>{site.pixCnpj}</div>
-            <p style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--faint)', marginTop: 10, letterSpacing: '.04em' }}>Transparência total · prestação de contas trimestral</p>
+            <p style={{ fontSize: 15, color: 'var(--dim)', marginTop: 12, maxWidth: 420, lineHeight: 1.55 }}>“Cada um dê conforme determinou em seu coração, não com tristeza ou por obrigação, pois Deus ama quem dá com alegria.” 2 Coríntios 9:7</p>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
             <div style={{ minWidth: 220 }}>

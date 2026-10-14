@@ -1,47 +1,31 @@
-// Central content for the public "Glow" site. Ministries are static (no admin
-// CRUD for them); ids are stable for /ministerios/:id URLs. Events come from the
-// DB (Prisma Event) — see app/eventos and the home teaser.
+// Conteúdo do site público. Os ministérios são fixos (sem cadastro no admin);
+// os ids são estáveis para as URLs /ministerios/:id. As mensagens vêm do canal
+// do YouTube (src/lib/youtube.ts), não deste arquivo.
 
 export const ministries = [
-  { id: 'louvor', name: 'Louvor', tag: 'Adoração', leaders: 'Profeta Milena', photo: '/assets/worship-team.jpg', desc: 'O ministério de Louvor conduz a igreja à presença de Deus através da adoração. Cantores, músicos e técnicos servem com excelência para criar uma atmosfera onde o céu toca a terra.' },
-  { id: 'welcome', name: 'Welcome', tag: 'Acolhimento', leaders: 'Evangelista Wagner', photo: '/assets/welcome-stage.jpg', desc: 'O time Welcome existe para que ninguém chegue e se sinta um estranho. Recebemos cada visitante com um sorriso, um café e a certeza de que aqui há lugar para ele.' },
-  { id: 'recepcao', name: 'Recepção', tag: 'Hospitalidade', leaders: 'Pr Hiago e Pra Isabela', photo: '/assets/community-prayer.jpg', desc: 'A Recepção cuida da primeira impressão, orientando, acolhendo e conduzindo cada pessoa com cuidado desde a porta até o seu assento.' },
-  { id: 'intercessao', name: 'Intercessão', tag: 'Oração', leaders: 'Pra Ivone', photo: '/assets/altar-prayer.jpg', desc: 'A Intercessão é a sala de máquinas da igreja. Antes, durante e depois dos cultos, esse time guerreia em oração por vidas, famílias e pela cidade.' },
-  { id: 'kids', name: 'Vitória Kids', tag: 'Crianças', leaders: 'Profeta Leandro e Profeta Carol', photo: '/assets/worship-arms.jpg', desc: 'O Vitória Kids ensina as crianças a amarem a Jesus de forma criativa, segura e divertida, para que cresçam conhecendo o Deus que as ama.' },
-  { id: 'midia', name: 'Mídia', tag: 'Comunicação', leaders: 'Pastor Leonardo e Pastora Linda', photo: '/assets/welcome-stage.jpg', desc: 'A Mídia leva a mensagem para além das paredes: transmissões ao vivo, fotografia, design e redes sociais que alcançam quem ainda não chegou.' },
-  { id: 'operacionais', name: 'Operacionais', tag: 'Estrutura', leaders: 'Profeta Johnny e Profeta Hila', photo: '/assets/community-prayer.jpg', desc: 'Os Operacionais cuidam de tudo o que faz o culto acontecer: estrutura, organização e serviço para que cada encontro flua com excelência.' },
+  { id: 'louvor', name: 'Louvor', tag: 'Adoração', leaders: 'Profeta Milena', photo: '/assets/hero-vitoria.webp', desc: 'Cantores, músicos e técnicos que conduzem a igreja na adoração em cada culto.' },
+  { id: 'welcome', name: 'Welcome', tag: 'Acolhimento', leaders: 'Evangelista Wagner', photo: '/assets/welcome-stage.webp', desc: 'O time que recebe quem chega pela primeira vez, para ninguém se sentir um estranho.' },
+  { id: 'recepcao', name: 'Recepção', tag: 'Hospitalidade', leaders: 'Pr Hiago e Pra Isabela', photo: '/assets/community-prayer.webp', desc: 'Orienta e acolhe cada pessoa da porta até o lugar no culto.' },
+  { id: 'intercessao', name: 'Intercessão', tag: 'Oração', leaders: 'Pra Ivone', photo: '/assets/altar-prayer.webp', desc: 'Ora antes, durante e depois dos cultos pelas pessoas, pelas famílias e pela cidade.' },
+  { id: 'kids', name: 'Vitória Kids', tag: 'Crianças', leaders: 'Profeta Leandro e Profeta Carol', photo: '/assets/worship-arms.webp', desc: 'Ensina as crianças a conhecer e amar Jesus, num ambiente seguro e alegre.' },
+  { id: 'midia', name: 'Mídia', tag: 'Comunicação', leaders: 'Pastor Leonardo e Pastora Linda', photo: '/assets/welcome-stage.webp', desc: 'Transmissões ao vivo, fotografia, design e redes sociais da igreja.' },
+  { id: 'operacionais', name: 'Operacionais', tag: 'Estrutura', leaders: 'Profeta Johnny e Profeta Hila', photo: '/assets/community-prayer.webp', desc: 'Cuida da estrutura e da organização para o culto acontecer.' },
 ] as const;
 
 export type Ministry = (typeof ministries)[number];
 
 export const beliefs = [
-  { n: '01', title: 'Adoração Vibrante', desc: 'Louvor intenso e uma atmosfera onde a presença de Deus é real e palpável.' },
-  { n: '02', title: 'Palavra Transformadora', desc: 'Mensagens bíblicas práticas que tocam o coração e mudam histórias.' },
-  { n: '03', title: 'Casa de Vitória', desc: 'Comunidade, discipulado e famílias caminhando juntas durante a semana.' },
-  { n: '04', title: 'Ação Social', desc: 'Apoio comunitário, cestas básicas e misericórdia para quem precisa.' },
-  { n: '05', title: 'Juventude Vitória', desc: 'Um movimento jovem, criativo e relevante que vive o evangelho com paixão.' },
+  { n: '01', title: 'Adoração', desc: 'O louvor está no centro dos nossos cultos.' },
+  { n: '02', title: 'Palavra', desc: 'A Bíblia ensinada de um jeito que dá para viver.' },
+  { n: '03', title: 'Casa de Vitória', desc: 'Durante a semana, a igreja se encontra nas casas.' },
+  { n: '04', title: 'Ação social', desc: 'Servir a cidade e cuidar de quem precisa.' },
+  { n: '05', title: 'Juventude', desc: 'Uma geração que vive o evangelho de verdade.' },
 ];
 
-export const testimonials = [
-  { quote: 'Cheguei quebrado e encontrei uma família. Hoje sirvo no mesmo lugar onde fui restaurado.', name: 'João Silva', role: 'MEMBRO · 2 ANOS', initials: 'JS', av: 'linear-gradient(135deg,var(--glow),var(--glow-deep))' },
-  { quote: 'A Casa de Vitória me ensinou o que é caminhar com Deus em comunidade. Não estou mais sozinha.', name: 'Maria Oliveira', role: 'LÍDER DE JOVENS', initials: 'MO', av: 'linear-gradient(135deg,var(--glow),var(--beam))' },
-  { quote: 'Comecei a servir e descobri um propósito que nem sabia que tinha. Minha vida tem direção.', name: 'Pedro Santos', role: 'VOLUNTÁRIO', initials: 'PS', av: 'linear-gradient(135deg,var(--beam),var(--glow))' },
-];
-
-export const messages = [
-  { id: 1, title: 'No Nome de Jesus Rendemos Glória', series: 'Adoração', speaker: 'Pr. Leonardo', duration: '48 min', date: '02 JUN', type: 'video', thumb: '/assets/worship-team.jpg' },
-  { id: 2, title: 'Jesus Está Aqui', series: 'Presença', speaker: 'Pr. Leonardo', duration: '52 min', date: '26 MAI', type: 'video', thumb: '/assets/welcome-stage.jpg' },
-  { id: 3, title: 'Uma Casa Sobre a Rocha', series: 'Família', speaker: 'Pra. Linda', duration: '44 min', date: '19 MAI', type: 'audio', thumb: '/assets/bible.jpg' },
-  { id: 4, title: 'O Poder da Oração no Altar', series: 'Intercessão', speaker: 'Pra. Ivone', duration: '39 min', date: '12 MAI', type: 'video', thumb: '/assets/altar-prayer.jpg' },
-  { id: 5, title: 'Vem Como Você Está', series: 'Família', speaker: 'Pr. Leonardo', duration: '46 min', date: '05 MAI', type: 'video', thumb: '/assets/community-prayer.jpg' },
-  { id: 6, title: 'A Fé Que Vence o Mundo', series: 'Vitória', speaker: 'Ev. Wagner', duration: '41 min', date: '28 ABR', type: 'audio', thumb: '/assets/worship-arms.jpg' },
-];
-
-// Eventos em destaque exibidos na home (curados).
+// Eventos em destaque na home e na agenda (curados).
 export const fallbackEvents: SiteEvent[] = [
-  { id: 'ceus-abertos-2026', title: 'Conferência Céus Abertos', date: 'JÁ ACONTECEU', time: 'Conferência', place: 'Igreja Vitória', featured: true, badge: 'Testemunhos', photo: '/assets/worship-team.jpg', desc: 'A conferência aconteceu na Igreja Vitória, em Campo Grande. Conte para a igreja o que Deus fez na sua vida nesses dias.', href: '/ceus-abertos#testemunhos', cta: 'Conte seu testemunho' },
-  { id: 'sister-2026', title: 'Sister · 6 anos', date: '26 SET', time: 'Sábado, 18h', place: 'Igreja Vitória', featured: true, badge: 'Inscrições esgotadas', photo: '/assets/worship-arms.jpg', art: { bg: 'linear-gradient(165deg,#FAEDEA,#F2DBD6)', fg: '#C4676B', label: 'Sister', sub: '6 anos', serif: true }, desc: 'A noite das mulheres dentro da Conferência Céus Abertos, comemorando 6 anos. Com Ap. Rayssa Coelho, Ap. Maricleyde Cardoso e Ap. Neila Lopes. As vagas acabaram e as inscrições estão esgotadas.', href: '/ceus-abertos#sister', cta: 'Ver detalhes' },
-  { id: 'deep-membresia', title: 'Deep · Curso de Membresia', date: 'PRÓXIMA TURMA', time: 'Curso de membresia', place: 'Igreja Vitória', featured: true, badge: 'Lista da próxima turma', photo: '/assets/altar-prayer.jpg', art: { bg: 'radial-gradient(120% 80% at 78% 8%, rgba(191,221,240,.55), transparent 62%), linear-gradient(165deg,#2E7FB8 0%,#12507F 48%,#0B3760 100%)', fg: '#FFFFFF', label: 'Deep', sub: 'Curso de membresia' }, desc: 'As inscrições da turma atual estão encerradas. Entre na lista e a igreja avisa quando a próxima abrir.', href: '/deep', cta: 'Quero na próxima' },
+  { id: 'ceus-abertos-2026', title: 'Conferência Céus Abertos', date: 'JÁ ACONTECEU', time: 'Conferência', place: 'Igreja Vitória', featured: true, badge: 'Testemunhos', photo: '/assets/worship-team.webp', desc: 'O que Deus fez na sua vida nesses dias? Conte para a igreja.', href: '/ceus-abertos#testemunhos', cta: 'Contar meu testemunho' },
+  { id: 'deep-membresia', title: 'Deep · Curso de Membresia', date: 'PRÓXIMA TURMA', time: 'Curso de membresia', place: 'Igreja Vitória', featured: true, badge: 'Lista da próxima turma', photo: '/assets/altar-prayer.webp', art: { bg: 'radial-gradient(120% 80% at 78% 8%, rgba(191,221,240,.55), transparent 62%), linear-gradient(165deg,#2E7FB8 0%,#12507F 48%,#0B3760 100%)', fg: '#FFFFFF', label: 'Deep', sub: 'Curso de membresia' }, desc: 'A turma atual já começou. Entre na lista e avisamos quando a próxima abrir.', href: '/deep', cta: 'Entrar na lista' },
 ];
 
 /**
@@ -66,7 +50,7 @@ export function eventosAtuais(agora: Date = new Date()): SiteEvent[] {
   return fallbackEvents.filter((e) => !e.ate || agora.getTime() < new Date(e.ate).getTime());
 }
 
-const FALLBACK_PHOTOS = ['/assets/worship-team.jpg', '/assets/worship-arms.jpg', '/assets/community-prayer.jpg'];
+const FALLBACK_PHOTOS = ['/assets/worship-team.webp', '/assets/worship-arms.webp', '/assets/community-prayer.webp'];
 
 /** Map a Prisma Event row to the design's event shape. */
 export function mapDbEvent(e: {
@@ -101,6 +85,8 @@ export const site = {
   email: 'contato@igrejavitoria.com.br',
   instagram: 'https://instagram.com/igrejavitoriacg',
   youtube: 'https://youtube.com/@igrejavitoriacampogrande',
+  // canal "Igreja Vitória em Campo Grande" (o @ acima aponta para ele)
+  youtubeChannelId: 'UCczJ5h3nD-8Aw2xDiqgP_sQ',
   youtubeHandle: '@igrejavitoriacampogrande',
   address: 'R. Mal. Rondon, 163 · Amambai',
   city: 'Campo Grande, MS',

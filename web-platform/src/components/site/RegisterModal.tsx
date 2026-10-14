@@ -55,9 +55,9 @@ export default function RegisterModal({
 
             {done ? (
               <div style={{ textAlign: 'center', padding: '14px 0' }}>
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(240,168,72,.14)', border: '1px solid rgba(240,168,72,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28, color: 'var(--glow)' }}>✓</div>
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgb(var(--glow-rgb) / .14)', border: '1px solid rgb(var(--glow-rgb) / .3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 28, color: 'var(--glow)' }}>✓</div>
                 <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 24, marginBottom: 10 }}>Abrimos o WhatsApp!</h3>
-                <p style={{ fontSize: 15, color: 'var(--dim)', lineHeight: 1.55, marginBottom: 24 }}>É só tocar em enviar na conversa com a Igreja Vitória para concluir. Mal podemos esperar para te receber!</p>
+                <p style={{ fontSize: 15, color: 'var(--dim)', lineHeight: 1.55, marginBottom: 24 }}>É só tocar em enviar na conversa com a Igreja Vitória.</p>
                 <span onClick={close} style={{ display: 'inline-block', background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15, padding: '13px 28px', borderRadius: 99, cursor: 'pointer' }}>Fechar</span>
               </div>
             ) : (

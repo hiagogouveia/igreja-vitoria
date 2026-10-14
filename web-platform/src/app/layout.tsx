@@ -1,19 +1,27 @@
 import type { Metadata } from "next";
+import { Archivo, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import RevealManager from "@/components/site/RevealManager";
 import MetaPixel from "@/components/analytics/MetaPixel";
 
+// Fontes servidas pelo próprio site (sem pedido ao Google na abertura da página).
+// O "Archivo Expanded" do design é o Archivo no eixo de largura: font-stretch 125%.
+const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--f-head", display: "swap" });
+const hanken = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--f-body", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--f-mono", display: "swap" });
+
+const DESCRICAO =
+  "Igreja apaixonada por Jesus em Campo Grande, MS. Cultos no domingo às 18h e na quarta às 19h30, na Rua Marechal Rondon, 163.";
+
 export const metadata: Metadata = {
   title: "Igreja Vitória · Campo Grande, MS",
-  description:
-    "Igreja Vitória · Campo Grande, MS. Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. Cultos aos domingos 18h (Culto da Família) e quartas 19h30 (Quarta Flow). Encontre fé, propósito e família.",
-  metadataBase: new URL("https://igreja-vitoria.vercel.app"),
+  description: DESCRICAO,
+  metadataBase: new URL("https://www.igrejavitoriacg.com.br"),
   openGraph: {
     type: "website",
     siteName: "Igreja Vitória",
     title: "Igreja Vitória · Campo Grande, MS",
-    description:
-      "Encontre Deus. Viva em família. Transforme sua história. Cultos aos domingos 18h e quartas 19h30 em Campo Grande, MS.",
+    description: DESCRICAO,
     images: ["/assets/worship-arms.jpg"],
     locale: "pt_BR",
   },
@@ -26,14 +34,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning className={`${archivo.variable} ${hanken.variable} ${mono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Archivo:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Archivo+Expanded:wght@600;700;800;900&family=Pirata+One&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
         <meta name="theme-color" content="#050505" />
       </head>
       <body className="antialiased">

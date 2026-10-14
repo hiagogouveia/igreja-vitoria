@@ -24,6 +24,9 @@ const nextConfig: NextConfig = {
       // tiver o link antigo cai na home.
       { source: '/caravana', destination: '/', permanent: false },
       { source: '/caravana/:path*', destination: '/', permanent: false },
+      // Página de pagamento de demonstração removida (não cobrava nada de verdade):
+      // a contribuição é pelo PIX, em /contribua.
+      { source: '/contribua-pagamento', destination: '/contribua', permanent: true },
     ];
   },
 };
