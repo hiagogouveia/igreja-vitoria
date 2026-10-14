@@ -22,19 +22,23 @@
   --s3: #202024;
   --border: #26262B;
   --border-soft: #1B1B1F;
-  --glow: #F0A848;
-  --glow-deep: #C77A24;
-  --glow-soft: #F8CE8E;
-  --beam: #5B8DEF;
+  /* Destaque: a luz azul e violeta dos LEDs do culto. Usado com parcimônia,
+     em detalhes e brilhos; os botões principais são brancos. */
+  --glow: #8EA6FF;
+  --glow-rgb: 142 166 255;
+  --glow-deep: #5D74FF;
+  --glow-soft: #C7D2FF;
+  --violet: #A98BFF;
+  --beam: #6C8CFF;
   --pulse: #E8475B;
   --heaven: #EFE7D6;
   --text: #F4F2EE;
-  --dim: #A8A6A2;
-  --faint: #6B6A68;
-  --display: 'Archivo Expanded', 'Archivo', sans-serif;
-  --head: 'Archivo', sans-serif;
-  --body: 'Hanken Grotesk', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --dim: #B2B0AC;
+  --faint: #85837F;
+  --display: var(--f-head), 'Archivo', sans-serif;
+  --head: var(--f-head), 'Archivo', sans-serif;
+  --body: var(--f-body), 'Hanken Grotesk', sans-serif;
+  --mono: var(--f-mono), 'JetBrains Mono', monospace;
   --ease: cubic-bezier(.16, 1, .3, 1);
 
   background-color: var(--void);
@@ -47,10 +51,21 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+/* Títulos "display": o Archivo na largura expandida (era a família Archivo Expanded) */
+[style*="var(--display)"] { font-stretch: 125%; }
 html { scroll-behavior: smooth; }
 body { min-height: 100vh; background: var(--void); color: var(--text); font-family: var(--body); overflow-x: hidden; }
 
 ::selection { background: var(--glow); color: #050505; }
+
+/* Foco visível para quem navega pelo teclado */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--glow); outline-offset: 3px; border-radius: 6px;
+}
+
+/* Texto com a luz do palco: azul para violeta */
+.luz { background: linear-gradient(92deg, var(--glow-soft) 0%, var(--glow) 45%, var(--violet) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
 ::-webkit-scrollbar { width: 11px; }
 ::-webkit-scrollbar-track { background: #0b0b0c; }
 ::-webkit-scrollbar-thumb { background: #26262b; border-radius: 99px; border: 3px solid #0b0b0c; }
@@ -59,7 +74,8 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
 /* ---------- Keyframes ---------- */
 @keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 @keyframes breathe { 0%,100% { opacity: .65; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.1); } }
-@keyframes kenburns { 0% { transform: scale(1.06) translate(0,0); } 100% { transform: scale(1.16) translate(-1.5%,-2%); } }
+/* A foto entra levemente aproximada e assenta uma vez; não fica em loop. */
+@keyframes kenburns { from { transform: scale(1.08); } to { transform: scale(1); } }
 
 /* Hero da home: a foto do culto é vertical (941×1672).
    Celular e tablet em pé: ocupa a hero inteira; o corte é pequeno e o texto
@@ -110,7 +126,7 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
 
 /* ---------- Interaction utility classes ---------- */
 .btn-glow { transition: transform .2s var(--ease), box-shadow .3s var(--ease); }
-.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 10px 34px rgba(240,168,72,.42); }
+.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgb(var(--glow-rgb) / .45); }
 .btn-pulse { transition: transform .2s var(--ease), box-shadow .3s var(--ease); }
 .btn-pulse:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(232,71,91,.4); }
 .btn-ghost { transition: border-color .3s, color .3s, background .3s; }
@@ -118,7 +134,7 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
 .btn-ghost-pulse { transition: border-color .3s, color .3s; }
 .btn-ghost-pulse:hover { border-color: var(--pulse); color: var(--pulse); }
 .btn-fill-glow { transition: background .3s, color .3s, border-color .3s; }
-.btn-fill-glow:hover { background: var(--glow); color: #050505; border-color: var(--glow); }
+.btn-fill-glow:hover { background: var(--text); color: #050505; border-color: var(--text); }
 .lift { transition: transform .4s var(--ease), border-color .4s, background .4s; }
 .lift:hover { transform: translateY(-5px); border-color: var(--glow-deep); }
 .lift-soft:hover { background: var(--s2); }
@@ -145,11 +161,6 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
 .searchbar:focus-within { border-color: var(--glow); }
 .zoom-parent:hover .zoom-img { transform: scale(1.05); }
 
-/* Conference highlight fold */
-.conf-kv { transition: transform 1.2s var(--ease); }
-.conf-fold:hover .conf-kv { transform: scale(1.05); }
-.conf-cta { transition: transform .25s var(--ease), box-shadow .3s var(--ease); }
-.conf-fold:hover .conf-cta { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(240,168,72,.5); }
 
 /* ---------- Responsive grid overrides ---------- */
 @media (max-width: 1080px) {
@@ -174,7 +185,109 @@ body { min-height: 100vh; background: var(--void); color: var(--text); font-fami
   section { padding-left: 18px !important; padding-right: 18px !important; }
 }
 
-/* Pop-up de campanha (VitóriaCon) — botão principal: glow + leve escala */
-.vc-pop-cta { transition: transform .25s var(--ease), box-shadow .3s var(--ease); }
-.vc-pop-cta:hover { transform: scale(1.04); box-shadow: 0 12px 38px rgba(240,168,72,.45); }
-@media (prefers-reduced-motion: reduce) { .vc-pop-cta:hover { transform: none; } }
+
+/* ============================================================
+   HOME · composição editorial
+   Preto, muito espaço, tipografia grande e foto. Poucos elementos
+   por seção; a cor de destaque aparece como luz, não como bloco.
+   ============================================================ */
+.secao { padding: clamp(88px, 12vw, 160px) 28px; }
+.rotulo { display: inline-flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 12px;
+  letter-spacing: .24em; text-transform: uppercase; color: var(--glow); margin-bottom: 22px; }
+.rotulo > span { width: 28px; height: 1px; background: currentColor; opacity: .8; }
+/* "APAIXONADOS" é uma palavra longa: no Archivo expandido ela mede ~9,4 vezes
+   o tamanho da fonte. 10,4vw − 8px cabe na largura útil de 320px em diante. */
+.hero-titulo { font-size: clamp(26px, calc(10.4vw - 8px), 124px); line-height: .9; letter-spacing: -.035em; }
+.titulo-secao { font-family: var(--head); font-weight: 800; font-size: clamp(34px, 5vw, 64px); line-height: 1; letter-spacing: -.03em; }
+.cabeca { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; margin-bottom: clamp(36px, 5vw, 56px); }
+.link-seta { display: inline-flex; align-items: center; gap: 10px; font-family: var(--head); font-weight: 600; font-size: 15px;
+  color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); padding-bottom: 6px; transition: border-color .3s, color .3s; }
+.link-seta::after { content: '→'; transition: transform .3s var(--ease); }
+.link-seta:hover { border-color: var(--glow); color: var(--glow-soft); }
+.link-seta:hover::after { transform: translateX(4px); }
+
+/* manifesto */
+.manifesto { font-family: var(--head); font-weight: 700; font-size: clamp(30px, 4.6vw, 62px); line-height: 1.08;
+  letter-spacing: -.03em; max-width: 19ch; margin-bottom: clamp(48px, 7vw, 88px); }
+.marcas { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--border);
+  margin-bottom: 44px; }
+.marcas li { display: flex; flex-direction: column; gap: 8px; padding: 26px 22px 0 0; }
+.marcas .marca-n { font-family: var(--mono); font-size: 12px; color: var(--glow); letter-spacing: .1em; }
+.marcas strong { font-family: var(--head); font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.marcas li > span:last-child { font-size: 15px; color: var(--dim); line-height: 1.5; }
+
+/* faixa de foto do louvor */
+.faixa-foto { position: relative; min-height: min(86vh, 860px); display: flex; align-items: flex-end; overflow: hidden; }
+.faixa-foto > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.faixa-veu { position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--void) 0%, rgba(5,5,5,.1) 22%, rgba(5,5,5,.15) 60%, var(--void) 100%),
+              radial-gradient(60% 50% at 70% 30%, rgb(var(--glow-rgb) / .14), transparent 70%); }
+.faixa-foto blockquote { position: relative; margin: 0 auto; padding-bottom: clamp(56px, 9vw, 110px); }
+.faixa-foto blockquote p { font-family: var(--display); font-stretch: 125%; font-weight: 800; text-transform: uppercase; letter-spacing: -.02em;
+  font-size: clamp(30px, 5vw, 72px); line-height: .95; max-width: 15ch; }
+.faixa-foto cite { display: block; margin-top: 18px; font-style: normal; font-family: var(--mono); font-size: 12px;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--glow); }
+
+/* vídeos */
+.grade-videos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.video { display: flex; flex-direction: column; gap: 8px; color: var(--text); text-decoration: none; }
+.video-thumb { position: relative; display: block; aspect-ratio: 16/9; overflow: hidden; border-radius: 14px; background: var(--s2); margin-bottom: 8px; }
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.video:hover .video-thumb img { transform: scale(1.04); }
+.video-play { position: absolute; right: 14px; bottom: 14px; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(5,5,5,.6); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.2); font-size: 13px; transition: background .3s, color .3s; }
+.video:hover .video-play { background: var(--text); color: #050505; }
+.video strong { font-family: var(--head); font-size: 18px; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; }
+.video-meta { font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: .04em; }
+
+/* ministérios */
+.grade-ministerios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.ministerio { position: relative; display: block; aspect-ratio: 3/4; overflow: hidden; border-radius: 14px; color: var(--text); text-decoration: none; background: var(--s2); }
+.ministerio:first-child { grid-row: span 2; aspect-ratio: auto; }
+.ministerio img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.ministerio::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(5,5,5,.9)); }
+.ministerio-texto { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 18px; display: flex; flex-direction: column; gap: 4px; }
+.ministerio-texto strong { font-family: var(--head); font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.ministerio-texto span { font-size: 13px; color: var(--dim); }
+
+/* agenda */
+.grade-agenda { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.agenda { display: grid; grid-template-columns: 1fr 1.1fr; border: 1px solid var(--border); border-radius: 18px; overflow: hidden;
+  color: var(--text); text-decoration: none; background: var(--ink); }
+.agenda-arte { position: relative; min-height: 240px; }
+.agenda-texto { display: flex; flex-direction: column; gap: 8px; padding: 28px; justify-content: center; }
+.agenda-data { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--glow); }
+.agenda-texto strong { font-family: var(--head); font-size: 22px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
+.agenda-texto > span:nth-child(3) { font-size: 15px; color: var(--dim); line-height: 1.5; }
+
+/* contribua e visite */
+.contribua { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: end; border-top: 1px solid var(--border); padding-top: 48px; }
+.contribua-pix { background: var(--ink); border: 1px solid var(--border); border-radius: 18px; padding: 26px; }
+.convite { font-size: clamp(44px, 8.5vw, 128px); line-height: .9; letter-spacing: -.035em; margin-bottom: clamp(40px, 6vw, 72px); }
+.visite { display: grid; grid-template-columns: 1.05fr .95fr; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--ink); }
+.horarios { display: flex; flex-direction: column; gap: 12px; }
+.horarios div { display: flex; gap: 16px; }
+.horarios dt { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); min-width: 72px; padding-top: 3px; }
+.horarios dd { font-size: 16px; }
+
+@media (max-width: 1080px) {
+  .marcas { grid-template-columns: repeat(3, 1fr); row-gap: 8px; }
+  .grade-ministerios { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .grade-videos { grid-template-columns: 1fr 1fr; }
+  .grade-videos .video:nth-child(3) { display: none; }
+  .contribua, .visite { grid-template-columns: 1fr; }
+  .agenda { grid-template-columns: 1fr; }
+  .agenda-arte { min-height: 200px; }
+}
+@media (max-width: 560px) {
+  .rotulo { letter-spacing: .16em; font-size: 11px; }
+  .marcas { grid-template-columns: 1fr; }
+  .marcas li { padding: 20px 0 0; }
+  .grade-videos { grid-template-columns: 1fr; }
+  .grade-videos .video:nth-child(3) { display: flex; }
+  .grade-ministerios { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ministerio:first-child { grid-column: span 2; grid-row: auto; aspect-ratio: 4/3; }
+  .ministerio-texto strong { font-size: 17px; }
+}

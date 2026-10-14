@@ -1,4 +1,6 @@
-export const dynamic = 'force-dynamic';
+// Página gerada e guardada por 10 minutos: abre na hora para o visitante e
+// continua acompanhando o cadastro de CAVs, a agenda e os vídeos do canal.
+export const revalidate = 600;
 
 import Link from 'next/link';
 import SiteShell from '@/components/site/SiteShell';
@@ -7,320 +9,195 @@ import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import CavFold from '@/components/site/CavFold';
-import CeusAbertosFold from '@/components/site/CeusAbertosFold';
-import DeepFold from '@/components/site/DeepFold';
 import EventArt from '@/components/site/EventArt';
-import { beliefs, eventosAtuais, messages, ministries, site } from '@/lib/site-data';
-import { btnGhost, btnPrimary, btnPrimarySm, card, display, kicker, sectionTitle, wrap } from '@/lib/site-ui';
+import { beliefs, eventosAtuais, site } from '@/lib/site-data';
+import { ultimosVideos, dataCurta } from '@/lib/youtube';
+import { btnGhost, btnPrimary, display, wrap } from '@/lib/site-ui';
+
+/* Rótulo pequeno das seções: mono, espaçado, com um traço de luz. */
+function Rotulo({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rotulo">
+      <span aria-hidden="true" />{children}
+    </div>
+  );
+}
 
 export default async function Home() {
-  // Eventos em destaque (curados): Conferência + Campanha do Agasalho.
   const events = eventosAtuais();
+  const videos = (await ultimosVideos(3)).slice(0, 3);
 
   return (
     <SiteShell>
-      {/* pop-up da caravana fora: as vagas do ônibus esgotaram */}
       {/* ---------- HERO ---------- */}
-      <header style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 64px' }}>
+      <header style={{ position: 'relative', minHeight: '100svh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 clamp(48px,8vh,88px)' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
           {/* Foto vertical do culto (palco, luzes e a igreja adorando). O enquadramento
               por tamanho de tela fica em .hero-foto, no globals.css. */}
           <div className="hero-foto-box">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/hero-vitoria.webp" alt="Momento de adoração no culto da Igreja Vitória, com a banda no palco e a igreja de mãos levantadas" width={941} height={1672} fetchPriority="high" decoding="async" className="hero-foto" style={{ animation: 'kenburns 18s var(--ease) infinite alternate' }} />
+            <img src="/assets/hero-vitoria.webp" alt="Banda e igreja adorando num culto da Igreja Vitória" width={941} height={1672} fetchPriority="high" decoding="async" className="hero-foto" style={{ animation: 'kenburns 2.4s var(--ease) both' }} />
           </div>
           <div className="hero-veu" />
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(70% 50% at 50% 38%, rgba(240,168,72,.16), transparent 70%)' }} />
         </div>
-        <div style={{ position: 'absolute', top: 0, left: '50%', width: 2, height: '60%', transform: 'rotate(-20deg)', transformOrigin: 'top', background: 'linear-gradient(180deg,rgba(240,168,72,.5),transparent 75%)', animation: 'beamSweep 7s var(--ease) infinite', zIndex: 1 }} />
-        <div style={{ position: 'absolute', top: 0, left: '50%', width: 2, height: '60%', transform: 'rotate(14deg)', transformOrigin: 'top', background: 'linear-gradient(180deg,rgba(91,141,239,.4),transparent 75%)', animation: 'beamSweep 8s var(--ease) infinite', animationDelay: '-3s', zIndex: 1 }} />
         <div style={{ position: 'relative', zIndex: 3, ...wrap, padding: '0 28px', width: '100%' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.26em', textTransform: 'uppercase', color: 'var(--glow)', fontWeight: 500, marginBottom: 22, animation: 'rise 1s var(--ease) both' }}>
-            <span style={{ width: 26, height: 1, background: 'var(--glow)', opacity: .7 }} />Igreja Vitória · {site.city}
+          <div className="rotulo" style={{ animation: 'rise 1s var(--ease) both' }}>
+            <span aria-hidden="true" />Igreja Vitória · {site.city}
           </div>
-          <h1 style={{ ...display, fontSize: 'clamp(44px,8.5vw,118px)', lineHeight: .9, maxWidth: '14ch', marginBottom: 26, animation: 'rise 1s var(--ease) .08s both' }}>
-            Encontre Deus.<br />Viva em família.<br /><span style={{ color: 'var(--glow)', textShadow: '0 0 60px rgba(240,168,72,.45)' }}>Transforme sua história.</span>
+          {/* sem animação de entrada: o título é o maior elemento da primeira tela e precisa aparecer já */}
+          <h1 className="hero-titulo" style={display}>
+            Apaixonados<br /><span className="luz">por Jesus.</span>
           </h1>
-          <p style={{ fontSize: 'clamp(17px,2.2vw,21px)', color: 'var(--text)', maxWidth: 620, lineHeight: 1.5, marginBottom: 38, animation: 'rise 1s var(--ease) .2s both' }}>
-            Uma igreja formada de pessoas imperfeitas, mas que amam um Deus que é Perfeito. Seja bem-vindo(a): aqui você encontra fé, propósito e família.
+          <p style={{ fontSize: 'clamp(16px,1.6vw,19px)', color: 'var(--text)', opacity: .86, lineHeight: 1.55, margin: '22px 0 34px', animation: 'rise 1s var(--ease) .18s both' }}>
+            Domingo 18h · Quarta 19h30 · R. Mal. Rondon, 163
           </p>
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', animation: 'rise 1s var(--ease) .3s both' }}>
-            <Link href="/quem-somos" className="btn-glow" style={btnPrimary}>Quero visitar →</Link>
-            <Link href="/aovivo" className="btn-ghost-pulse" style={btnGhost}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--pulse)', animation: 'pulse 1.4s infinite' }} />Assistir ao vivo
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', animation: 'rise 1s var(--ease) .26s both' }}>
+            <RegisterModal kicker="Primeira visita" title="Quero visitar" sub="Diga quando você vem e a gente te recebe." triggerClass="btn-glow" triggerStyle={btnPrimary}>Quero visitar</RegisterModal>
+            <Link href="/aovivo" className="btn-ghost" style={btnGhost}>
+              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--pulse)' }} />Assistir ao vivo
             </Link>
           </div>
         </div>
-        <div style={{ position: 'absolute', bottom: 26, left: '50%', transform: 'translateX(-50%)', zIndex: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9 }}>
-          <span style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.2em', color: 'var(--faint)' }}>ROLE</span>
-          <span style={{ width: 1, height: 36, background: 'linear-gradient(var(--glow),transparent)', animation: 'cue 2s var(--ease) infinite' }} />
-        </div>
       </header>
 
-      {/* ---------- HORÁRIOS STRIP ---------- */}
-      <div style={{ borderTop: '1px solid var(--border-soft)', borderBottom: '1px solid var(--border-soft)', background: 'var(--ink)' }}>
-        <div style={{ ...wrap, padding: '22px 28px', display: 'flex', flexWrap: 'wrap', gap: '18px 40px', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px 36px' }}>
-            {[['Domingo', '18h · Culto da Família'], ['Quarta-feira', '19h30 · Quarta Flow'], ['Onde', 'R. Mal. Rondon, 163 · Amambai']].map(([k, v]) => (
-              <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <span style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--faint)' }}>{k}</span>
-                <span style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 16 }}>{v}</span>
-              </div>
-            ))}
-          </div>
-          <Link href="/contato" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Como chegar →</Link>
-        </div>
-      </div>
-
+      {/* ---------- CASA DE VITÓRIA (destaque logo depois da hero) ---------- */}
       <CavFold />
 
-      <CeusAbertosFold />
-
-      <DeepFold />
-
-      {/* ---------- IDENTIDADE ---------- */}
-      <section className="reveal" style={{ padding: '108px 28px', position: 'relative' }}>
+      {/* ---------- QUEM SOMOS (manifesto) ---------- */}
+      <section className="reveal secao">
         <div style={wrap}>
-          <div style={{ maxWidth: 760, marginBottom: 52 }}>
-            <span style={kicker}>01 · NOSSA IDENTIDADE</span>
-            <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 14px' }}>O que nos move<br />e o que acreditamos.</h2>
-            <p style={{ fontSize: 18, color: 'var(--dim)', maxWidth: 560 }}>Cinco marcas que definem quem somos como igreja, vividas a cada encontro, dentro e fora do domingo.</p>
-          </div>
-          <div data-grid5 style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 16 }}>
+          <Rotulo>Quem somos</Rotulo>
+          <p className="manifesto">
+            Somos uma igreja apaixonada por Jesus. Aqui a gente adora, aprende a Palavra e <span className="luz">caminha junto.</span>
+          </p>
+          <ol className="marcas">
             {beliefs.map((b) => (
-              <div key={b.n} className="lift lift-soft" style={{ ...card, borderRadius: 14, padding: '26px 22px' }}>
-                <div style={{ width: 42, height: 42, borderRadius: 11, background: 'rgba(240,168,72,.12)', border: '1px solid rgba(240,168,72,.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, color: 'var(--glow)', fontFamily: 'var(--display)', fontWeight: 800, fontSize: 18 }}>{b.n}</div>
-                <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 18, letterSpacing: '-.01em', marginBottom: 9 }}>{b.title}</h3>
-                <p style={{ fontSize: 14, color: 'var(--dim)', lineHeight: 1.55 }}>{b.desc}</p>
-              </div>
+              <li key={b.n}>
+                <span className="marca-n">{b.n}</span>
+                <strong>{b.title}</strong>
+                <span>{b.desc}</span>
+              </li>
             ))}
-          </div>
+          </ol>
+          <Link href="/quem-somos" className="link-seta">Conheça a igreja</Link>
         </div>
       </section>
 
-      {/* ---------- QUEM SOMOS TEASER ---------- */}
-      <section className="reveal" style={{ padding: '0 28px 108px' }}>
-        <div data-split style={{ ...wrap, display: 'grid', gridTemplateColumns: '1.05fr .95fr', gap: 54, alignItems: 'center' }}>
-          <div style={{ position: 'relative', borderRadius: 22, overflow: 'hidden', aspectRatio: '4/3', border: '1px solid var(--border)' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/welcome-stage.jpg" alt="Recepção na Igreja Vitória" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(120deg,transparent 40%,rgba(5,5,5,.55))' }} />
-            <div style={{ position: 'absolute', left: 22, bottom: 22, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--glow-soft)', background: 'rgba(5,5,5,.5)', backdropFilter: 'blur(6px)', padding: '8px 14px', borderRadius: 99, border: '1px solid var(--border)' }}>#WelcomeVictory</div>
-          </div>
-          <div>
-            <span style={kicker}>02 · QUEM SOMOS</span>
-            <h2 style={{ ...sectionTitle, fontSize: 'clamp(28px,4vw,44px)', lineHeight: 1.04, margin: '16px 0 18px' }}>Uma igreja em movimento, construída como família.</h2>
-            <p style={{ fontSize: 17.5, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 16 }}>A Igreja Vitória nasceu para ser um lugar onde pessoas reais encontram um Deus real. Adoração vibrante, palavra que transforma e uma comunidade que caminha junto durante toda a semana.</p>
-            <p style={{ fontSize: 17.5, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 30 }}>Aqui ninguém precisa ter tudo resolvido para pertencer. Vem como você está.</p>
-            <Link href="/quem-somos" className="btn-ghost" style={{ ...btnGhost, padding: '14px 26px' }}>Conheça nossa história →</Link>
-          </div>
-        </div>
+      {/* ---------- LOUVOR (foto inteira, quase sem texto) ---------- */}
+      <section className="reveal faixa-foto" aria-label="Adoração">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/assets/worship-team.webp" alt="Time de louvor da Igreja Vitória no palco" loading="lazy" decoding="async" width={1600} height={1067} />
+        <div className="faixa-veu" />
+        <blockquote style={{ ...wrap, padding: '0 28px', width: '100%' }}>
+          <p>Tudo o que tem fôlego louve ao Senhor.</p>
+          <cite>Salmos 150:6</cite>
+        </blockquote>
       </section>
 
-      {/* ---------- MINISTÉRIOS ---------- */}
-      <section className="reveal" style={{ padding: '104px 28px', borderTop: '1px solid var(--border-soft)', background: 'linear-gradient(180deg,var(--ink),var(--void))' }}>
+      {/* ---------- AO VIVO + MENSAGENS ---------- */}
+      <section className="reveal secao">
         <div style={wrap}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 46 }}>
-            <div style={{ maxWidth: 620 }}>
-              <span style={kicker}>03 · NOSSOS MINISTÉRIOS</span>
-              <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 12px' }}>Existe um lugar<br />para você servir e crescer.</h2>
-            </div>
-            <Link href="/ministerios" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Ver todos →</Link>
-          </div>
-          <div data-grid-min style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
-            {ministries.map((m) => (
-              <Link key={m.id} href={`/ministerios/${m.id}`} className="lift zoom-parent" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', cursor: 'pointer', aspectRatio: '3/4', border: '1px solid var(--border)', display: 'block', textDecoration: 'none', color: 'var(--text)' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={m.photo} alt={m.name} loading="lazy" className="zoom-img" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .6s var(--ease)' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.05) 30%,rgba(5,5,5,.92))' }} />
-                <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: 20 }}>
-                  <div style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--glow)', marginBottom: 6 }}>{m.tag}</div>
-                  <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 19, letterSpacing: '-.01em', marginBottom: 4 }}>{m.name}</h3>
-                  <p style={{ fontSize: 12.5, color: 'var(--dim)', lineHeight: 1.4 }}>{m.leaders}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- CASA DE VITÓRIA ---------- */}
-      <section className="reveal" style={{ padding: '104px 28px', borderTop: '1px solid var(--border-soft)' }}>
-        <div data-split style={{ ...wrap, display: 'grid', gridTemplateColumns: '1fr .8fr', gap: 48, alignItems: 'center' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--beam)', background: 'rgba(91,141,239,.1)', border: '1px solid rgba(91,141,239,.25)', padding: '7px 14px', borderRadius: 99, marginBottom: 22 }}>Perto de você</div>
-            <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,50px)', marginBottom: 18 }}>A igreja não termina no domingo.</h2>
-            <p style={{ fontSize: 18, color: 'var(--dim)', lineHeight: 1.6, marginBottom: 30, maxWidth: 520 }}>Durante a semana nos reunimos nas casas, as <b style={{ color: 'var(--text)' }}>Casas de Vitória</b>, para comunhão, oração e crescimento. É onde a fé vira família e ninguém caminha sozinho.</p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <Link href="/cav" className="btn-glow" style={btnPrimarySm}>Encontrar uma CAV</Link>
-              <RegisterModal kicker="Casa de Vitória" title="Quero ser anfitrião" sub="Abra sua casa para receber uma CAV. Nossa equipe entra em contato." triggerClass="btn-ghost" triggerStyle={{ ...btnGhost, padding: '13px 24px' }}>Quero ser anfitrião</RegisterModal>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {[{ bairro: 'CAV Rita Vieira', addr: 'Rua Antônio Alves, 406 · Rita Vieira', when: 'Quinta · 19:30' }, { bairro: 'CAV Centro', addr: 'Rua dos Ferroviários, 412 · Centro', when: 'Terça · 19:30' }].map((c) => (
-              <div key={c.bairro} className="hov-beam" style={{ ...card, borderRadius: 14, padding: '22px 24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-                  <div>
-                    <h4 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 18, marginBottom: 4 }}>{c.bairro}</h4>
-                    <p style={{ fontSize: 13, color: 'var(--dim)' }}>{c.addr}</p>
-                  </div>
-                  <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--beam)', textAlign: 'right', whiteSpace: 'nowrap', letterSpacing: '.04em' }}>{c.when}</div>
-                </div>
-              </div>
-            ))}
-            <Link href="/cav" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', paddingTop: 4, textDecoration: 'none' }}>Ver todas as casas →</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- AO VIVO + COUNTDOWN ---------- */}
-      <section className="reveal" style={{ padding: '0 28px 104px' }}>
-        <div style={{ ...wrap, background: 'linear-gradient(135deg,var(--s1),var(--ink))', border: '1px solid var(--border)', borderRadius: 24, padding: 46, position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', right: -80, top: -80, width: 340, height: 340, background: 'radial-gradient(circle,rgba(232,71,91,.18),transparent 65%)', pointerEvents: 'none' }} />
-          <div data-split style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1.1fr .9fr', gap: 44, alignItems: 'center' }}>
+          <div className="cabeca">
             <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--pulse)', marginBottom: 18 }}>
-                <span style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--pulse)', animation: 'pulse 1.4s infinite' }} />Offline · próximo culto
-              </div>
-              <h2 style={{ ...sectionTitle, fontSize: 'clamp(28px,4vw,44px)', marginBottom: 12 }}>Adore de onde<br />você estiver.</h2>
-              <p style={{ fontSize: 17, color: 'var(--dim)', lineHeight: 1.55, marginBottom: 26, maxWidth: 440 }}>Não conseguiu vir? Assista nossos cultos ao vivo pelo YouTube e viva uma experiência com Deus em qualquer lugar.</p>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <a href={`${site.youtube}/live`} target="_blank" rel="noreferrer" className="btn-pulse" style={{ ...btnPrimarySm, background: 'var(--pulse)', color: '#fff' }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff', animation: 'pulse 1.4s infinite' }} />Assistir agora
-                </a>
-                <Link href="/programacao" className="btn-ghost" style={{ ...btnGhost, padding: '13px 24px' }}>Ver programação</Link>
-              </div>
+              <Rotulo>No YouTube</Rotulo>
+              <h2 className="titulo-secao">Cultos ao vivo<br />e mensagens.</h2>
             </div>
             <Countdown />
           </div>
-        </div>
-      </section>
-
-      {/* ---------- EVENTOS ---------- */}
-      <section className="reveal" style={{ padding: '104px 28px', borderTop: '1px solid var(--border-soft)', background: 'linear-gradient(180deg,var(--ink),var(--void))' }}>
-        <div style={wrap}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 46 }}>
-            <div style={{ maxWidth: 620 }}>
-              <span style={kicker}>04 · PRÓXIMOS EVENTOS</span>
-              <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 0' }}>Não perca o que está<br />por vir na nossa família.</h2>
+          {videos.length > 0 && (
+            <div className="grade-videos">
+              {videos.map((v) => (
+                <a key={v.id} href={v.url} target="_blank" rel="noreferrer" className="video">
+                  <span className="video-thumb">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={v.thumb} alt="" loading="lazy" decoding="async" width={480} height={360} />
+                    <span className="video-play" aria-hidden="true">▶</span>
+                  </span>
+                  <strong>{v.titulo}</strong>
+                  <span className="video-meta">{[v.autor, dataCurta(v.publicado)].filter(Boolean).join(' · ')}</span>
+                </a>
+              ))}
             </div>
-            <Link href="/eventos" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Agenda completa →</Link>
-          </div>
-          <div data-grid-ev style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 16 }}>
-            {events.map((e) => {
-              const cardStyle = { position: 'relative' as const, borderRadius: 18, overflow: 'hidden', border: '1px solid var(--border)', minHeight: 300, display: 'flex', flexDirection: 'column' as const, justifyContent: 'flex-end' as const };
-              const inner = (
-                <>
-                  <EventArt event={e} variant="card" />
-                  {/* sobre a arte própria o véu começa mais tarde (para não sujar a cor oficial no topo)
-                      e fecha mais forte embaixo, onde ficam a data e o título */}
-                  <div style={{ position: 'absolute', inset: 0, background: e.art ? 'linear-gradient(180deg,rgba(5,5,5,0) 32%,rgba(5,5,5,.85) 52%,rgba(5,5,5,.97))' : 'linear-gradient(180deg,rgba(5,5,5,.15) 25%,rgba(5,5,5,.94))' }} />
-                  {e.featured && <div style={{ position: 'absolute', top: 16, left: 16, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: '#050505', background: 'var(--glow)', padding: '6px 12px', borderRadius: 99, fontWeight: 600 }}>{e.badge ?? 'Destaque'}</div>}
-                  <div style={{ position: 'relative', padding: 22 }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.06em', color: 'var(--glow)', marginBottom: 10 }}>
-                      <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 13, background: 'var(--void)', padding: '6px 11px', borderRadius: 8 }}>{e.date}</span><span>{e.time} · {e.place}</span>
-                    </div>
-                    <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 22, letterSpacing: '-.01em', marginBottom: 14 }}>{e.title}</h3>
-                    {e.href ? (
-                      <span className="btn-fill-glow" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, backdropFilter: 'blur(6px)' }}>{e.cta ?? 'Saiba mais'} →</span>
-                    ) : (
-                      <RegisterModal kicker="Inscrição em evento" title={e.title} sub={`${e.date} · ${e.time} · ${e.place}`} triggerClass="btn-fill-glow" triggerStyle={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid var(--border)', color: 'var(--text)', fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', backdropFilter: 'blur(6px)' }}>Fazer inscrição →</RegisterModal>
-                    )}
-                  </div>
-                </>
-              );
-              return e.href ? (
-                <a key={e.id} href={e.href} target={e.href.startsWith('http') ? '_blank' : undefined} rel={e.href.startsWith('http') ? 'noreferrer' : undefined} className="lift" style={{ ...cardStyle, cursor: 'pointer', textDecoration: 'none', color: 'var(--text)' }}>{inner}</a>
-              ) : (
-                <div key={e.id} className="lift" style={cardStyle}>{inner}</div>
-              );
-            })}
+          )}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 36 }}>
+            <Link href="/aovivo" className="btn-glow" style={btnPrimary}>Assistir ao vivo</Link>
+            <Link href="/mensagens" className="btn-ghost" style={btnGhost}>Todas as mensagens</Link>
           </div>
         </div>
       </section>
 
-      {/* ---------- MENSAGENS TEASER ---------- */}
-      <section className="reveal" style={{ padding: '104px 28px', borderTop: '1px solid var(--border-soft)' }}>
-        <div style={wrap}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 46 }}>
-            <div style={{ maxWidth: 620 }}>
-              <span style={kicker}>05 · ÚLTIMAS MENSAGENS</span>
-              <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.6vw,52px)', margin: '16px 0 0' }}>Palavra que transforma,<br />onde e quando quiser.</h2>
+      {/* ---------- AGENDA ---------- */}
+      {events.length > 0 && (
+        <section className="reveal secao">
+          <div style={wrap}>
+            <div className="cabeca">
+              <div>
+                <Rotulo>Agenda</Rotulo>
+                <h2 className="titulo-secao">Na igreja.</h2>
+              </div>
+              <Link href="/eventos" className="link-seta">Ver agenda</Link>
             </div>
-            <Link href="/mensagens" className="link-glow" style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.08em', color: 'var(--glow)', whiteSpace: 'nowrap', textDecoration: 'none' }}>Biblioteca completa →</Link>
+            <div className="grade-agenda">
+              {events.map((e) => (
+                <a key={e.id} href={e.href} className="agenda lift">
+                  <span className="agenda-arte">
+                    <EventArt event={e} variant="card" />
+                  </span>
+                  <span className="agenda-texto">
+                    <span className="agenda-data">{e.date} · {e.time}</span>
+                    <strong>{e.title}</strong>
+                    <span>{e.desc}</span>
+                    <span className="link-seta" style={{ marginTop: 14 }}>{e.cta ?? 'Saiba mais'}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
-          <div data-grid-msg style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-            {messages.slice(0, 3).map((msg) => (
-              <Link key={msg.id} href="/mensagens" className="lift-sm" style={{ cursor: 'pointer', borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--s1)', display: 'block', textDecoration: 'none', color: 'var(--text)' }}>
-                <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={msg.thumb} alt={msg.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,transparent 50%,rgba(5,5,5,.6))' }} />
-                  <div style={{ position: 'absolute', left: 14, top: 14, fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--glow-soft)', background: 'rgba(5,5,5,.55)', backdropFilter: 'blur(4px)', padding: '5px 11px', borderRadius: 99, border: '1px solid var(--border)' }}>{msg.series}</div>
-                  <div style={{ position: 'absolute', right: 14, bottom: 14, width: 42, height: 42, borderRadius: '50%', background: 'rgba(240,168,72,.92)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#050505', fontSize: 14 }}>▶</div>
-                </div>
-                <div style={{ padding: '18px 20px' }}>
-                  <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 17, letterSpacing: '-.01em', marginBottom: 7, lineHeight: 1.25 }}>{msg.title}</h3>
-                  <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.04em', color: 'var(--faint)' }}>{msg.speaker} · {msg.duration}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ---------- CONTRIBUA ---------- */}
-      <section className="reveal" style={{ padding: '0 28px 104px' }}>
-        <div style={{ ...wrap, border: '1px solid var(--border)', borderRadius: 24, overflow: 'hidden', position: 'relative' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/altar-prayer.jpg" alt="" aria-hidden="true" loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(110deg,rgba(5,5,5,.96) 38%,rgba(5,5,5,.6))' }} />
-          <div data-split style={{ position: 'relative', padding: '54px 46px', display: 'grid', gridTemplateColumns: '1fr .9fr', gap: 44, alignItems: 'center' }}>
+      <section className="reveal secao">
+        <div style={wrap}>
+          <div className="contribua">
             <div>
-              <span style={kicker}>06 · GENEROSIDADE</span>
-              <h2 style={{ ...sectionTitle, fontSize: 'clamp(30px,4.4vw,48px)', margin: '16px 0 16px' }}>Faça parte da missão.</h2>
-              <p style={{ fontSize: 17.5, color: 'var(--dim)', lineHeight: 1.6, maxWidth: 460, marginBottom: 14 }}>Sua generosidade sustenta vidas sendo transformadas, projetos sociais e a expansão do Reino em Campo Grande e além.</p>
-              <p style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--faint)', letterSpacing: '.04em' }}>Transparência total · prestação de contas a cada trimestre</p>
+              <Rotulo>Contribua</Rotulo>
+              <h2 className="titulo-secao">Dízimos e ofertas.</h2>
+              <p style={{ color: 'var(--dim)', fontSize: 17, lineHeight: 1.6, marginTop: 14, maxWidth: 420 }}>
+                “Cada um dê conforme determinou em seu coração.” 2 Coríntios 9:7
+              </p>
             </div>
-            <div style={{ background: 'rgba(11,11,12,.7)', backdropFilter: 'blur(10px)', border: '1px solid var(--border)', borderRadius: 18, padding: 26 }}>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 8 }}>PIX · CNPJ</div>
+            <div className="contribua-pix">
+              <div style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--faint)', marginBottom: 10 }}>PIX · CNPJ</div>
               <PixCopy value={site.pixCnpj} />
-              <p style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', marginTop: 12, letterSpacing: '.04em' }}>Igreja Vitória · Campo Grande, MS</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ---------- CTA + LOCALIZAÇÃO ---------- */}
-      <section className="reveal" style={{ padding: '0 28px 104px' }}>
+      {/* ---------- VISITE ---------- */}
+      <section className="reveal secao" style={{ paddingTop: 0 }}>
         <div style={wrap}>
-          <div style={{ textAlign: 'center', padding: '60px 0 56px', position: 'relative' }}>
-            <div style={{ position: 'absolute', left: '50%', top: '40%', width: 560, height: 420, maxWidth: '90%', transform: 'translate(-50%,-50%)', background: 'radial-gradient(circle,rgba(240,168,72,.14),transparent 64%)', filter: 'blur(10px)', animation: 'breathe 6s var(--ease) infinite', pointerEvents: 'none' }} />
-            <div style={{ position: 'relative' }}>
-              <h2 style={{ ...display, fontSize: 'clamp(32px,6vw,76px)', lineHeight: .94, marginBottom: 20 }}>Venha viver uma<br />experiência com <span style={{ color: 'var(--glow)' }}>Deus</span></h2>
-              <p style={{ fontSize: 18, color: 'var(--dim)', maxWidth: 480, margin: '0 auto 32px' }}>Te esperamos no domingo às 18h. Vem como você está. Aqui você é família.</p>
-              <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <Link href="/quem-somos" className="btn-glow" style={btnPrimary}>Planejar minha visita →</Link>
-                <Link href="/aovivo" className="btn-ghost" style={btnGhost}>Assistir ao vivo</Link>
+          <h2 className="convite" style={display}>
+            Te <span className="luz">esperamos.</span>
+          </h2>
+          <div className="visite">
+            <div style={{ padding: 'clamp(28px,4vw,44px)' }}>
+              <Rotulo>Onde estamos</Rotulo>
+              <p style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 'clamp(22px,2.4vw,28px)', lineHeight: 1.25, margin: '6px 0 24px' }}>
+                R. Mal. Rondon, 163<br />Amambai · {site.city}
+              </p>
+              <dl className="horarios">
+                <div><dt>Domingo</dt><dd>18h · Culto da Família</dd></div>
+                <div><dt>Quarta</dt><dd>19h30 · Quarta Flow</dd></div>
+              </dl>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 28 }}>
+                <RegisterModal kicker="Primeira visita" title="Quero visitar" sub="Diga quando você vem e a gente te recebe." triggerClass="btn-glow" triggerStyle={btnPrimary}>Quero visitar</RegisterModal>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${site.mapsQuery}`} target="_blank" rel="noreferrer" className="btn-ghost" style={btnGhost}>Como chegar</a>
               </div>
             </div>
-          </div>
-          <div data-split style={{ display: 'grid', gridTemplateColumns: '1.1fr .9fr', gap: 0, border: '1px solid var(--border)', borderRadius: 22, overflow: 'hidden' }}>
-            <div style={{ padding: '38px 36px', background: 'var(--s1)' }}>
-              <span style={{ fontFamily: 'var(--mono)', fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--glow)' }}>Onde estamos</span>
-              <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 24, letterSpacing: '-.01em', margin: '14px 0 18px' }}>R. Mal. Rondon, 163<br />Amambai · {site.city}</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
-                {[['DOMINGO', '18h · Culto da Família'], ['QUARTA', '19h30 · Quarta Flow'], ['CEP', site.cep]].map(([k, v]) => (
-                  <div key={k} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--faint)', letterSpacing: '.1em', minWidth: 78, paddingTop: 2 }}>{k}</span>
-                    <span style={{ fontSize: 15, color: 'var(--text)' }}>{v}</span>
-                  </div>
-                ))}
-              </div>
-              <a href={`https://www.google.com/maps/search/?api=1&query=${site.mapsQuery}`} target="_blank" rel="noreferrer" className="btn-ghost" style={{ ...btnGhost, fontSize: 14, padding: '12px 22px' }}>Abrir no Google Maps →</a>
-            </div>
-            <div style={{ position: 'relative', minHeight: 300, background: 'var(--s2)' }}>
-              <MapEmbed query={site.mapsQuery} title="Mapa Igreja Vitória" />
+            <div style={{ position: 'relative', minHeight: 320, background: 'var(--s2)' }}>
+              <MapEmbed query={site.mapsQuery} title="Mapa da Igreja Vitória" />
             </div>
           </div>
         </div>

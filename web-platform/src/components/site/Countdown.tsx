@@ -58,7 +58,7 @@ export default function Countdown({ dark = false }: { dark?: boolean }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10 }}>
         {([['Dias', c.days], ['Horas', c.hours], ['Min', c.mins], ['Seg', c.secs]] as const).map(([lbl, val]) => (
           <div key={lbl} style={{ background: boxBg, border: '1px solid var(--border)', borderRadius: 12, padding: '14px 6px', textAlign: 'center' }}>
-            <div style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 30, color: 'var(--glow)', lineHeight: 1 }}>{val}</div>
+            <div style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 30, color: 'var(--text)', lineHeight: 1 }}>{val}</div>
             <div style={{ fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--faint)', marginTop: 5 }}>{lbl}</div>
           </div>
         ))}

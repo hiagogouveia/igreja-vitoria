@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { label: 'Contato', to: '/contato' },
 ];
 
-const logoImg: CSSProperties = { width: 24, height: 'auto', filter: 'brightness(0) invert(1) drop-shadow(0 0 12px rgba(240,168,72,.4))' };
+const logoImg: CSSProperties = { width: 24, height: 'auto', filter: 'brightness(0) invert(1) drop-shadow(0 0 12px rgb(var(--glow-rgb) / .4))' };
 
 export default function SiteNavbar() {
   const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ export default function SiteNavbar() {
           {NAV_ITEMS.map((item) => {
             const on = isActive(item.to);
             return (
-              <Link key={item.to} href={item.to} aria-current={on ? 'page' : undefined} className="nav-pill" style={{ fontSize: 13, color: on ? 'var(--glow)' : 'var(--dim)', background: on ? 'rgba(240,168,72,.12)' : 'transparent', padding: '9px 13px', borderRadius: 99, cursor: 'pointer', fontWeight: on ? 700 : 500, fontFamily: 'var(--head)', textDecoration: 'none' }}>{item.label}</Link>
+              <Link key={item.to} href={item.to} aria-current={on ? 'page' : undefined} className="nav-pill" style={{ fontSize: 13, color: on ? 'var(--glow)' : 'var(--dim)', background: on ? 'rgb(var(--glow-rgb) / .12)' : 'transparent', padding: '9px 13px', borderRadius: 99, cursor: 'pointer', fontWeight: on ? 700 : 500, fontFamily: 'var(--head)', textDecoration: 'none' }}>{item.label}</Link>
             );
           })}
           <Link href="/contribua" className="btn-glow" style={{ marginLeft: 8, background: 'var(--glow)', color: '#050505', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 13.5, padding: '10px 20px', borderRadius: 99, cursor: 'pointer', textDecoration: 'none' }}>Contribua</Link>

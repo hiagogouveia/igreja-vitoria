@@ -23,8 +23,8 @@ export default function ContatoContent() {
     <>
       <section style={{ padding: '120px 28px 0' }}>
         <div style={wrap}>
-          <div style={eyebrowLine}><span style={{ width: 24, height: 1, background: 'var(--glow)' }} />Fale Conosco</div>
-          <h1 style={{ ...display, fontSize: 'clamp(38px,6.5vw,82px)', maxWidth: '14ch' }}>Estamos aqui<br />por você.</h1>
+          <div style={eyebrowLine}><span style={{ width: 24, height: 1, background: 'var(--glow)' }} />Contato</div>
+          <h1 style={{ ...display, fontSize: 'clamp(38px,6.5vw,82px)', maxWidth: '14ch' }}>Fale com<br />a gente.</h1>
         </div>
       </section>
 
@@ -36,7 +36,7 @@ export default function ContatoContent() {
               <div><div style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 16 }}>WhatsApp</div><div style={{ fontSize: 13, color: 'var(--dim)' }}>{site.whatsappLabel}</div></div>
             </a>
             <a href={`mailto:${site.email}`} className="hov-glow" style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 16, padding: 24, textDecoration: 'none' }}>
-              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(240,168,72,.12)', border: '1px solid rgba(240,168,72,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--glow)', fontSize: 18 }}>@</div>
+              <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgb(var(--glow-rgb) / .12)', border: '1px solid rgb(var(--glow-rgb) / .3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--glow)', fontSize: 18 }}>@</div>
               <div><div style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 16 }}>E-mail</div><div style={{ fontSize: 13, color: 'var(--dim)' }}>{site.email}</div></div>
             </a>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 16, padding: 24 }}>
@@ -51,12 +51,12 @@ export default function ContatoContent() {
 
           <div style={{ background: 'var(--s1)', border: '1px solid var(--border)', borderRadius: 18, padding: 34 }}>
             <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 22, letterSpacing: '-.01em', marginBottom: 6 }}>Envie uma mensagem</h3>
-            <p style={{ fontSize: 14, color: 'var(--dim)', marginBottom: 24 }}>Dúvidas, pedidos ou só pra dizer oi. Respondemos com carinho.</p>
+            <p style={{ fontSize: 14, color: 'var(--dim)', marginBottom: 24 }}>Dúvidas, pedidos de oração ou uma visita. A mensagem vai pelo WhatsApp.</p>
             {sent ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px 0' }}>
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(240,168,72,.14)', border: '1px solid rgba(240,168,72,.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, fontSize: 28, color: 'var(--glow)' }}>✓</div>
-                <h4 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 20, marginBottom: 8 }}>Mensagem enviada!</h4>
-                <p style={{ fontSize: 14, color: 'var(--dim)', maxWidth: 320 }}>Recebemos seu contato e responderemos em breve pelo canal informado.</p>
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgb(var(--glow-rgb) / .14)', border: '1px solid rgb(var(--glow-rgb) / .3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, fontSize: 28, color: 'var(--glow)' }}>✓</div>
+                <h4 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 20, marginBottom: 8 }}>WhatsApp aberto</h4>
+                <p style={{ fontSize: 14, color: 'var(--dim)', maxWidth: 320 }}>Abrimos o WhatsApp com a sua mensagem. É só tocar em enviar por lá.</p>
               </div>
             ) : (
               <form onSubmit={enviar} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

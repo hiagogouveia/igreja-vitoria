@@ -5,7 +5,7 @@ import Countdown from '@/components/site/Countdown';
 import { site } from '@/lib/site-data';
 import { display, wrap } from '@/lib/site-ui';
 
-export const metadata: Metadata = { title: 'Ao Vivo · Igreja Vitória', description: 'Assista aos cultos da Igreja Vitória ao vivo pelo YouTube, de onde você estiver.' };
+export const metadata: Metadata = { title: 'Ao Vivo · Igreja Vitória', description: 'Cultos da Igreja Vitória ao vivo no YouTube: domingo às 18h e quarta às 19h30.' };
 
 export default function Aovivo() {
   return (
@@ -14,10 +14,10 @@ export default function Aovivo() {
         <div style={wrap}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--pulse)', background: 'rgba(232,71,91,.1)', border: '1px solid rgba(232,71,91,.28)', padding: '7px 14px', borderRadius: 99 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--pulse)', animation: 'pulse 1.4s infinite' }} />Offline · próximo culto
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--pulse)', animation: 'pulse 1.4s infinite' }} />Domingo 18h · Quarta 19h30
             </span>
           </div>
-          <h1 style={{ ...display, fontSize: 'clamp(38px,6.5vw,84px)', marginBottom: 34 }}>Culto Ao Vivo</h1>
+          <h1 style={{ ...display, fontSize: 'clamp(38px,6.5vw,84px)', marginBottom: 34 }}>Ao vivo</h1>
         </div>
       </section>
 
@@ -25,14 +25,14 @@ export default function Aovivo() {
         <div data-split style={{ ...wrap, display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 24, alignItems: 'start' }}>
           <div>
             <div style={{ position: 'relative', aspectRatio: '16/9', borderRadius: 18, overflow: 'hidden', border: '1px solid var(--border)', background: '#000' }}>
-              <iframe title="Transmissão Igreja Vitória" src="https://www.youtube.com/embed?listType=user_uploads&list=igrejavitoriacampogrande" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowFullScreen />
+              <iframe title="Transmissão Igreja Vitória" src={`https://www.youtube.com/embed/videoseries?list=UU${site.youtubeChannelId.slice(2)}`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowFullScreen />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginTop: 18 }}>
               <div>
-                <h3 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 19, marginBottom: 3 }}>Igreja Vitória · Campo Grande</h3>
+                <h2 style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 19, marginBottom: 3 }}>Igreja Vitória · Campo Grande</h2>
                 <p style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--faint)', letterSpacing: '.04em' }}>{site.youtubeHandle}</p>
               </div>
-              <a href={site.youtube} target="_blank" rel="noreferrer" className="btn-pulse" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--pulse)', color: '#fff', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 14, padding: '12px 22px', borderRadius: 99, textDecoration: 'none' }}>Inscrever-se no canal</a>
+              <a href={`${site.youtube}/live`} target="_blank" rel="noreferrer" className="btn-pulse" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#C42B44', color: '#fff', fontFamily: 'var(--head)', fontWeight: 700, fontSize: 14, padding: '12px 22px', borderRadius: 99, textDecoration: 'none' }}>Abrir no YouTube</a>
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -45,7 +45,7 @@ export default function Aovivo() {
                   <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 18, color: 'var(--glow)' }}>18:00</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-                  <div><div style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15 }}>Quarta-Flow</div><div style={{ fontSize: 12, color: 'var(--dim)' }}>Quarta-feira</div></div>
+                  <div><div style={{ fontFamily: 'var(--head)', fontWeight: 700, fontSize: 15 }}>Quarta Flow</div><div style={{ fontSize: 12, color: 'var(--dim)' }}>Quarta-feira</div></div>
                   <span style={{ fontFamily: 'var(--display)', fontWeight: 800, fontSize: 18, color: 'var(--glow)' }}>19:30</span>
                 </div>
               </div>

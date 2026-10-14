@@ -18,6 +18,8 @@ export type CavData = {
 }
 
 function revalidateAll() {
+    revalidatePath('/')
+    revalidatePath('/cav')
     revalidatePath('/cav-enderecos')
     revalidatePath('/admin/cavs')
 }
