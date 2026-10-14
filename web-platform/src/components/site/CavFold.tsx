@@ -3,8 +3,8 @@ import { wrap } from '@/lib/site-ui';
 
 /**
  * Destaque das CAVs (Casas de Vitória), logo abaixo do topo da home.
- * Minimalista de propósito: foto, um título e um caminho só, o mapa.
- * Dias, horários e endereços ficam no mapa, que lê o cadastro do admin.
+ * Minimalista de propósito: foto, um título e um caminho só, a página /cav,
+ * que lista as casas com dia, horário e endereço (cadastro do admin).
  */
 export default function CavFold() {
   return (
@@ -42,7 +42,7 @@ export default function CavFold() {
         </p>
 
         <Link
-          href="/cav-enderecos"
+          href="/cav"
           className="btn-glow"
           style={{
             marginTop: 32, display: 'inline-flex', alignItems: 'center', gap: 10, background: 'var(--text)', color: '#050505',
@@ -50,7 +50,7 @@ export default function CavFold() {
             padding: '15px 28px', borderRadius: 99, textDecoration: 'none',
           }}
         >
-          Ver no mapa <span aria-hidden="true">→</span>
+          Conhecer as CAVs <span aria-hidden="true">→</span>
         </Link>
       </div>
     </section>
