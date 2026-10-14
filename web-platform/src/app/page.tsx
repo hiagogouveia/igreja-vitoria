@@ -179,7 +179,7 @@ export default async function Home() {
       <section className="reveal secao" style={{ paddingTop: 0 }}>
         <div style={wrap}>
           <h2 className="convite" style={display}>
-            Te esperamos<br /><span className="luz">no domingo.</span>
+            Te <span className="luz">esperamos.</span>
           </h2>
           <div className="visite">
             <div style={{ padding: 'clamp(28px,4vw,44px)' }}>
