@@ -38,7 +38,6 @@ export default function SiteFooter() {
             <div style={colHead}>Navegar</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
               <Link href="/quem-somos" className="foot-link" style={navLink}>Quem Somos</Link>
-              <Link href="/ministerios" className="foot-link" style={navLink}>Ministérios</Link>
               <Link href="/cav" className="foot-link" style={navLink}>Casa de Vitória</Link>
               <Link href="/eventos" className="foot-link" style={navLink}>Eventos</Link>
             </div>

@@ -1,5 +1,5 @@
 // Conteúdo do site público. Os ministérios são fixos (sem cadastro no admin);
-// os ids são estáveis para as URLs /ministerios/:id. As mensagens vêm do canal
+// a página Quem Somos lista quem lidera cada um. As mensagens vêm do canal
 // do YouTube (src/lib/youtube.ts), não deste arquivo.
 
 export const ministries = [

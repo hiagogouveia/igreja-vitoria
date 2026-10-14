@@ -27,6 +27,9 @@ const nextConfig: NextConfig = {
       // Página de pagamento de demonstração removida (não cobrava nada de verdade):
       // a contribuição é pelo PIX, em /contribua.
       { source: '/contribua-pagamento', destination: '/contribua', permanent: true },
+      // A página de ministérios saiu; quem lidera cada um aparece em Quem Somos.
+      { source: '/ministerios', destination: '/quem-somos', permanent: true },
+      { source: '/ministerios/:path*', destination: '/quem-somos', permanent: true },
     ];
   },
 };

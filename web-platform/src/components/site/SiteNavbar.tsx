@@ -6,7 +6,6 @@ import { useRouter, usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
   { label: 'Quem Somos', to: '/quem-somos' },
-  { label: 'Ministérios', to: '/ministerios' },
   { label: 'Casa de Vitória', to: '/cav' },
   { label: 'Ao Vivo', to: '/aovivo' },
   { label: 'Eventos', to: '/eventos' },
