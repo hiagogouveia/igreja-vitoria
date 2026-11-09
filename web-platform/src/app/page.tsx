@@ -9,6 +9,7 @@ import PixCopy from '@/components/site/PixCopy';
 import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import CavFold from '@/components/site/CavFold';
+import TlcFold from '@/components/site/TlcFold';
 import EventArt from '@/components/site/EventArt';
 import { beliefs, eventosAtuais, site } from '@/lib/site-data';
 import { ultimosVideos, dataCurta } from '@/lib/youtube';
@@ -30,7 +31,7 @@ export default async function Home() {
   return (
     <SiteShell>
       {/* ---------- HERO ---------- */}
-      <header style={{ position: 'relative', minHeight: '100svh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 clamp(48px,8vh,88px)' }}>
+      <header style={{ position: 'relative', minHeight: 'calc(100svh - clamp(110px,16vh,170px))', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', overflow: 'hidden', padding: '0 0 clamp(48px,8vh,88px)' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
           {/* Foto vertical do culto (palco, luzes e a igreja adorando). O enquadramento
               por tamanho de tela fica em .hero-foto, no globals.css. */}
@@ -60,7 +61,11 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* ---------- CASA DE VITÓRIA (destaque logo depois da hero) ---------- */}
+      {/* ---------- TLC: inscrições abertas (a hero é mais baixa para este bloco
+          já aparecer na primeira tela) ---------- */}
+      <TlcFold />
+
+      {/* ---------- CASA DE VITÓRIA ---------- */}
       <CavFold />
 
       {/* ---------- QUEM SOMOS (manifesto) ---------- */}

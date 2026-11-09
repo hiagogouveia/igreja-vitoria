@@ -182,7 +182,7 @@ var TLC = {
       document.getElementById('okMsg').textContent = opts.viaZap
         ? 'Toque no botão abaixo para enviar seus dados pelo WhatsApp da igreja. Sua inscrição só é concluída depois dessa mensagem.'
         : (opts.duplicado
-            ? 'Você já tinha se inscrito com esse WhatsApp. Está tudo certo: a igreja entra em contato para os próximos passos.'
+            ? 'Você já tinha se inscrito com esse WhatsApp ou e-mail, então não fizemos uma nova inscrição. Está tudo certo: a igreja entra em contato para os próximos passos.'
             : 'Recebemos a sua inscrição no TLC. A igreja entra em contato pelo WhatsApp para os próximos passos.');
       var z = document.getElementById('okZap');
       z.hidden = !opts.viaZap;

@@ -43,6 +43,10 @@ export default function EventArt({ event, variant = 'row' }: { event: SiteEvent;
         textAlign: 'center', color: art.fg,
       }}
     >
+      {art.logo ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={art.logo} alt="" style={{ width: variant === 'card' ? '62%' : '74%', maxWidth: 240, height: 'auto' }} />
+      ) : (
       <span
         style={{
           fontFamily: art.serif ? serif : 'var(--head)',
@@ -58,6 +62,7 @@ export default function EventArt({ event, variant = 'row' }: { event: SiteEvent;
       >
         {art.label}
       </span>
+      )}
       {art.sub && (
         <span
           style={{

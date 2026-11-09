@@ -65,8 +65,8 @@ main{overflow-x:clip}
   padding:12px var(--pad);background:linear-gradient(180deg,rgba(8,8,8,.92),rgba(8,8,8,0))}
 .nav-back{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cinza-c)}
 .nav-back:hover{color:var(--papel)}
-.nav-mark{font-family:'Archivo',sans-serif;font-weight:900;font-stretch:125%;font-size:20px;letter-spacing:-.03em;
-  transform:skewX(-8deg)}
+.nav-mark{display:block;line-height:0}
+.nav-mark img{height:22px;width:auto}
 .nav-cta{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--laranja);
   color:var(--preto);padding:10px 16px;border-radius:999px;transition:background .2s}
 .nav-cta:hover{background:var(--papel)}
@@ -112,11 +112,9 @@ main{overflow-x:clip}
 .hero-apr span{flex:1;height:1px;background:var(--papel);opacity:.6}
 .hero-apr b{font-size:clamp(11px,1.5vw,15px);font-weight:500;letter-spacing:.42em;text-transform:uppercase;white-space:nowrap}
 .hero-grid{display:grid;gap:28px;max-width:1240px;margin:0 auto}
-.logo{position:relative;display:inline-block;margin:0 0 clamp(8px,1.6vw,20px)}
-.logo-t{display:block;font-family:'Archivo',sans-serif;font-weight:900;font-stretch:125%;
-  font-size:clamp(130px,34vw,300px);line-height:.8;letter-spacing:-.05em;transform:skewX(-9deg);
-  color:var(--papel);padding-right:.1em}
-.logo-seta{position:absolute;right:-4%;top:-2%;width:44%;fill:var(--laranja);filter:drop-shadow(0 6px 14px rgba(255,133,0,.35))}
+.logo{display:block;margin:0 0 clamp(14px,2.2vw,26px)}
+/* logo oficial (letras claras + seta laranja), em PNG transparente */
+.logo img{display:block;width:min(100%,640px);height:auto;filter:drop-shadow(0 8px 24px rgba(255,133,0,.18))}
 .hero-sub{font-weight:700;font-size:clamp(13px,3.3vw,28px);letter-spacing:.3em;text-transform:uppercase}
 .faixa{display:inline-block;margin-top:clamp(10px,1.8vw,18px);background:var(--laranja);color:var(--preto);
   clip-path:polygon(0 12%,3% 0,12% 6%,24% 0,40% 5%,58% 0,76% 5%,90% 0,98% 8%,100% 26%,97% 52%,100% 80%,96% 100%,80% 94%,62% 100%,44% 95%,26% 100%,10% 95%,2% 100%,0 76%,2% 48%)}

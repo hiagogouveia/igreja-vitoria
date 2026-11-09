@@ -14,7 +14,8 @@
  * TLC
  *   O formulário de /tlc grava na aba "TLC": nome, telefone, e-mail, endereço,
  *   data de nascimento, sexo e se a pessoa quer ser anfitriã (abrir uma CAV na
- *   casa dela). A coluna Idade (H) é uma fórmula sobre a data de nascimento (G). A mesma pessoa (mesmo telefone) só entra uma vez.
+ *   casa dela). A coluna Idade (H) é uma fórmula sobre a data de nascimento (G).
+ *   Inscrição repetida (mesmo telefone ou mesmo e-mail) não grava de novo. A mesma pessoa (mesmo telefone) só entra uma vez.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
@@ -447,7 +448,8 @@ function doPost(e) {
     }
     if (destino === 'tlc') {
       var inscritosTlc = abaTlc(ss);
-      if (jaInscrito(inscritosTlc, digitos)) {
+      // Repetida = mesmo telefone OU mesmo e-mail já na aba.
+      if (jaInscritoTlc(inscritosTlc, digitos, p.email)) {
         return json({ ok: true, duplicado: true });
       }
       var nascimento = String(p.nascimento || '').trim();
@@ -503,6 +505,23 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/**
+ * Inscrição repetida no TLC: o mesmo telefone (só dígitos, coluna D) ou o mesmo
+ * e-mail (sem diferença de maiúsculas, coluna E) já está na aba.
+ * Roda dentro do lock do doPost, então dois envios simultâneos não passam.
+ */
+function jaInscritoTlc(sheet, digitos, email) {
+  var ultima = sheet.getLastRow();
+  if (ultima < 2) return false;
+  var mail = String(email || '').trim().toLowerCase();
+  var linhas = sheet.getRange(2, COL_TELEFONE_DIGITOS, ultima - 1, 2).getValues();
+  for (var i = 0; i < linhas.length; i++) {
+    if (String(linhas[i][0]).replace(/\D/g, '') === digitos) return true;
+    if (mail && String(linhas[i][1]).trim().toLowerCase() === mail) return true;
+  }
+  return false;
 }
 
 function jaInscrito(sheet, digitos) {
