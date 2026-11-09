@@ -32,7 +32,7 @@ export default async function CavPage() {
     <SiteShell>
       <header style={{ position: 'relative', minHeight: '56vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', padding: '0 0 50px' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/cav-familia.webp" alt="Família da Igreja Vitória reunida em frente à igreja" fetchPriority="high" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 42%', animation: 'kenburns 22s var(--ease) infinite alternate' }} />
+        <img src="/assets/community-prayer.webp" alt="Encontro de uma Casa de Vitória" fetchPriority="high" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', animation: 'kenburns 22s var(--ease) infinite alternate' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(5,5,5,.8) 0%,rgba(5,5,5,.3) 45%,rgba(5,5,5,.96) 100%)' }} />
         <div style={{ position: 'relative', zIndex: 2, ...wrap, padding: '0 28px', width: '100%' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--beam)', background: 'rgba(91,141,239,.12)', border: '1px solid rgba(91,141,239,.28)', padding: '7px 14px', borderRadius: 99, marginBottom: 18, marginTop: 90 }}>Perto de você</div>
