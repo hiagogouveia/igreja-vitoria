@@ -14,7 +14,7 @@ export default function TlcFold() {
         <a href="/tlc" className="tlc-card">
           <span className="tlc-foto" aria-hidden="true">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tlc/img/f1.webp" alt="" width={1000} height={667} decoding="async" />
+            <img src="/tlc/img/chamada.webp" alt="" width={1400} height={788} decoding="async" />
           </span>
           <span className="tlc-texto">
             <span className="tlc-selo">Inscrições abertas</span>

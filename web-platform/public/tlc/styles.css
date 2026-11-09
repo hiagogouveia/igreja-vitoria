@@ -20,6 +20,8 @@
   --rasgo-b:polygon(0 0,7% 2%,14% 0,23% 3%,33% 0,41% 2%,52% 0,60% 3%,70% 0,79% 2%,88% 0,100% 2%,98% 18%,100% 35%,99% 52%,100% 70%,98% 86%,100% 100%,91% 97%,82% 100%,71% 98%,61% 100%,50% 97%,40% 100%,30% 98%,19% 100%,9% 97%,0 100%,2% 80%,0 60%,1% 40%,0 20%);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+/* classes com display (ex.: .form) não podem vencer o atributo hidden */
+[hidden]{display:none!important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--preto);color:var(--papel);font-family:var(--corpo);line-height:1.55;
   -webkit-font-smoothing:antialiased;overflow-x:hidden}

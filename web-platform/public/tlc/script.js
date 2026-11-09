@@ -158,9 +158,12 @@ var TLC = {
     /* a planilha é lida por pessoas: dd/mm/aaaa comunica melhor que aaaa-mm-dd */
     function dataBR(iso) { var p = (iso || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso; }
 
-    function textoZap() {
+    /* `feita` = a inscrição já foi gravada: a mensagem vira o comprovante dela. */
+    function textoZap(feita) {
       return [
-        'Olá! Quero me inscrever no TLC (Treinamento de Líderes de CAV).',
+        feita
+          ? 'Olá! Acabei de fazer minha inscrição no TLC (Treinamento de Líderes de CAV). Seguem meus dados:'
+          : 'Olá! Quero me inscrever no TLC (Treinamento de Líderes de CAV).',
         '',
         '• Nome: ' + fNome.value.trim(),
         '• Nascimento: ' + dataBR(fNasc.value),
@@ -171,7 +174,7 @@ var TLC = {
         '• Quer ser anfitrião (CAV na minha casa): ' + anfitriao()
       ].join('\n');
     }
-    function linkZap() { return 'https://wa.me/' + TLC.whatsapp + '?text=' + encodeURIComponent(textoZap()); }
+    function linkZap(feita) { return 'https://wa.me/' + TLC.whatsapp + '?text=' + encodeURIComponent(textoZap(feita)); }
 
     /* Confirmação visual. `viaZap` = a inscrição ainda não foi gravada, falta
        enviar a mensagem pelo WhatsApp. */
@@ -182,11 +185,13 @@ var TLC = {
       document.getElementById('okMsg').textContent = opts.viaZap
         ? 'Toque no botão abaixo para enviar seus dados pelo WhatsApp da igreja. Sua inscrição só é concluída depois dessa mensagem.'
         : (opts.duplicado
-            ? 'Você já tinha se inscrito com esse WhatsApp ou e-mail, então não fizemos uma nova inscrição. Está tudo certo: a igreja entra em contato para os próximos passos.'
-            : 'Recebemos a sua inscrição no TLC. A igreja entra em contato pelo WhatsApp para os próximos passos.');
+            ? 'Você já tinha se inscrito com esse WhatsApp ou e-mail, então não fizemos uma nova inscrição. Envie seus dados pelo WhatsApp da igreja para ficar com o comprovante.'
+            : 'Recebemos a sua inscrição no TLC. Agora envie seus dados pelo WhatsApp da igreja: a mensagem fica como o comprovante da sua inscrição.');
+      // O botão aparece sempre: com a inscrição gravada, a mensagem é o comprovante;
+      // sem a planilha, é por ela que a inscrição é concluída.
       var z = document.getElementById('okZap');
-      z.hidden = !opts.viaZap;
-      if (opts.viaZap) z.href = linkZap();
+      z.hidden = false;
+      z.href = linkZap(!opts.viaZap);
       form.hidden = true;
       okCard.hidden = false;
       okCard.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'center' });
@@ -239,7 +244,7 @@ var TLC = {
                 enviando(false);
                 msg('Não conseguimos enviar agora. Toque aqui para concluir pelo WhatsApp.', 'err-t');
                 nota.style.cursor = 'pointer';
-                nota.onclick = function () { window.open(linkZap(), '_blank', 'noopener'); };
+                nota.onclick = function () { window.open(linkZap(false), '_blank', 'noopener'); };
               });
           });
       });
