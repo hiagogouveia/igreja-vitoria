@@ -1,53 +1,28 @@
 /**
  * Inscrições · Igreja Vitória
- * Recebe formulários do site e grava na planilha, uma aba por evento:
- *   - Conferência Céus Abertos 2026 → primeira aba (a que já existe)
- *   - Deep · Curso de Membresia ..... → aba "Deep" (criada automaticamente)
+ * Recebe formulários do site e grava na planilha, uma aba por finalidade.
+ * O site escolhe a aba pelo parâmetro "destino":
  *
- * O site escolhe a aba pelo parâmetro "destino" ("ceus-abertos" ou "deep").
- * Sem esse parâmetro, cai no Céus Abertos — mantém compatibilidade.
+ *   deep ............ aba "Deep" (inscrição do curso; hoje fechada, ver DEEP_FECHADO)
+ *   deep-interesse .. aba "Deep · Interessados" (lista de espera da próxima turma)
+ *   tlc ............. aba "TLC" (Treinamento de Líderes de CAV)
+ *   testemunho ...... aba "Testemunhos"
  *
- * CARAVANA ANASTÁCIO (Conferência Mercosul · 10/10)
- *   Reservas do ônibus, na aba "Caravana Anastácio" (destino=caravana).
- *   O servidor recalcula poltronas e valor a partir dos números enviados,
- *   em vez de confiar na conta feita no navegador.
- *   O TOTAL DE VAGAS fica na própria planilha, na aba "Caravana Anastácio",
- *   célula Q2 (com o título "Vagas no ônibus" em Q1). É a única fonte desse
- *   número: o site lê dali, desconta as poltronas reservadas e trava sozinho
- *   quando lota. Q2 vazia = sem limite. R2 mostra quantas vagas restam.
- *   PAGAMENTO: coluna N da aba das reservas, com a lista Pago / Não pago
- *   (toda reserva nova entra como Não pago).
- *   PASSAGEIROS: a aba "Caravana · Passageiros" tem uma linha por pessoa,
- *   com caixinha de check-in e o pagamento puxado da reserva. Se as reservas
- *   forem mexidas à mão, rode refazerPassageiros() para montar a lista de novo.
+ * Destino ausente ou desconhecido é recusado (erro "destino-invalido"), para
+ * nunca gravar na aba errada. As abas são criadas sozinhas no primeiro envio.
+ *
+ * TLC
+ *   O formulário de /tlc grava na aba "TLC": nome, telefone, e-mail, endereço,
+ *   data de nascimento, sexo e se a pessoa quer ser anfitriã (abrir uma CAV na
+ *   casa dela). A coluna Idade (H) é uma fórmula sobre a data de nascimento (G). A mesma pessoa (mesmo telefone) só entra uma vez.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
- *   avisado da próxima turma, na aba "Deep · Interessados" (destino=
- *   deep-interesse). Sem valor e sem pagamento: é só uma lista de espera.
+ *   avisado da próxima turma. Sem valor e sem pagamento: é só uma lista de espera.
  *
  * TESTEMUNHOS
- *   O site da conferência tem um formulário de testemunho, que grava na aba
- *   "Testemunhos" (criada automaticamente). Não tem trava de repetição: a
- *   mesma pessoa pode mandar mais de um.
- *
- * VAGAS DO SISTER
- *   O Sister tem LIMITE_SISTER vagas. A conta é feita aqui, na hora de
- *   gravar e dentro do lock, então duas inscrições simultâneas não furam o
- *   limite. Cheio, o site para de oferecer o Sister (a inscrição na
- *   conferência continua normal).
- *
- * CHECK-IN DO SISTER
- *   A aba "Sister · Check-in" lista, em ordem alfabética, as mulheres que
- *   marcaram "Sim" no Sister, com uma caixinha para marcar a chegada. Rode
- *   criarCheckinSister pelo editor para criar a aba ou puxar quem faltar
- *   (inclusive quem você inscrever à mão na aba da conferência).
- *
- * PRATOS DO SISTER
- *   Quem vai ao Sister escolhe levar um prato Salgado ou Doce para o brunch.
- *   A aba "Sister · Pratos" (criada automaticamente) controla quais opções o
- *   site oferece: desmarque a caixinha para fechar uma opção. Vale na hora,
- *   sem implantar nada. A mesma aba mostra quantas inscritas escolheram cada uma.
+ *   O formulário de testemunho do site da conferência. Não tem trava de
+ *   repetição: a mesma pessoa pode mandar mais de um.
  *
  * PRESENÇA DO DEEP
  *   A aba "Deep · Presença" tem os inscritos do Deep em ordem alfabética e uma
@@ -69,55 +44,33 @@ var PLANILHA_ID = '1as5jde5YMTVBaKYD2SRrIEpQQwGSa0F3azPXC5K7KuA';
  *  horário da inscrição sai 3h atrasado. */
 var FUSO = 'America/Campo_Grande';
 
-var COLUNAS_CEUS = [
-  'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'Sexo', 'Sister',
-  'Endereço', 'Bairro', 'Cidade', 'Já participa de CAV', 'Qual CAV', 'Origem',
-  // colunas novas entram sempre no FIM: as linhas antigas continuam alinhadas
-  'Prato (Sister)'
-];
-
 var COLUNAS_DEEP = [
   'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'E-mail',
   'Endereço', 'Data de nascimento', 'Origem'
 ];
 
-var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual nas duas abas
+var COL_TELEFONE_DIGITOS = 4; // 1-indexado, igual em todas as abas
 
 /* Inscrições do Deep encerradas. Para reabrir, volte para false (e troque
    DEEP_ABERTO no /deep/script.js do site). */
 var DEEP_FECHADO = true;
-
-var VALOR_POLTRONA = 60;
-
-/* Onde a equipe digita o total de vagas do ônibus (aba da caravana).
-   Fica à direita das colunas das reservas, nas duas linhas congeladas,
-   então aparece sempre no topo da aba. */
-var CELULA_VAGAS_CARAVANA = 'Q2';
-var CELULA_RESTANTES_CARAVANA = 'R2';
-
-var ABA_CARAVANA = 'Caravana Anastácio';
-var COLUNAS_CARAVANA = [
-  'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'CPF', 'Adultos',
-  'Leva crianças', 'Crianças (total)', 'Crianças (nome · idade · lugar)', 'Crianças no colo',
-  'Crianças com poltrona', 'Poltronas', 'Valor estimado (R$)', 'Pagamento', 'Origem',
-  'Acompanhantes adultos (nome · CPF)'
-];
-var TITULO_ANTIGO_CRIANCAS = 'Idades das crianças';
-var PAGO = 'Pago';
-var NAO_PAGO = 'Não pago';
-
-/* Uma linha por pessoa (quem reserva, acompanhantes e crianças), para fazer
-   a chamada no embarque e contar quem vai. O pagamento vem da reserva. */
-var ABA_PASSAGEIROS = 'Caravana · Passageiros';
-var COLUNAS_PASSAGEIROS = [
-  'Check-in', 'Nome', 'Tipo', 'CPF', 'Idade', 'Lugar', 'Reserva de', 'WhatsApp da reserva', 'Pagamento'
-];
 
 var ABA_INTERESSE_DEEP = 'Deep · Interessados';
 var COLUNAS_INTERESSE_DEEP = [
   'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'E-mail',
   'Endereço', 'Data de nascimento', 'Origem'
 ];
+
+/* Inscrições do TLC (Treinamento de Líderes de CAV), destino=tlc.
+   Telefone (só dígitos) fica na coluna 4, como nas outras abas: é por ela que
+   jaInscrito() barra a mesma pessoa duas vezes. */
+var ABA_TLC = 'TLC';
+var COLUNAS_TLC = [
+  'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'E-mail',
+  'Endereço', 'Data de nascimento', 'Idade', 'Sexo', 'Quer ser anfitrião?', 'Origem'
+];
+var COL_NASC_TLC = 7;  // G: data de nascimento (data de verdade)
+var COL_IDADE_TLC = 8; // H: idade, calculada pela planilha a partir da coluna G
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
@@ -126,22 +79,10 @@ var COLUNAS_TESTEMUNHO = [
   'Elogio ou sugestão'
 ];
 
-var LIMITE_SISTER = 160;
-/* Fechamento manual do Sister, independente das vagas: a igreja encerrou as
-   inscrições e vai inscrever na hora quem chegar sem inscrição. Para reabrir,
-   volte para false. */
-var SISTER_FECHADO = true;
-var COL_SISTER = 6; // 1-indexado, igual em COLUNAS_CEUS
-
-var ABA_CHECKIN_SISTER = 'Sister · Check-in';
-
 var ABA_PRESENCA_DEEP = 'Deep · Presença';
 var AULAS_DEEP = ['21/09', '28/09', '05/10', '12/10', '19/10', '26/10'];
 // Na aba Deep, a coluna I é onde a igreja anota o pagamento ("pg pix", "pg dinheiro"...)
 var COL_PAGAMENTO_DEEP = 9;
-
-var ABA_PRATOS = 'Sister · Pratos';
-var PRATOS = ['Salgado', 'Doce'];
 
 function abrirPlanilha() {
   var ss = SpreadsheetApp.openById(PLANILHA_ID);
@@ -151,50 +92,10 @@ function abrirPlanilha() {
   return ss;
 }
 
-/** Aba do Céus Abertos: a primeira, que já tem os dados. Não renomeia nada. */
-function abaCeusAbertos(ss) {
-  var sheet = ss.getSheets()[0];
-  garantirCabecalho(sheet, COLUNAS_CEUS);
-  return sheet;
-}
-
 /**
- * Aba de controle dos pratos. Criada na primeira vez que alguém usa o site
- * depois desta versão. Procura cada prato pelo nome na coluna A, então dá
- * para reordenar as linhas sem quebrar nada.
- */
-function abaPratos(ss) {
-  var sheet = ss.getSheetByName(ABA_PRATOS);
-  if (sheet) return sheet;
-
-  // sempre no fim: a aba da conferência é identificada por ser a primeira
-  sheet = ss.insertSheet(ABA_PRATOS, ss.getSheets().length);
-
-  sheet.getRange(1, 1, 1, 3).setValues([['Prato', 'Aceitando no site?', 'Já escolheram']])
-    .setFontWeight('bold');
-  PRATOS.forEach(function (prato, i) {
-    var linha = i + 2;
-    sheet.getRange(linha, 1).setValue(prato);
-    sheet.getRange(linha, 2).insertCheckboxes().setValue(true);
-    escreverContagem(ss, sheet.getRange(linha, 3), prato);
-  });
-  sheet.getRange(PRATOS.length + 3, 1).setValue(
-    'Desmarque uma caixinha para o site parar de oferecer aquele prato. ' +
-    'Vale na hora, sem publicar nada. Se as duas estiverem desmarcadas, ' +
-    'a pergunta do prato some e a inscrição no Sister continua aberta.'
-  ).setFontStyle('italic');
-  sheet.setColumnWidth(1, 140);
-  sheet.setColumnWidth(2, 170);
-  sheet.setColumnWidth(3, 140);
-  sheet.setFrozenRows(1);
-  return sheet;
-}
-
-/**
- * Fórmula "Já escolheram" de um prato. O separador de argumentos depende do
+ * Escreve uma fórmula na célula. O separador de argumentos depende do
  * idioma da planilha (vírgula em inglês, ponto e vírgula em português), então
  * testa os dois e fica com o que a planilha aceitar.
- * O asterisco conta também as linhas marcadas como "(fora do limite)".
  */
 function escreverFormulaLocal(celula, montar) {
   var separadores = [';', ','];
@@ -204,211 +105,6 @@ function escreverFormulaLocal(celula, montar) {
     if (String(celula.getDisplayValue()).charAt(0) !== '#') return separadores[i];
   }
   return null;
-}
-
-function escreverContagem(ss, celula, prato) {
-  var ceus = ss.getSheets()[0];
-  var colPrato = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
-  var letra = ceus.getRange(1, colPrato).getA1Notation().replace(/\d+/g, '');
-  var ref = "'" + ceus.getName().replace(/'/g, "''") + "'!" + letra + ':' + letra;
-
-  var separadores = [';', ','];
-  for (var i = 0; i < separadores.length; i++) {
-    celula.setFormula('=COUNTIF(' + ref + separadores[i] + '"' + prato + '*")');
-    SpreadsheetApp.flush();
-    if (String(celula.getDisplayValue()).charAt(0) !== '#') return true;
-  }
-  return false;
-}
-
-/**
- * Uso manual, pelo editor (Executar): reescreve a coluna "Já escolheram"
- * da aba de pratos, sem mexer nas caixinhas.
- */
-function consertarContagem() {
-  var ss = abrirPlanilha();
-  var sheet = abaPratos(ss);
-  var linhas = sheet.getRange(1, 1, Math.max(sheet.getLastRow(), 1), 1).getValues();
-  var feitos = [];
-  PRATOS.forEach(function (prato) {
-    for (var i = 1; i < linhas.length; i++) {
-      if (String(linhas[i][0]).trim().toLowerCase() === prato.toLowerCase()) {
-        var celula = sheet.getRange(i + 1, 3);
-        var ok = escreverContagem(ss, celula, prato);
-        feitos.push(prato + ': ' + (ok ? celula.getDisplayValue() : 'ERRO'));
-      }
-    }
-  });
-  Logger.log('Contagem → ' + feitos.join(' | '));
-}
-
-/** Quantas já estão inscritas no Sister (coluna Sister = "Sim"). */
-function inscritasSister(ss) {
-  var ceus = ss.getSheets()[0];
-  var ultima = ceus.getLastRow();
-  if (ultima < 2) return 0;
-  var total = 0;
-  ceus.getRange(2, COL_SISTER, ultima - 1, 1).getValues().forEach(function (r) {
-    if (String(r[0]).trim().toLowerCase() === 'sim') total++;
-  });
-  return total;
-}
-
-/** Situação das vagas do Sister, do jeito que o site usa. */
-function vagasSister(ss) {
-  var inscritas = inscritasSister(ss);
-  var vagas = Math.max(LIMITE_SISTER - inscritas, 0);
-  return {
-    limite: LIMITE_SISTER,
-    inscritas: inscritas,
-    vagas: vagas,
-    aberto: !SISTER_FECHADO && vagas > 0
-  };
-}
-
-/**
- * Aba de check-in do Sister: Nome, caixinha de chegada e o telefone numa
- * coluna oculta, que serve de chave para não repetir ninguém.
- */
-function abaCheckinSister(ss) {
-  var sheet = ss.getSheetByName(ABA_CHECKIN_SISTER);
-  if (sheet) return sheet;
-
-  sheet = ss.insertSheet(ABA_CHECKIN_SISTER, ss.getSheets().length);
-  sheet.getRange(1, 1, 1, 3).setValues([['Nome', 'Check-in', 'Telefone']])
-    .setFontWeight('bold').setHorizontalAlignment('center');
-  sheet.getRange(1, 1).setHorizontalAlignment('left');
-  sheet.getRange(2, 1).setValue('Fizeram check-in');
-  sheet.getRange(2, 2).setFormula('=SUMPRODUCT(B3:B*1)').setHorizontalAlignment('center');
-  sheet.getRange(2, 1, 1, 3).setFontWeight('bold').setBackground('#F7E7E3');
-  sheet.setFrozenRows(2);
-  sheet.setFrozenColumns(1);
-  sheet.setColumnWidth(1, 300);
-  sheet.setColumnWidth(2, 110);
-  sheet.hideColumns(3); // o telefone fica escondido: a lista é só nome e chegada
-  return sheet;
-}
-
-/**
- * Acrescenta na lista de check-in quem marcou "Sim" no Sister e ainda não
- * está nela, sem mexer nas caixinhas já marcadas. Com `ordenar`, deixa em
- * ordem alfabética. Devolve quantas entraram.
- */
-function sincronizarCheckinSister(ss, ordenar) {
-  var ceus = ss.getSheets()[0];
-  var sheet = abaCheckinSister(ss);
-  var ultimaCeus = ceus.getLastRow();
-  if (ultimaCeus < 2) return 0;
-
-  /* Quem já está na lista, por telefone E por nome: assim funciona tanto para
-     quem veio do site quanto para quem foi escrito à mão, com ou sem telefone,
-     e ninguém aparece duas vezes. */
-  var ja = {};
-  var ultima = sheet.getLastRow();
-  if (ultima >= 3) {
-    sheet.getRange(3, 1, ultima - 2, 3).getDisplayValues().forEach(function (r) {
-      var digitos = String(r[2]).replace(/\D/g, '');
-      if (digitos) ja['tel:' + digitos] = true;
-      if (String(r[0]).trim()) ja['nome:' + chaveNome(r[0])] = true;
-    });
-  }
-
-  var novos = [];
-  ceus.getRange(2, 2, ultimaCeus - 1, 5).getValues().forEach(function (r) {
-    // r: Nome, Telefone, Telefone (dígitos), Sexo, Sister
-    var nome = String(r[0]).trim();
-    var digitos = String(r[2]).replace(/\D/g, '');
-    if (String(r[4]).trim().toLowerCase() !== 'sim') return;
-    if (!nome) return;
-    if (nome.toUpperCase().indexOf('TESTE') === 0) return;
-    if ((digitos && ja['tel:' + digitos]) || ja['nome:' + chaveNome(nome)]) return;
-    if (digitos) ja['tel:' + digitos] = true;
-    ja['nome:' + chaveNome(nome)] = true;
-    novos.push([nomeBonito(nome), false, String(r[1]).trim()]);
-  });
-  if (novos.length) {
-    var inicio = Math.max(ultima, 2) + 1;
-    sheet.getRange(inicio, 1, novos.length, 3).setValues(novos);
-    sheet.getRange(inicio, 2, novos.length, 1).insertCheckboxes().setHorizontalAlignment('center');
-  }
-  if (ordenar) {
-    var total = sheet.getLastRow() - 2;
-    if (total > 1) sheet.getRange(3, 1, total, Math.max(sheet.getLastColumn(), 3))
-      .sort({ column: 1, ascending: true });
-  }
-  return novos.length;
-}
-
-/**
- * Uso manual, pelo editor (Executar): cria a lista de check-in do Sister ou
- * puxa quem faltar, e deixa em ordem alfabética. Pode rodar quantas vezes
- * quiser, inclusive no dia, depois de inscrever alguém à mão.
- */
-function criarCheckinSister() {
-  var ss = abrirPlanilha();
-  var entraram = sincronizarCheckinSister(ss, true);
-  Logger.log('Sister · Check-in → ' + entraram + ' nome(s) acrescentado(s). Total na lista: ' +
-    (abaCheckinSister(ss).getLastRow() - 2));
-}
-
-/** Linha de cada prato na aba de controle, procurando pelo nome na coluna A. */
-function linhasDosPratos(sheet) {
-  var nomes = sheet.getRange(1, 1, Math.max(sheet.getLastRow(), 1), 1).getValues();
-  var linhas = {};
-  PRATOS.forEach(function (prato) {
-    for (var i = 1; i < nomes.length; i++) {
-      if (String(nomes[i][0]).trim().toLowerCase() === prato.toLowerCase()) { linhas[prato] = i + 1; return; }
-    }
-  });
-  return linhas;
-}
-
-/**
- * Autocorreção da coluna "Já escolheram": se a fórmula de algum prato sumiu
- * (alguém digitou por cima, colou só valores...), escreve de novo. Roda a cada
- * consulta do site, então a contagem nunca fica congelada por muito tempo.
- */
-function garantirContagem(ss, sheet) {
-  var linhas = linhasDosPratos(sheet);
-  Object.keys(linhas).forEach(function (prato) {
-    var celula = sheet.getRange(linhas[prato], 3);
-    if (String(celula.getFormula() || '').toUpperCase().indexOf('COUNTIF') === -1) {
-      escreverContagem(ss, celula, prato);
-    }
-  });
-}
-
-/** Conta cada prato lendo a coluna linha por linha, sem depender de fórmula. */
-function contagemReal(ss) {
-  var ceus = ss.getSheets()[0];
-  var col = COLUNAS_CEUS.indexOf('Prato (Sister)') + 1;
-  var ultima = ceus.getLastRow();
-  var total = {};
-  PRATOS.forEach(function (prato) { total[prato] = 0; });
-  if (ultima < 2) return total;
-  ceus.getRange(2, col, ultima - 1, 1).getValues().forEach(function (r) {
-    var v = String(r[0]).trim().toLowerCase();
-    PRATOS.forEach(function (prato) {
-      if (v.indexOf(prato.toLowerCase()) === 0) total[prato]++;
-    });
-  });
-  return total;
-}
-
-/** Pratos com a caixinha marcada, na ordem de PRATOS. */
-function pratosAbertos(ss) {
-  var sheet = abaPratos(ss);
-  try { garantirContagem(ss, sheet); } catch (errContagem) {}
-  var ultima = Math.max(sheet.getLastRow(), 1);
-  var linhas = sheet.getRange(1, 1, ultima, 2).getValues();
-  return PRATOS.filter(function (prato) {
-    for (var i = 1; i < linhas.length; i++) {
-      if (String(linhas[i][0]).trim().toLowerCase() === prato.toLowerCase()) {
-        return linhas[i][1] === true;
-      }
-    }
-    return true; // linha apagada por engano: não fecha a opção sem querer
-  });
 }
 
 /** Aba do Deep: cria na primeira inscrição, com o cabeçalho próprio. */
@@ -628,213 +324,6 @@ function criarPresencaDeep() {
     (abaPresencaDeep(ss).getLastRow() - 2));
 }
 
-/**
- * Aba das reservas da caravana. A linha 2 soma os totais, para a equipe ver
- * de uma olhada quantas poltronas já foram ocupadas.
- */
-function abaCaravana(ss) {
-  var sheet = ss.getSheetByName(ABA_CARAVANA);
-  if (sheet) {
-    // aba criada antes dos acompanhantes: ganha a coluna nova e o título novo
-    var colCriancas = COLUNAS_CARAVANA.indexOf('Crianças (nome · idade · lugar)') + 1;
-    var tituloCriancas = sheet.getRange(1, colCriancas);
-    if (tituloCriancas.getValue() === TITULO_ANTIGO_CRIANCAS) {
-      tituloCriancas.setValue(COLUNAS_CARAVANA[colCriancas - 1]);
-    }
-    garantirCabecalho(sheet, COLUNAS_CARAVANA);
-    garantirConfigCaravana(sheet);
-    return sheet;
-  }
-
-  try {
-    sheet = ss.insertSheet(ABA_CARAVANA, ss.getSheets().length);
-  } catch (err) {
-    // duas visitas ao mesmo tempo logo após a implantação: a outra já criou
-    var criada = ss.getSheetByName(ABA_CARAVANA);
-    if (criada) return criada;
-    throw err;
-  }
-  sheet.getRange(1, 1, 1, COLUNAS_CARAVANA.length).setValues([COLUNAS_CARAVANA]).setFontWeight('bold');
-  sheet.getRange(2, 1).setValue('Totais');
-  // SUM de coluna inteira não usa separador de argumentos: vale em pt-BR e en-US
-  [6, 8, 10, 11, 12, 13].forEach(function (col) {
-    var letra = sheet.getRange(1, col).getA1Notation().replace(/\d+/g, '');
-    sheet.getRange(2, col).setFormula('=SUM(' + letra + '3:' + letra + ')');
-  });
-  sheet.getRange(2, 1, 1, COLUNAS_CARAVANA.length).setFontWeight('bold').setBackground('#E8F0FE');
-  sheet.setFrozenRows(2);
-  sheet.setColumnWidth(2, 240);
-  sheet.setColumnWidth(9, 160);
-  sheet.setColumnWidth(14, 150);
-  sheet.setColumnWidth(16, 320);
-  garantirConfigCaravana(sheet);
-  return sheet;
-}
-
-/**
- * Bloco de configuração das vagas (Q1:R2). Só escreve os títulos e a conta
- * de restantes quando estão vazios: o número digitado em Q2 nunca é tocado.
- */
-function garantirPagamentoCaravana(sheet) {
-  var col = COLUNAS_CARAVANA.indexOf('Pagamento') + 1;
-  if (sheet.getRange(3, col).getDataValidation()) return;
-  var regra = SpreadsheetApp.newDataValidation()
-    .requireValueInList([PAGO, NAO_PAGO], true).setAllowInvalid(false).build();
-  sheet.getRange(3, col, Math.max(sheet.getMaxRows() - 2, 1), 1).setDataValidation(regra);
-  // N2: quantas reservas já estão pagas
-  escreverFormulaLocal(sheet.getRange(2, col), function (sep) {
-    return '=COUNTIF(N3:N' + sep + '"' + PAGO + '")';
-  });
-}
-
-function garantirConfigCaravana(sheet) {
-  garantirPagamentoCaravana(sheet);
-  var titulo = sheet.getRange('Q1');
-  if (titulo.getValue() !== '') return;
-  titulo.setValue('Vagas no ônibus');
-  sheet.getRange('R1').setValue('Vagas restantes');
-  sheet.getRange('Q1:R1').setFontWeight('bold');
-  sheet.getRange(CELULA_VAGAS_CARAVANA).setBackground('#FFF2CC').setFontWeight('bold')
-    .setNote('Digite aqui o total de vagas (poltronas) do ônibus. O site lê este número. Vazio = sem limite.');
-  // L2 = total de poltronas reservadas (linha de totais)
-  escreverFormulaLocal(sheet.getRange(CELULA_RESTANTES_CARAVANA), function (sep) {
-    return '=IF(Q2=""' + sep + '""' + sep + 'MAX(0' + sep + 'Q2-L2))';
-  });
-  sheet.getRange(CELULA_RESTANTES_CARAVANA).setFontWeight('bold');
-  sheet.setColumnWidth(17, 130);
-  sheet.setColumnWidth(18, 130);
-}
-
-/** Aba com uma linha por passageiro. A linha 2 conta pessoas, poltronas e check-ins. */
-function abaPassageiros(ss) {
-  var sheet = ss.getSheetByName(ABA_PASSAGEIROS);
-  if (sheet) return sheet;
-  try {
-    sheet = ss.insertSheet(ABA_PASSAGEIROS, ss.getSheets().length);
-  } catch (err) {
-    var criada = ss.getSheetByName(ABA_PASSAGEIROS);
-    if (criada) return criada;
-    throw err;
-  }
-  sheet.getRange(1, 1, 1, COLUNAS_PASSAGEIROS.length).setValues([COLUNAS_PASSAGEIROS]).setFontWeight('bold');
-  // totais sem separador de argumentos onde dá; o resto com o separador do idioma
-  sheet.getRange(2, 2).setFormula('=COUNTA(B3:B)');
-  escreverFormulaLocal(sheet.getRange(2, 1), function (sep) { return '=COUNTIF(A3:A' + sep + 'TRUE)'; });
-  escreverFormulaLocal(sheet.getRange(2, 6), function (sep) { return '=COUNTIF(F3:F' + sep + '"Poltrona")'; });
-  escreverFormulaLocal(sheet.getRange(2, 9), function (sep) { return '=COUNTIF(I3:I' + sep + '"' + PAGO + '")'; });
-  sheet.getRange(2, 3).setValue('← pessoas');
-  sheet.getRange(2, 7).setValue('← poltronas · check-ins em A2 · pagos em I2');
-  sheet.getRange(2, 1, 1, COLUNAS_PASSAGEIROS.length).setFontWeight('bold').setBackground('#E8F0FE');
-  sheet.setFrozenRows(2);
-  sheet.setColumnWidth(2, 260);
-  sheet.setColumnWidth(7, 220);
-  return sheet;
-}
-
-/**
- * Grava as pessoas de uma reserva. `linhaReserva` é a linha na aba das
- * reservas: o pagamento de cada passageiro é uma referência para a coluna N
- * dela, então marcar Pago na reserva marca todo mundo junto.
- */
-function gravarPassageiros(ss, linhaReserva, titular, pessoas) {
-  var sheet = abaPassageiros(ss);
-  var inicio = sheet.getLastRow() + 1;
-  var colPag = COLUNAS_CARAVANA.indexOf('Pagamento') + 1;
-  var letraPag = sheet.getRange(1, colPag).getA1Notation().replace(/\d+/g, '');
-  var ref = "='" + ABA_CARAVANA.replace(/'/g, "''") + "'!" + letraPag + linhaReserva;
-  var linhas = pessoas.map(function (pe) {
-    return [false, pe.nome, pe.tipo, pe.cpf || '', pe.idade === '' ? '' : pe.idade, pe.lugar,
-      titular.nome, titular.telefone, ref];
-  });
-  if (!linhas.length) return;
-  sheet.getRange(inicio, 1, linhas.length, COLUNAS_PASSAGEIROS.length).setValues(linhas);
-  sheet.getRange(inicio, 1, linhas.length, 1).insertCheckboxes();
-}
-
-/**
- * Monta a aba de passageiros de novo a partir das reservas (para quando
- * alguém apagar ou editar reservas à mão). Mantém os check-ins já marcados,
- * procurando pelo nome.
- */
-function refazerPassageiros() {
-  var ss = abrirPlanilha();
-  var res = abaCaravana(ss);
-  var pass = abaPassageiros(ss);
-  var feitos = {};
-  if (pass.getLastRow() >= 3) {
-    pass.getRange(3, 1, pass.getLastRow() - 2, 2).getValues().forEach(function (r) {
-      if (r[0] === true) feitos[String(r[1]).trim().toLowerCase()] = true;
-    });
-    pass.getRange(3, 1, pass.getLastRow() - 2, COLUNAS_PASSAGEIROS.length).clearContent().clearDataValidations();
-  }
-  var ultima = res.getLastRow();
-  if (ultima < 3) return;
-  var C = function (nome) { return COLUNAS_CARAVANA.indexOf(nome); };
-  res.getRange(3, 1, ultima - 2, COLUNAS_CARAVANA.length).getValues().forEach(function (r, i) {
-    if (!String(r[C('Nome')]).trim()) return;
-    var pessoas = [{ nome: String(r[C('Nome')]).trim(), tipo: 'Titular', cpf: r[C('CPF')], idade: '', lugar: 'Poltrona' }];
-    String(r[C('Acompanhantes adultos (nome · CPF)')] || '').split('\n').forEach(function (l) {
-      var partes = l.split(' · ');
-      if (partes[0] && partes[0].trim()) pessoas.push({ nome: partes[0].trim(), tipo: 'Acompanhante', cpf: (partes[1] || '').trim(), idade: '', lugar: 'Poltrona' });
-    });
-    String(r[C('Crianças (nome · idade · lugar)')] || '').split(' · ').forEach(function (l) {
-      var m = l.trim().match(/^(.*), (\d+) anos \((colo|poltrona)\)$/);
-      if (m) pessoas.push({ nome: m[1], tipo: 'Criança', cpf: '', idade: Number(m[2]), lugar: m[3] === 'poltrona' ? 'Poltrona' : 'Colo' });
-    });
-    gravarPassageiros(ss, i + 3, { nome: pessoas[0].nome, telefone: r[C('Telefone')] }, pessoas);
-  });
-  if (pass.getLastRow() >= 3) {
-    var nomes = pass.getRange(3, 2, pass.getLastRow() - 2, 1).getValues();
-    pass.getRange(3, 1, nomes.length, 1).setValues(nomes.map(function (n) {
-      return [!!feitos[String(n[0]).trim().toLowerCase()]];
-    }));
-  }
-  Logger.log('Passageiros: ' + Math.max(pass.getLastRow() - 2, 0));
-}
-
-/** Total de vagas digitado na planilha; 0 quando vazio ou inválido (= sem limite). */
-function limiteCaravana(ss) {
-  var valor = abaCaravana(ss).getRange(CELULA_VAGAS_CARAVANA).getValue();
-  var n = parseInt(valor, 10);
-  return isNaN(n) || n < 0 ? 0 : n;
-}
-
-/** Poltronas já reservadas (coluna "Poltronas", a partir da linha 3). */
-function poltronasOcupadas(ss) {
-  var sheet = abaCaravana(ss);
-  var ultima = sheet.getLastRow();
-  if (ultima < 3) return 0;
-  var col = COLUNAS_CARAVANA.indexOf('Poltronas') + 1;
-  var total = 0;
-  sheet.getRange(3, col, ultima - 2, 1).getValues().forEach(function (r) {
-    var n = parseInt(r[0], 10);
-    if (!isNaN(n)) total += n;
-  });
-  return total;
-}
-
-/** Situação das vagas da caravana, do jeito que o site usa. */
-function vagasCaravana(ss) {
-  var limite = limiteCaravana(ss);
-  if (!limite) return { limite: 0, vagas: null, aberto: true };
-  var vagas = Math.max(limite - poltronasOcupadas(ss), 0);
-  // só números agregados: nada de quem reservou
-  return { limite: limite, vagas: vagas, aberto: vagas > 0 };
-}
-
-/** CPF válido (11 dígitos e os dois dígitos verificadores batendo). */
-function cpfValido(cpf) {
-  var d = String(cpf || '').replace(/\D/g, '');
-  if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
-  for (var j = 9; j < 11; j++) {
-    var soma = 0;
-    for (var i = 0; i < j; i++) soma += parseInt(d.charAt(i), 10) * ((j + 1) - i);
-    var dig = (soma * 10) % 11 % 10;
-    if (dig !== parseInt(d.charAt(j), 10)) return false;
-  }
-  return true;
-}
-
 /** Aba da lista de espera do Deep, criada no primeiro envio. */
 function abaInteresseDeep(ss) {
   var sheet = ss.getSheetByName(ABA_INTERESSE_DEEP);
@@ -844,6 +333,39 @@ function abaInteresseDeep(ss) {
     sheet.setColumnWidth(6, 320);
   }
   garantirCabecalho(sheet, COLUNAS_INTERESSE_DEEP);
+  return sheet;
+}
+
+/** Escreve a fórmula da idade (em anos completos) numa linha da aba TLC. */
+function escreverIdadeTlc(sheet, linha) {
+  var nasc = 'G' + linha;
+  return escreverFormulaLocal(sheet.getRange(linha, COL_IDADE_TLC), function (sep) {
+    return '=IFERROR(IF(ISNUMBER(' + nasc + ')' + sep + 'DATEDIF(' + nasc + sep + 'TODAY()' + sep + '"Y")' + sep + '"")' + sep + '"")';
+  });
+}
+
+/**
+ * Uso manual, pelo editor (Executar): recoloca a fórmula da idade em todas as
+ * linhas da aba TLC (útil se alguém apagou ou colou por cima).
+ */
+function refazerIdadesTlc() {
+  var sheet = abaTlc(abrirPlanilha());
+  var ultima = sheet.getLastRow();
+  for (var r = 2; r <= ultima; r++) escreverIdadeTlc(sheet, r);
+  Logger.log('Idades refeitas em ' + Math.max(ultima - 1, 0) + ' linha(s).');
+}
+
+/** Aba das inscrições do TLC, criada no primeiro envio. */
+function abaTlc(ss) {
+  var sheet = ss.getSheetByName(ABA_TLC);
+  if (!sheet) {
+    sheet = ss.insertSheet(ABA_TLC, ss.getSheets().length);
+    sheet.setColumnWidth(2, 260);
+    sheet.setColumnWidth(5, 220);
+    sheet.setColumnWidth(6, 320);
+    sheet.setColumnWidth(COL_IDADE_TLC, 70);
+  }
+  garantirCabecalho(sheet, COLUNAS_TLC);
   return sheet;
 }
 
@@ -900,113 +422,10 @@ function doPost(e) {
     }
 
     var ss = abrirPlanilha();
-    var destino = String(p.destino || 'ceus-abertos').toLowerCase();
+    var destino = String(p.destino || '').toLowerCase();
 
     if (destino === 'deep' && DEEP_FECHADO) {
       return json({ ok: false, erro: 'deep-fechado' });
-    }
-
-    if (destino === 'caravana') {
-      if (nome.length < 3 || digitos.length < 10 || !cpfValido(p.cpf)) {
-        return json({ ok: false, erro: 'dados incompletos' });
-      }
-
-      /* A conta é refeita aqui: o navegador só manda os números, e quem decide
-         quantas poltronas e quanto custa é o servidor. */
-      var inteiro = function (v, minimo) {
-        var n = parseInt(v, 10);
-        if (isNaN(n) || n < minimo) return minimo;
-        return Math.min(n, 60);
-      };
-      var adultos = inteiro(p.adultos, 1);
-      var criancas = inteiro(p.criancas, 0);
-      var comPoltrona = Math.min(inteiro(p.criancasPoltrona, 0), criancas);
-
-      /* Crianças com nome, idade e lugar. A regra do colo vale aqui também:
-         acima de 5 anos, ocupa poltrona, diga o navegador o que disser. */
-      var listaCriancas = [];
-      if (p.criancasLista) {
-        try { listaCriancas = JSON.parse(p.criancasLista); } catch (errCri) { listaCriancas = null; }
-        if (!Array.isArray(listaCriancas) || listaCriancas.length !== criancas) {
-          return json({ ok: false, erro: 'dados incompletos' });
-        }
-        for (var ic = 0; ic < listaCriancas.length; ic++) {
-          var cr = listaCriancas[ic] || {};
-          var crNome = String(cr.nome || '').trim();
-          var crIdade = parseInt(cr.idade, 10);
-          if (crNome.length < 2 || isNaN(crIdade) || crIdade < 0 || crIdade > 17) {
-            return json({ ok: false, erro: 'dados incompletos' });
-          }
-          var crLugar = (crIdade > 5 || cr.lugar === 'poltrona') ? 'poltrona' : 'colo';
-          listaCriancas[ic] = { nome: crNome, idade: crIdade, lugar: crLugar };
-        }
-        comPoltrona = listaCriancas.filter(function (x) { return x.lugar === 'poltrona'; }).length;
-      }
-      var noColo = criancas - comPoltrona;
-      var poltronas = adultos + comPoltrona;
-      var valor = poltronas * VALOR_POLTRONA;
-
-      /* Cada adulto além de quem reserva vem com nome completo e CPF válido,
-         um por pessoa e sem CPF repetido na mesma reserva. */
-      var acompanhantes;
-      try { acompanhantes = JSON.parse(p.acompanhantes || '[]'); } catch (errJson) { acompanhantes = null; }
-      if (!Array.isArray(acompanhantes) || acompanhantes.length !== adultos - 1) {
-        return json({ ok: false, erro: 'dados incompletos' });
-      }
-      var nomesAcompanhantes = [];
-      var cpfsVistos = [String(p.cpf || '').replace(/\D/g, '')];
-      for (var ia = 0; ia < acompanhantes.length; ia++) {
-        var ac = acompanhantes[ia] || {};
-        var acNome = String(ac.nome || '').trim();
-        var acCpf = String(ac.cpf || '').replace(/\D/g, '');
-        if (acNome.length < 3 || !cpfValido(acCpf) || cpfsVistos.indexOf(acCpf) !== -1) {
-          return json({ ok: false, erro: 'dados incompletos' });
-        }
-        cpfsVistos.push(acCpf);
-        nomesAcompanhantes.push({ nome: acNome, cpf: String(ac.cpf).trim() });
-        acompanhantes[ia] = acNome + ' · ' + String(ac.cpf).trim();
-      }
-
-      var caravana = abaCaravana(ss);
-      if (jaInscrito(caravana, digitos)) {
-        return json({ ok: true, duplicado: true });
-      }
-
-      var situacao = vagasCaravana(ss);
-      if (situacao.limite && situacao.vagas < poltronas) {
-        return json({ ok: false, erro: 'caravana-lotada', caravana: situacao });
-      }
-
-      caravana.appendRow([
-        new Date(),
-        nome,
-        telefone,
-        "'" + digitos,
-        String(p.cpf || '').trim(),
-        adultos,
-        criancas > 0 ? 'Sim' : 'Não',
-        criancas,
-        listaCriancas.length
-          ? listaCriancas.map(function (x) { return x.nome + ', ' + x.idade + ' anos (' + x.lugar + ')'; }).join(' · ')
-          : String(p.idades || '').trim(),
-        noColo,
-        comPoltrona,
-        poltronas,
-        valor,
-        NAO_PAGO, // a equipe troca para Pago quando o comprovante chegar
-        String(p.origem || 'site'),
-        acompanhantes.join('\n')
-      ]);
-
-      var pessoas = [{ nome: nome, tipo: 'Titular', cpf: String(p.cpf || '').trim(), idade: '', lugar: 'Poltrona' }];
-      nomesAcompanhantes.forEach(function (a) {
-        pessoas.push({ nome: a.nome, tipo: 'Acompanhante', cpf: a.cpf, idade: '', lugar: 'Poltrona' });
-      });
-      listaCriancas.forEach(function (x) {
-        pessoas.push({ nome: x.nome, tipo: 'Criança', cpf: '', idade: x.idade, lugar: x.lugar === 'poltrona' ? 'Poltrona' : 'Colo' });
-      });
-      gravarPassageiros(ss, caravana.getLastRow(), { nome: nome, telefone: telefone }, pessoas);
-      return json({ ok: true, duplicado: false, poltronas: poltronas, valor: valor });
     }
 
     if (destino === 'deep-interesse') {
@@ -1026,90 +445,57 @@ function doPost(e) {
       ]);
       return json({ ok: true, duplicado: false });
     }
-    var sheet = destino === 'deep' ? abaDeep(ss) : abaCeusAbertos(ss);
-
-    // Duplicidade pelo telefone normalizado, dentro da própria aba:
-    // a mesma pessoa pode se inscrever na conferência E no Deep.
-    if (jaInscrito(sheet, digitos)) {
-      return json({ ok: true, duplicado: true });
-    }
-
-    if (destino === 'deep') {
-      sheet.appendRow([
-        new Date(),
-        nome,
-        telefone,
-        "'" + digitos, // apóstrofo força texto: preserva o zero à esquerda
-        String(p.email || '').trim(),
-        String(p.endereco || '').trim(),
-        String(p.nascimento || '').trim(),
-        String(p.origem || 'site')
-      ]);
-      // A chamada é um extra: se falhar, a inscrição já está gravada.
-      try { sincronizarPresencaDeep(ss, false); } catch (errPresenca) {}
-    } else {
-      var sexo = String(p.sexo || '').trim();
-      var sister = sexo === 'Feminino' ? String(p.sister || '') : '';
-      var prato = '';
-
-      if (sister === 'Sim') {
-        // Conferido aqui dentro, com o lock ativo: mesmo com dois envios ao
-        // mesmo tempo, o limite não é ultrapassado.
-        var situacao = vagasSister(ss);
-        if (!situacao.aberto) {
-          if (p.envio !== 'cego') {
-            // devolve a situação para o site avisar e reenviar sem o Sister
-            return json({ ok: false, erro: 'sister-lotado', sister: situacao });
-          }
-          // reenvio sem leitura de resposta: grava a inscrição na conferência
-          // sem o Sister, porque as vagas acabaram
-          sister = '';
-        }
+    if (destino === 'tlc') {
+      var inscritosTlc = abaTlc(ss);
+      if (jaInscrito(inscritosTlc, digitos)) {
+        return json({ ok: true, duplicado: true });
       }
-
-      if (sister === 'Sim') {
-        var abertos = pratosAbertos(ss);
-        var escolhido = String(p.prato || '').trim();
-        var clienteNovo = p.prato !== undefined; // site antigo em cache não manda o campo
-
-        if (!clienteNovo) {
-          prato = 'Não informado';
-        } else if (!escolhido && abertos.length === 0) {
-          prato = ''; // nenhum prato aberto: o site nem perguntou
-        } else if (abertos.indexOf(escolhido) !== -1) {
-          prato = escolhido;
-        } else if (p.envio !== 'cego') {
-          // A opção fechou depois que a página abriu. Devolve as opções atuais
-          // para o site pedir outra escolha, sem gravar nada.
-          return json({ ok: false, erro: 'prato-indisponivel', pratos: abertos });
-        } else {
-          // Reenvio sem leitura de resposta (no-cors): o site não teria como
-          // mostrar o erro, então grava e sinaliza em vez de perder a inscrição.
-          prato = (escolhido || 'Não informado') + ' (fora do limite)';
-        }
-      }
-
-      sheet.appendRow([
+      var nascimento = String(p.nascimento || '').trim();
+      var nascData = null;
+      try { nascData = Utilities.parseDate(nascimento, FUSO, 'dd/MM/yyyy'); } catch (errData) {}
+      inscritosTlc.appendRow([
         new Date(),
         nome,
         telefone,
         "'" + digitos,
-        sexo,
-        sister,
+        String(p.email || '').trim(),
         String(p.endereco || '').trim(),
-        String(p.bairro || '').trim(),
-        String(p.cidade || '').trim(),
-        String(p.cav || '').trim(),
-        String(p.qualCav || '').trim(),
-        String(p.origem || 'site'),
-        prato
+        nascData || nascimento, // data de verdade, para a idade poder ser calculada
+        '',                     // idade: preenchida pela fórmula logo abaixo
+        String(p.sexo || '').trim(),
+        String(p.anfitriao || '').trim(),
+        String(p.origem || 'site')
       ]);
+      var linhaTlc = inscritosTlc.getLastRow();
+      inscritosTlc.getRange(linhaTlc, COL_NASC_TLC).setNumberFormat('dd/MM/yyyy');
+      // Idade sempre em dia: a planilha recalcula sozinha todo ano/dia.
+      try { escreverIdadeTlc(inscritosTlc, linhaTlc); } catch (errIdade) {}
+      return json({ ok: true, duplicado: false });
+    }
+    // Só o Deep chega até aqui; qualquer outro destino é recusado, para nunca
+    // gravar na aba errada.
+    if (destino !== 'deep') {
+      return json({ ok: false, erro: 'destino-invalido' });
+    }
+    var sheet = abaDeep(ss);
+
+    // Duplicidade pelo telefone normalizado, dentro da própria aba.
+    if (jaInscrito(sheet, digitos)) {
+      return json({ ok: true, duplicado: true });
     }
 
-    // A lista de check-in do Sister é um extra: se falhar, a inscrição já está gravada.
-    if (destino !== 'deep') {
-      try { sincronizarCheckinSister(ss, false); } catch (errCheckin) {}
-    }
+    sheet.appendRow([
+      new Date(),
+      nome,
+      telefone,
+      "'" + digitos, // apóstrofo força texto: preserva o zero à esquerda
+      String(p.email || '').trim(),
+      String(p.endereco || '').trim(),
+      String(p.nascimento || '').trim(),
+      String(p.origem || 'site')
+    ]);
+    // A chamada é um extra: se falhar, a inscrição já está gravada.
+    try { sincronizarPresencaDeep(ss, false); } catch (errPresenca) {}
 
     return json({ ok: true, duplicado: false });
   } catch (err) {
@@ -1155,10 +541,9 @@ function json(obj) {
 }
 
 /**
- * O site consulta por GET quais pratos do Sister estão abertos.
- * Com ?diag=1 devolve também uma conferência (só números, nenhum dado pessoal):
- * o que a aba de pratos mostra, a contagem feita linha por linha e o tamanho
- * da chamada do Deep.
+ * O site consulta por GET o que esta implantação já sabe gravar (aceitaTlc,
+ * aceitaInteresseDeep...). Com ?diag=1 devolve também contagens (só números,
+ * nenhum dado pessoal): inscritos do Deep, chamada, interessados e TLC.
  */
 function doGet(e) {
   try {
@@ -1166,38 +551,14 @@ function doGet(e) {
     var resposta = {
       ok: true,
       servico: 'inscricoes-igreja-vitoria',
-      pratos: pratosAbertos(ss),
-      sister: vagasSister(ss),
       deep: { aberto: !DEEP_FECHADO },
       // dizem ao site que esta implantação já sabe gravar cada coisa
       aceitaTestemunho: true,
-      aceitaCaravana: true,
-      aceitaAcompanhantes: true, // grava nome e CPF dos adultos acompanhantes
-      aceitaPassageiros: true,   // grava crianças com nome e a aba de passageiros
-      caravana: vagasCaravana(ss),
       aceitaSugestao: true,
-      aceitaInteresseDeep: true
+      aceitaInteresseDeep: true,
+      aceitaTlc: true
     };
     if (e && e.parameter && e.parameter.diag) {
-      var aba = abaPratos(ss);
-      var linhas = linhasDosPratos(aba);
-      var real = contagemReal(ss);
-      resposta.contagem = PRATOS.map(function (prato) {
-        if (!linhas[prato]) return { prato: prato, naPlanilha: 'linha não encontrada', contadoLinhaALinha: real[prato] };
-        var celula = aba.getRange(linhas[prato], 3);
-        return {
-          prato: prato,
-          naPlanilha: celula.getDisplayValue(),
-          contadoLinhaALinha: real[prato],
-          temFormula: String(celula.getFormula() || '') !== ''
-        };
-      });
-      resposta.contagemSister = inscritasSister(ss);
-      var checkin = ss.getSheetByName(ABA_CHECKIN_SISTER);
-      resposta.checkinSister = {
-        abaExiste: !!checkin,
-        naLista: checkin ? Math.max(checkin.getLastRow() - 2, 0) : 0
-      };
       var pres = ss.getSheetByName(ABA_PRESENCA_DEEP);
       var deep = ss.getSheetByName('Deep');
       resposta.deep = {
@@ -1206,18 +567,12 @@ function doGet(e) {
         abaPresencaExiste: !!pres,
         naChamada: pres ? Math.max(pres.getLastRow() - 2, 0) : 0
       };
-      var carav = ss.getSheetByName(ABA_CARAVANA);
-      resposta.caravanaDiag = {
-        abaExiste: !!carav,
-        reservas: carav ? Math.max(carav.getLastRow() - 2, 0) : 0,
-        poltronas: carav ? poltronasOcupadas(ss) : 0,
-        vagasNaPlanilha: carav ? limiteCaravana(ss) : 0,
-        passageiros: ss.getSheetByName(ABA_PASSAGEIROS) ? Math.max(ss.getSheetByName(ABA_PASSAGEIROS).getLastRow() - 2, 0) : 0
-      };
       var test = ss.getSheetByName(ABA_TESTEMUNHOS);
       resposta.testemunhos = test ? Math.max(test.getLastRow() - 1, 0) : 0;
       var espera = ss.getSheetByName(ABA_INTERESSE_DEEP);
       resposta.deep.interessados = espera ? Math.max(espera.getLastRow() - 1, 0) : 0;
+      var tlc = ss.getSheetByName(ABA_TLC);
+      resposta.tlc = { inscritos: tlc ? Math.max(tlc.getLastRow() - 1, 0) : 0 };
     }
     return json(resposta);
   } catch (err) {
