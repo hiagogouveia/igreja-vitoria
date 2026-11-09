@@ -18,11 +18,11 @@ export default function CavFold() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/assets/igreja-adorando.webp"
+        src="/assets/cav-familia.webp"
         alt=""
         aria-hidden="true"
         loading="lazy"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '60% 62%' }}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 44%' }}
       />
       <div style={{
         position: 'absolute', inset: 0,
