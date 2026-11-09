@@ -180,12 +180,16 @@ var TLC = {
        enviar a mensagem pelo WhatsApp. */
     function concluir(opts) {
       var primeiro = fNome.value.trim().split(/\s+/)[0];
-      document.getElementById('okNome').textContent = opts.viaZap ? 'Falta um passo, ' + primeiro : primeiro + ', você está dentro!';
-      document.getElementById('okTag').textContent = opts.viaZap ? 'Quase lá' : 'Inscrição confirmada';
+      document.getElementById('okNome').textContent = opts.viaZap ? 'Falta um passo, ' + primeiro
+        : opts.duplicado ? primeiro + ', você já está inscrito!'
+        : primeiro + ', você está dentro!';
+      document.getElementById('okTag').textContent = opts.viaZap ? 'Quase lá'
+        : opts.duplicado ? 'Inscrição já realizada'
+        : 'Inscrição confirmada';
       document.getElementById('okMsg').textContent = opts.viaZap
         ? 'Toque no botão abaixo para enviar seus dados pelo WhatsApp da igreja. Sua inscrição só é concluída depois dessa mensagem.'
         : (opts.duplicado
-            ? 'Você já tinha se inscrito com esse WhatsApp ou e-mail, então não fizemos uma nova inscrição. Envie seus dados pelo WhatsApp da igreja para ficar com o comprovante.'
+            ? 'Já existe uma inscrição no TLC com esse WhatsApp ou e-mail, então não fizemos outra. Sua vaga continua garantida. Se quiser, envie seus dados pelo WhatsApp da igreja como comprovante.'
             : 'Recebemos a sua inscrição no TLC. Agora envie seus dados pelo WhatsApp da igreja: a mensagem fica como o comprovante da sua inscrição.');
       // O botão aparece sempre: com a inscrição gravada, a mensagem é o comprovante;
       // sem a planilha, é por ela que a inscrição é concluída.
