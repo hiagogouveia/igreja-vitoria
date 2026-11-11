@@ -50,9 +50,21 @@ export type SiteEvent = {
   art?: SiteEventArt;
 };
 
+/**
+ * Fim das inscrições do TLC: 27/11/2026 às 00h (Campo Grande, UTC-4).
+ * Manter igual a TLC_ENCERRA_EM no Apps Script e TLC.encerraEm em public/tlc/script.js.
+ */
+export const tlcEncerraEm = '2026-11-27T00:00:00-04:00';
+export function tlcEncerrado(agora: Date = new Date()): boolean {
+  return agora.getTime() >= new Date(tlcEncerraEm).getTime();
+}
+
 /** Eventos curados que ainda estão no ar (os que têm `ate` somem sozinhos depois da data). */
 export function eventosAtuais(agora: Date = new Date()): SiteEvent[] {
-  return fallbackEvents.filter((e) => !e.ate || agora.getTime() < new Date(e.ate).getTime());
+  return fallbackEvents
+    .filter((e) => !e.ate || agora.getTime() < new Date(e.ate).getTime())
+    // passado o prazo, o cartão do TLC deixa de chamar para a inscrição
+    .map((e) => (e.id === 'tlc-lideres-cav' && tlcEncerrado(agora) ? { ...e, badge: 'Inscrições encerradas', cta: 'Saiba mais' } : e));
 }
 
 const FALLBACK_PHOTOS = ['/assets/worship-team.webp', '/assets/worship-arms.webp', '/assets/community-prayer.webp'];

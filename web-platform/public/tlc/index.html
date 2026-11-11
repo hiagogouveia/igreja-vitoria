@@ -44,7 +44,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 <header class="nav">
   <a class="nav-back" href="/">← Igreja Vitória</a>
   <a class="nav-mark" href="#top"><img src="/tlc/logo-tlc-bege.png" width="1000" height="413" alt="TLC, voltar ao topo"></a>
-  <a class="nav-cta" href="#inscricao">Inscreva-se</a>
+  <a class="nav-cta" data-cta href="#inscricao">Inscreva-se</a>
 </header>
 
 <!-- indicador de seção (desktop) -->
@@ -70,7 +70,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <p class="hero-lema rv">Pequenos grupos, <strong>grandes propósitos.</strong>
         <svg viewBox="0 0 300 14" aria-hidden="true" preserveAspectRatio="none"><path d="M3 9 C50 3 100 12 150 6 S250 10 297 4"/></svg>
       </p>
-      <div class="hero-cta rv">
+      <div class="hero-cta rv" data-cta>
         <svg class="seta-mao" viewBox="0 0 90 70" aria-hidden="true"><path d="M6 6 C-4 40 22 62 70 52"/><path d="M56 40 L72 52 L54 62"/></svg>
         <a class="btn" href="#inscricao"><span class="btn-chev" aria-hidden="true">&gt;</span>Quero me inscrever</a>
       </div>
@@ -185,10 +185,10 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 <section class="sec insc" id="inscricao" data-obs>
   <div class="wrap insc-grid">
     <div class="insc-txt">
-      <p class="tag rv">06 · Inscrição</p>
-      <h2 class="h2 rv">Seu próximo passo <em>começa aqui.</em></h2>
-      <p class="corpo rv">Faça sua inscrição para o TLC e prepare-se para viver uma nova etapa de crescimento e desenvolvimento.</p>
-      <svg class="seta-form" viewBox="0 0 120 90" aria-hidden="true"><path d="M8 6 C-6 50 30 82 100 64"/><path d="M84 50 L102 64 L82 76"/></svg>
+      <p class="tag rv" id="inscTag">06 · Inscrição</p>
+      <h2 class="h2 rv" id="inscTitulo">Seu próximo passo <em>começa aqui.</em></h2>
+      <p class="corpo rv" id="inscTexto">Faça sua inscrição para o TLC e prepare-se para viver uma nova etapa de crescimento e desenvolvimento.</p>
+      <svg class="seta-form" data-cta viewBox="0 0 120 90" aria-hidden="true"><path d="M8 6 C-6 50 30 82 100 64"/><path d="M84 50 L102 64 L82 76"/></svg>
     </div>
 
     <div class="cartao rv">
@@ -249,6 +249,14 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
         <p class="ok-msg" id="okMsg"></p>
         <a class="btn btn-cheio" id="okZap" href="#" target="_blank" rel="noreferrer" hidden>Enviar minha inscrição pelo WhatsApp</a>
       </div>
+
+      <!-- inscrições encerradas (aparece sozinho depois de 27/11) -->
+      <div class="ok" id="encerradoCard" hidden>
+        <p class="ok-tag">Inscrições encerradas</p>
+        <h3 class="ok-nome">O prazo do TLC terminou.</h3>
+        <p class="ok-msg">As inscrições foram encerradas em 27 de novembro. Ficou com alguma dúvida ou quer saber da próxima turma? Fale com a igreja.</p>
+        <a class="btn btn-cheio" id="encerradoZap" href="#" target="_blank" rel="noreferrer">Falar com a igreja</a>
+      </div>
     </div>
   </div>
 </section>
@@ -257,7 +265,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 <section class="fecho" id="fecho">
   <p class="fecho-t rv">Pequenos grupos.<br><em>Grandes propósitos.</em></p>
   <p class="fecho-s rv">TLC — Igreja Vitória</p>
-  <a class="btn rv" href="#inscricao"><span class="btn-chev" aria-hidden="true">&gt;</span>Quero me inscrever</a>
+  <a class="btn rv" data-cta href="#inscricao"><span class="btn-chev" aria-hidden="true">&gt;</span>Quero me inscrever</a>
 </section>
 </main>
 
@@ -267,7 +275,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
 </footer>
 
 <!-- CTA fixo no celular -->
-<div class="sticky-cta" id="stickyCta"><a class="btn btn-cheio" href="#inscricao">Quero me inscrever</a></div>
+<div class="sticky-cta" id="stickyCta" data-cta><a class="btn btn-cheio" href="#inscricao">Quero me inscrever</a></div>
 
 <script src="/tlc/script.js" defer></script>
 </body>

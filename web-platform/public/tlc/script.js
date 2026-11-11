@@ -16,6 +16,10 @@ var TLC = {
     local: 'Igreja Vitória'
   },
   whatsapp: '5567998318450', // número oficial (src/lib/site-data.ts)
+  /* Fim das inscrições: 27/11/2026 às 00h (Campo Grande, UTC-4). Depois disso a
+     página mostra "encerradas" sozinha e o servidor (Apps Script) também recusa.
+     Manter igual a TLC_ENCERRA_EM no Apps Script e tlcEncerraEm no site-data.ts. */
+  encerraEm: '2026-11-27T00:00:00-04:00',
   /* Mesmo endpoint do Deep e da conferência (Apps Script → planilha).
      O site só grava lá se a implantação responder aceitaTlc:true; antes disso
      a inscrição vai por WhatsApp, para nunca cair na aba errada. */
@@ -114,12 +118,36 @@ var TLC = {
     var nota = document.getElementById('formNote');
     var okCard = document.getElementById('okCard');
 
+    /* ---------- inscrições encerradas ---------- */
+    var encerrado = false;
+    function passouPrazo() { return Date.now() >= new Date(TLC.encerraEm).getTime(); }
+    function encerrar() {
+      if (encerrado) return;
+      encerrado = true;
+      document.documentElement.classList.add('encerrado');
+      // setAttribute (e não .hidden) porque a seta é um SVG
+      document.querySelectorAll('[data-cta]').forEach(function (el) { el.setAttribute('hidden', ''); });
+      document.getElementById('inscTag').textContent = '06 · Inscrições';
+      document.getElementById('inscTitulo').innerHTML = 'Inscrições <em>encerradas.</em>';
+      document.getElementById('inscTexto').textContent = 'O prazo para se inscrever no TLC terminou.';
+      document.getElementById('encerradoZap').href = 'https://wa.me/' + TLC.whatsapp + '?text=' +
+        encodeURIComponent('Olá! Tenho uma dúvida sobre o TLC (Treinamento de Líderes de CAV).');
+      form.hidden = true;
+      okCard.hidden = true;
+      document.getElementById('encerradoCard').hidden = false;
+    }
+    if (passouPrazo()) encerrar();
+
     /* A planilha só é usada se a implantação do Apps Script já souber gravar o
-       TLC. Senão cairia na aba da conferência. */
+       TLC. Senão cairia na aba da conferência. O servidor também diz se o prazo
+       acabou (tlcAberto), e vale mais que o relógio do aparelho. */
     var planilha = false;
     var sondagem = TLC.inscricaoUrl
       ? fetch(TLC.inscricaoUrl).then(function (r) { return r.json(); })
-          .then(function (res) { planilha = !!(res && res.aceitaTlc); })
+          .then(function (res) {
+            planilha = !!(res && res.aceitaTlc);
+            if (res && res.tlcAberto === false) encerrar();
+          })
           .catch(function () { planilha = false; })
       : Promise.resolve();
 
@@ -204,6 +232,7 @@ var TLC = {
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (passouPrazo()) { encerrar(); return; }
       var ok = true;
       function req(el, cond, t) { setErr(el, cond ? '' : t); if (!cond && ok) { (el.focus || function () {}).call(el); ok = false; } }
       req(fNome, fNome.value.trim().length > 2, 'Informe seu nome completo.');
@@ -238,6 +267,7 @@ var TLC = {
         return fetch(TLC.inscricaoUrl, { method: 'POST', body: d })
           .then(function (r) { return r.json(); })
           .then(function (res) {
+            if (res && res.erro === 'tlc-encerrado') { enviando(false); encerrar(); return; }
             if (res && res.ok === false) throw new Error(res.erro || 'falha');
             enviando(false); concluir({ duplicado: !!(res && res.duplicado) });
           })

@@ -15,7 +15,8 @@
  *   O formulário de /tlc grava na aba "TLC": nome, telefone, e-mail, endereço,
  *   data de nascimento, sexo e se a pessoa quer ser anfitriã (abrir uma CAV na
  *   casa dela). A coluna Idade (H) é uma fórmula sobre a data de nascimento (G).
- *   Inscrição repetida (mesmo telefone ou mesmo e-mail) não grava de novo. A mesma pessoa (mesmo telefone) só entra uma vez.
+ *   Inscrição repetida (mesmo telefone ou mesmo e-mail) não grava de novo.
+ *   As inscrições fecham sozinhas em TLC_ENCERRA_EM (27/11/2026). A mesma pessoa (mesmo telefone) só entra uma vez.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
@@ -72,6 +73,14 @@ var COLUNAS_TLC = [
 ];
 var COL_NASC_TLC = 7;  // G: data de nascimento (data de verdade)
 var COL_IDADE_TLC = 8; // H: idade, calculada pela planilha a partir da coluna G
+
+/* Fim das inscrições do TLC: a partir deste instante o servidor recusa novas
+   inscrições (erro "tlc-encerrado"), sem precisar publicar nada no dia.
+   27/11/2026 às 00h, horário de Campo Grande (UTC-4). Para mudar o prazo,
+   troque a data aqui e em TLC.encerraEm (public/tlc/script.js) e
+   tlcEncerraEm (src/lib/site-data.ts). */
+var TLC_ENCERRA_EM = '2026-11-27T00:00:00-04:00';
+function tlcAberto() { return new Date().getTime() < new Date(TLC_ENCERRA_EM).getTime(); }
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
@@ -447,6 +456,10 @@ function doPost(e) {
       return json({ ok: true, duplicado: false });
     }
     if (destino === 'tlc') {
+      // Prazo conferido aqui, dentro do lock: vale mesmo que a página esteja aberta há dias.
+      if (!tlcAberto()) {
+        return json({ ok: false, erro: 'tlc-encerrado' });
+      }
       var inscritosTlc = abaTlc(ss);
       // Repetida = mesmo telefone OU mesmo e-mail já na aba.
       if (jaInscritoTlc(inscritosTlc, digitos, p.email)) {
@@ -575,7 +588,8 @@ function doGet(e) {
       aceitaTestemunho: true,
       aceitaSugestao: true,
       aceitaInteresseDeep: true,
-      aceitaTlc: true
+      aceitaTlc: true,
+      tlcAberto: tlcAberto()
     };
     if (e && e.parameter && e.parameter.diag) {
       var pres = ss.getSheetByName(ABA_PRESENCA_DEEP);
@@ -591,7 +605,7 @@ function doGet(e) {
       var espera = ss.getSheetByName(ABA_INTERESSE_DEEP);
       resposta.deep.interessados = espera ? Math.max(espera.getLastRow() - 1, 0) : 0;
       var tlc = ss.getSheetByName(ABA_TLC);
-      resposta.tlc = { inscritos: tlc ? Math.max(tlc.getLastRow() - 1, 0) : 0 };
+      resposta.tlc = { aberto: tlcAberto(), encerraEm: TLC_ENCERRA_EM, inscritos: tlc ? Math.max(tlc.getLastRow() - 1, 0) : 0 };
     }
     return json(resposta);
   } catch (err) {
