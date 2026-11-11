@@ -116,9 +116,10 @@ main{overflow-x:clip}
 .hero::before{display:none;content:"";position:absolute;top:0;left:0;width:min(42vw,330px);height:min(30vw,220px);
   background:linear-gradient(135deg,rgba(245,243,239,.55),rgba(245,243,239,.08) 70%,transparent);
   clip-path:polygon(0 0,100% 0,82% 14%,90% 30%,66% 44%,72% 60%,44% 74%,48% 88%,0 100%);opacity:.5;pointer-events:none}
-.hero-apr{display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto 22px}
-.hero-apr span{flex:1;height:1px;background:var(--papel);opacity:.6}
-.hero-apr b{font-size:clamp(11px,1.5vw,15px);font-weight:500;letter-spacing:.42em;text-transform:uppercase;white-space:nowrap}
+.hero-marca{display:flex;align-items:center;justify-content:center;gap:12px;width:max-content;margin:0 auto 24px}
+/* o V oficial é preto: o filtro deixa branco, como no menu do site */
+.hero-marca img{height:clamp(34px,5vw,48px);width:auto;filter:brightness(0) invert(1)}
+.hero-marca span{font-family:var(--largo);font-weight:600;font-size:clamp(12px,1.7vw,16px);line-height:1.15;letter-spacing:.28em;text-transform:uppercase;color:var(--papel)}
 .hero-grid{display:grid;gap:28px;max-width:1240px;margin:0 auto}
 .logo{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px);margin:0 0 clamp(14px,2.2vw,26px)}
 /* logotipo oficial: letras TLC em bege (PNG transparente) + o nome ao lado, como nas artes */
