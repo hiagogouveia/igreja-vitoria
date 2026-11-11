@@ -5,7 +5,7 @@ import { wrap } from '@/lib/site-ui';
  * da hero da home. Sem a classe "reveal" de propósito: ele precisa estar
  * visível desde a abertura, sem depender da rolagem. A hero foi encurtada
  * para o topo deste bloco já aparecer na primeira tela.
- * Visual da campanha /tlc: preto, laranja e foto em preto e branco.
+ * Identidade oficial do TLC: azul, logo em bege e foto com tratamento azulado.
  */
 export default function TlcFold() {
   return (
@@ -19,7 +19,7 @@ export default function TlcFold() {
           <span className="tlc-texto">
             <span className="tlc-selo">Inscrições abertas</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="tlc-marca" src="/tlc/logo-tlc-claro.png" alt="TLC" width={1200} height={324} decoding="async" />
+            <img className="tlc-marca" src="/tlc/logo-tlc-bege.png" alt="TLC" width={1000} height={413} decoding="async" />
             <strong id="tlc-fold-titulo" className="tlc-titulo">Treinamento de Líderes de CAV</strong>
             <span className="tlc-faixa">Acolhimento e expansão</span>
             <span className="tlc-info">Início 19 de novembro · 19h30 · Igreja Vitória</span>
