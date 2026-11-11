@@ -199,7 +199,7 @@ var TLC = {
         '• WhatsApp: ' + fZap.value.trim(),
         '• E-mail: ' + fEmail.value.trim(),
         '• Endereço: ' + fEndereco.value.trim(),
-        '• Quer ser anfitrião (CAV na minha casa): ' + anfitriao()
+        '• Anfitrião (CAV na minha casa): ' + anfitriao()
       ].join('\n');
     }
     function linkZap(feita) { return 'https://wa.me/' + TLC.whatsapp + '?text=' + encodeURIComponent(textoZap(feita)); }
