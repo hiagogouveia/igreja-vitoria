@@ -293,9 +293,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .tlc-fold-in { transform: translateY(-20px); margin-bottom: -20px; }
 .tlc-card {
   display: grid; grid-template-columns: 1fr; overflow: hidden; text-decoration: none; color: #FFFFFF;
-  background:
-    linear-gradient(90deg,rgba(255,255,255,.035) 0 8%,transparent 8% 18%,rgba(0,0,0,.10) 18% 28%,rgba(255,255,255,.04) 28% 34%,transparent 34% 48%,rgba(0,0,0,.08) 48% 58%,rgba(255,255,255,.035) 58% 64%,transparent 64% 78%,rgba(0,0,0,.10) 78% 88%,transparent 88%),
-    linear-gradient(180deg,#0E4598 0%,#0A3477 55%,#062454 100%);
+  background: url('/tlc/img/fundo.webp') center / cover no-repeat #0A3477;
   border: 1px solid rgba(140,192,242,.55); border-radius: 20px;
   box-shadow: 0 24px 60px rgba(2,12,32,.55);
   transition: transform .3s var(--ease), box-shadow .3s var(--ease);

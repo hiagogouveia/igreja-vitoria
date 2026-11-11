@@ -15,9 +15,8 @@
   --claro:#8CC0F2;      /* azul claro: detalhes e destaques */
   --cinza:#8AA3C7;
   --cinza-c:#D3E1F3;
-  /* faixas verticais em tons de azul, como nas artes oficiais */
-  --listras:linear-gradient(90deg,rgba(255,255,255,.035) 0 6%,transparent 6% 14%,rgba(0,0,0,.10) 14% 22%,rgba(255,255,255,.03) 22% 27%,transparent 27% 38%,rgba(0,0,0,.08) 38% 47%,rgba(255,255,255,.045) 47% 52%,transparent 52% 63%,rgba(0,0,0,.10) 63% 71%,rgba(255,255,255,.035) 71% 78%,transparent 78% 88%,rgba(0,0,0,.08) 88% 100%);
-  --fundo-azul:var(--listras),linear-gradient(180deg,#0E4598 0%,#0A3477 55%,#062454 100%);
+  /* fundo oficial: faixas verticais largas em tons de azul (imagem da identidade) */
+  --fundo-azul:url("/tlc/img/fundo.webp") center/cover no-repeat #0A3477;
   --display:'Anton','Archivo',Impact,sans-serif;
   --largo:'Montserrat','Space Grotesk',sans-serif;
   --corpo:'Space Grotesk',system-ui,-apple-system,sans-serif;
@@ -112,7 +111,6 @@ main{overflow-x:clip}
    ============================================================ */
 .hero{position:relative;min-height:100svh;padding:96px var(--pad) 56px;overflow:hidden;
   background:
-   radial-gradient(60% 45% at 85% 8%,rgba(140,192,242,.22),transparent 70%),
    var(--fundo-azul)}
 /* rasgo claro no canto, como as bordas rasgadas da referência */
 .hero::before{display:none;content:"";position:absolute;top:0;left:0;width:min(42vw,330px);height:min(30vw,220px);
@@ -286,7 +284,7 @@ main{overflow-x:clip}
    07 · INSCRIÇÃO
    ============================================================ */
 .insc{background:var(--preto);
-  background-image:radial-gradient(60% 50% at 90% 10%,rgba(140,192,242,.18),transparent 70%),var(--listras)}
+  background-image:radial-gradient(60% 50% at 90% 10%,rgba(140,192,242,.16),transparent 70%)}
 .insc-grid{display:grid;gap:36px;align-items:start}
 .insc-txt{position:relative}
 .seta-form{display:none;width:110px;fill:none;stroke:var(--papel);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
@@ -356,6 +354,9 @@ main{overflow-x:clip}
   background:linear-gradient(0deg,rgba(6,31,74,.96) 60%,rgba(6,31,74,0));transform:translateY(120%);transition:transform .35s var(--ease)}
 .sticky-cta.on{transform:none}
 @media(min-width:900px){.sticky-cta{display:none}.foot{padding-bottom:26px}}
+
+/* no celular a imagem é cortada nas laterais: mostra a parte com mais variação de tons */
+@media(max-width:899px){.hero,.quem,.fecho{background-position:68% center}}
 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
