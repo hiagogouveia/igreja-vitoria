@@ -16,7 +16,11 @@
  *   data de nascimento, sexo e se a pessoa quer ser anfitriã (abrir uma CAV na
  *   casa dela). A coluna Idade (H) é uma fórmula sobre a data de nascimento (G).
  *   Inscrição repetida (mesmo telefone ou mesmo e-mail) não grava de novo.
- *   As inscrições fecham sozinhas em TLC_ENCERRA_EM (27/11/2026). A mesma pessoa (mesmo telefone) só entra uma vez.
+ *   As inscrições fecham sozinhas em TLC_ENCERRA_EM (27/11/2026).
+ *   CHAMADA: a aba "TLC · Presença" tem os inscritos em ordem alfabética, uma
+ *   caixinha por aula (12), o total de presenças e a frequência de cada um.
+ *   Cada nova inscrição entra nela sozinha. Para criar a aba ou puxar quem
+ *   falta, rode criarPresencaTlc pelo editor.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
@@ -81,6 +85,12 @@ var COL_IDADE_TLC = 8; // H: idade, calculada pela planilha a partir da coluna G
    tlcEncerraEm (src/lib/site-data.ts). */
 var TLC_ENCERRA_EM = '2026-11-27T00:00:00-04:00';
 function tlcAberto() { return new Date().getTime() < new Date(TLC_ENCERRA_EM).getTime(); }
+
+/* Chamada do TLC: 12 aulas, começando em 19/11/2026. Só a primeira data é
+   conhecida; as demais ficam como "Aula N" e podem ser escritas à mão no
+   cabeçalho da aba "TLC · Presença" (o código nunca reescreve o cabeçalho). */
+var ABA_PRESENCA_TLC = 'TLC · Presença';
+var AULAS_TLC = ['19/11', '', '', '', '', '', '', '', '', '', '', ''];
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
@@ -379,6 +389,139 @@ function abaTlc(ss) {
   return sheet;
 }
 
+/**
+ * Chamada do TLC. Colunas: Nome, Telefone, uma caixinha por aula, total de
+ * presenças da pessoa e frequência (presenças ÷ aulas). A linha 2 soma os
+ * presentes de cada aula. As fórmulas usam ROW(), então continuam certas se a
+ * aba for ordenada, e não dependem do idioma da planilha.
+ */
+function abaPresencaTlc(ss) {
+  var sheet = ss.getSheetByName(ABA_PRESENCA_TLC);
+  if (sheet) return sheet;
+
+  sheet = ss.insertSheet(ABA_PRESENCA_TLC, ss.getSheets().length);
+  var cab = ['Nome', 'Telefone'];
+  AULAS_TLC.forEach(function (data, i) { cab.push('Aula ' + (i + 1) + (data ? '\n' + data : '')); });
+  cab.push('Presenças', 'Frequência');
+  sheet.getRange(1, 1, 1, cab.length).setValues([cab])
+    .setFontWeight('bold').setHorizontalAlignment('center').setWrap(true);
+
+  sheet.getRange(2, 1).setValue('Presentes na aula');
+  for (var c = 3; c < 3 + AULAS_TLC.length; c++) {
+    var letra = sheet.getRange(1, c).getA1Notation().replace(/\d+/g, '');
+    sheet.getRange(2, c).setFormula('=SUMPRODUCT(' + letra + '3:' + letra + '*1)');
+  }
+  sheet.getRange(2, 1, 1, cab.length).setFontWeight('bold').setBackground('#E7EEF9');
+  sheet.getRange(2, 3, 1, AULAS_TLC.length + 2).setHorizontalAlignment('center');
+
+  sheet.setFrozenRows(2);
+  sheet.setFrozenColumns(1);
+  sheet.setColumnWidth(1, 260);
+  sheet.setColumnWidth(2, 130);
+  for (var k = 3; k <= cab.length; k++) sheet.setColumnWidth(k, 85);
+  return sheet;
+}
+
+/** Letra da coluna do número `col` (1 = A). */
+function letraColuna(col) {
+  var s = '';
+  while (col > 0) { var m = (col - 1) % 26; s = String.fromCharCode(65 + m) + s; col = Math.floor((col - 1) / 26); }
+  return s;
+}
+
+/** Põe as fórmulas de "Presenças" e "Frequência" nas linhas que estiverem sem elas. */
+function garantirTotaisPresencaTlc(pres) {
+  var colTotal = 3 + AULAS_TLC.length;
+  var colFreq = colTotal + 1;
+  var ultima = pres.getLastRow();
+  if (ultima < 3) return;
+  var letraFim = letraColuna(colTotal - 1);
+  var letraTotal = letraColuna(colTotal);
+  var fTotal = '=SUMPRODUCT(INDIRECT("C"&ROW()&":' + letraFim + '"&ROW())*1)';
+  var fFreq = '=INDIRECT("' + letraTotal + '"&ROW())/' + AULAS_TLC.length;
+  var totais = pres.getRange(3, colTotal, ultima - 2, 1).getFormulas();
+  var freqs = pres.getRange(3, colFreq, ultima - 2, 1).getFormulas();
+  for (var i = 0; i < totais.length; i++) {
+    if (!totais[i][0]) pres.getRange(3 + i, colTotal).setFormula(fTotal).setHorizontalAlignment('center');
+    if (!freqs[i][0]) pres.getRange(3 + i, colFreq).setFormula(fFreq).setNumberFormat('0%').setHorizontalAlignment('center');
+  }
+}
+
+/**
+ * Acrescenta no fim da chamada quem está inscrito no TLC e ainda não está
+ * nela, sem mexer nas caixinhas já marcadas. Compara pelo telefone (a mesma
+ * chave que barra inscrição repetida). Com `ordenar`, reordena por nome; a
+ * inscrição automática não ordena, para as linhas não mudarem de lugar
+ * enquanto alguém marca a presença. Devolve quantas pessoas entraram.
+ */
+function sincronizarPresencaTlc(ss, ordenar) {
+  var tlc = abaTlc(ss);
+  var pres = abaPresencaTlc(ss);
+  var ultimaTlc = tlc.getLastRow();
+  if (ultimaTlc < 2) return 0;
+
+  var inscritos = tlc.getRange(2, 2, ultimaTlc - 1, 3).getValues(); // Nome, Telefone, Telefone (só dígitos)
+  var nomePorTelefone = {};
+  inscritos.forEach(function (r) {
+    var digitos = String(r[2]).replace(/\D/g, '');
+    if (digitos && String(r[0]).trim()) nomePorTelefone[digitos] = nomeBonito(r[0]);
+  });
+
+  // A aba TLC é a fonte: nome corrigido lá é corrigido aqui também.
+  var jaNaChamada = {};
+  var ultimaPres = pres.getLastRow();
+  if (ultimaPres >= 3) {
+    var linhas = pres.getRange(3, 1, ultimaPres - 2, 2).getDisplayValues();
+    var nomes = linhas.map(function (r) { return [r[0]]; });
+    var mudou = false;
+    linhas.forEach(function (r, i) {
+      var digitos = String(r[1]).replace(/\D/g, '');
+      jaNaChamada[digitos] = true;
+      var certo = nomePorTelefone[digitos];
+      if (certo && certo !== r[0]) { nomes[i][0] = certo; mudou = true; }
+    });
+    if (mudou) pres.getRange(3, 1, nomes.length, 1).setValues(nomes);
+  }
+
+  var novos = [];
+  inscritos.forEach(function (r) {
+    var nome = String(r[0]).trim();
+    var digitos = String(r[2]).replace(/\D/g, '');
+    if (!nome || !digitos || jaNaChamada[digitos]) return;
+    if (nome.toUpperCase().indexOf('TESTE') === 0) return;
+    jaNaChamada[digitos] = true;
+    novos.push([nomeBonito(nome), String(r[1]).trim()]);
+  });
+
+  if (novos.length) {
+    var inicio = Math.max(ultimaPres, 2) + 1;
+    pres.getRange(inicio, 1, novos.length, 2).setValues(novos);
+    pres.getRange(inicio, 3, novos.length, AULAS_TLC.length).insertCheckboxes().setHorizontalAlignment('center');
+  }
+  garantirTotaisPresencaTlc(pres);
+  if (ordenar) ordenarPresencaTlc(pres);
+  return novos.length;
+}
+
+/** Ordena por nome levando a linha inteira, inclusive colunas acrescentadas à mão. */
+function ordenarPresencaTlc(pres) {
+  var total = pres.getLastRow() - 2;
+  if (total < 2) return;
+  var largura = Math.max(pres.getLastColumn(), 3 + AULAS_TLC.length + 1);
+  pres.getRange(3, 1, total, largura).sort({ column: 1, ascending: true });
+}
+
+/**
+ * Uso manual, pelo editor (Executar): cria a chamada do TLC ou puxa quem
+ * falta, e deixa tudo em ordem alfabética. Pode rodar quantas vezes quiser.
+ */
+function criarPresencaTlc() {
+  var ss = abrirPlanilha();
+  var entraram = sincronizarPresencaTlc(ss, true);
+  Logger.log('TLC · Presença → ' + entraram + ' pessoa(s) acrescentada(s). Total na chamada: ' +
+    (abaPresencaTlc(ss).getLastRow() - 2));
+}
+
 /** Aba dos testemunhos, criada no primeiro envio. */
 function abaTestemunhos(ss) {
   var sheet = ss.getSheetByName(ABA_TESTEMUNHOS);
@@ -485,6 +628,8 @@ function doPost(e) {
       inscritosTlc.getRange(linhaTlc, COL_NASC_TLC).setNumberFormat('dd/MM/yyyy');
       // Idade sempre em dia: a planilha recalcula sozinha todo ano/dia.
       try { escreverIdadeTlc(inscritosTlc, linhaTlc); } catch (errIdade) {}
+      // A chamada é um extra: se falhar, a inscrição já está gravada.
+      try { sincronizarPresencaTlc(ss, false); } catch (errPresencaTlc) {}
       return json({ ok: true, duplicado: false });
     }
     // Só o Deep chega até aqui; qualquer outro destino é recusado, para nunca
@@ -605,7 +750,9 @@ function doGet(e) {
       var espera = ss.getSheetByName(ABA_INTERESSE_DEEP);
       resposta.deep.interessados = espera ? Math.max(espera.getLastRow() - 1, 0) : 0;
       var tlc = ss.getSheetByName(ABA_TLC);
-      resposta.tlc = { aberto: tlcAberto(), encerraEm: TLC_ENCERRA_EM, inscritos: tlc ? Math.max(tlc.getLastRow() - 1, 0) : 0 };
+      var presTlc = ss.getSheetByName(ABA_PRESENCA_TLC);
+      resposta.tlc = { aberto: tlcAberto(), encerraEm: TLC_ENCERRA_EM, inscritos: tlc ? Math.max(tlc.getLastRow() - 1, 0) : 0,
+        abaPresencaExiste: !!presTlc, naChamada: presTlc ? Math.max(presTlc.getLastRow() - 2, 0) : 0 };
     }
     return json(resposta);
   } catch (err) {
