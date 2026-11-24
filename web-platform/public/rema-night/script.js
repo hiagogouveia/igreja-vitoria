@@ -10,7 +10,7 @@
 var RN = {
   nome: 'Rema Night',          // nome do evento
   data: '05 de dezembro',       // dados do convite oficial
-  horario: '19h30',
+  horario: '20h',
   local: 'Igreja Vitória',
   traje: '',                    // ex.: 'Esporte fino' (vazio = linha some)
 
