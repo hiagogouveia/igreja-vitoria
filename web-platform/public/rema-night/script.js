@@ -12,7 +12,7 @@ var RN = {
   data: '05 de dezembro',       // dados do convite oficial
   horario: '20h',
   local: 'Igreja Vitória',
-  traje: '',                    // ex.: 'Esporte fino' (vazio = linha some)
+  traje: 'Formal',              // dress code (vazio = linha some)
 
   /* Times da igreja (lista oficial passada pela liderança). Para mudar, edite
      aqui; a ordem é a da tela. A pessoa pode marcar mais de um. */
