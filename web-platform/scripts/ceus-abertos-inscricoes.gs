@@ -27,6 +27,8 @@
  *   Inscrição com nome, telefone e time(s). Cada pessoa recebe um comprovante
  *   (RN-001...) para enviar no WhatsApp da igreja; a coluna "Confirmou no
  *   WhatsApp" é marcada pela equipe. Mesmo telefone não entra duas vezes.
+ *   PAGAMENTO: ingresso de R$ 35 por Pix; colunas Valor (J), Pago (K, caixinha)
+ *   e Obs. (L) no fim da aba. A presença mostra o "Pago" e o total de pagos.
  *   Fecha sozinha em REMA_NIGHT_ENCERRA_EM (04/12/2026, 22h). PRESENÇA: a aba
  *   "Rema Night · Presença" recebe cada inscrito na hora; para criar ou puxar
  *   quem falta, rode criarPresencaRemaNight pelo editor.
@@ -114,10 +116,16 @@ var REMA_NIGHT_ENCERRA_EM = '2026-12-04T22:00:00-04:00';
 function remaNightAberto() { return new Date().getTime() < new Date(REMA_NIGHT_ENCERRA_EM).getTime(); }
 var COLUNAS_REMA_NIGHT = [
   'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'Time(s)', 'Comprovante',
-  'Consentimento LGPD', 'Confirmou no WhatsApp', 'Origem'
+  'Consentimento LGPD', 'Confirmou no WhatsApp', 'Origem',
+  // colunas novas entram no FIM: as linhas já gravadas continuam alinhadas
+  'Valor (R$)', 'Pago', 'Obs.'
 ];
 var COL_CODIGO_RN = 6;
 var COL_CONFIRMOU_RN = 8;
+var COL_VALOR_RN = 10;   // J
+var COL_PAGO_RN = 11;    // K: caixinha que a equipe marca quando o Pix cai
+var COL_OBS_RN = 12;     // L: texto livre da equipe
+var VALOR_REMA_NIGHT = 35;
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
@@ -559,7 +567,47 @@ function abaRemaNight(ss) {
     sheet.setColumnWidth(COL_CONFIRMOU_RN, 150);
   }
   garantirCabecalho(sheet, COLUNAS_REMA_NIGHT);
+  garantirPagamentoRn(sheet);
   return sheet;
+}
+
+/**
+ * Colunas de pagamento: valor (R$ 35), caixinha "Pago" e "Obs.". Completa as
+ * linhas que ainda não têm (inclusive as gravadas antes destas colunas
+ * existirem), sem mexer no que a equipe já marcou ou escreveu.
+ */
+function garantirPagamentoRn(sheet) {
+  var ultima = sheet.getLastRow();
+  if (sheet.getColumnWidth(COL_OBS_RN) < 200) {
+    sheet.setColumnWidth(COL_VALOR_RN, 90);
+    sheet.setColumnWidth(COL_PAGO_RN, 70);
+    sheet.setColumnWidth(COL_OBS_RN, 320);
+  }
+  if (ultima < 2) return;
+  var n = ultima - 1;
+  var valores = sheet.getRange(2, COL_VALOR_RN, n, 1).getValues();
+  var faltaValor = false;
+  for (var i = 0; i < n; i++) {
+    if (valores[i][0] === '' || valores[i][0] === null) { valores[i][0] = VALOR_REMA_NIGHT; faltaValor = true; }
+  }
+  if (faltaValor) sheet.getRange(2, COL_VALOR_RN, n, 1).setValues(valores);
+  sheet.getRange(2, COL_VALOR_RN, n, 1).setNumberFormat('"R$" #,##0.00').setHorizontalAlignment('center');
+  // caixinha só onde ainda não há: não desmarca quem já foi marcado como pago
+  var regras = sheet.getRange(2, COL_PAGO_RN, n, 1).getDataValidations();
+  for (var j = 0; j < n; j++) {
+    if (!regras[j][0]) sheet.getRange(2 + j, COL_PAGO_RN).insertCheckboxes().setHorizontalAlignment('center');
+  }
+}
+
+/**
+ * Uso manual, pelo editor (Executar): acrescenta as colunas de pagamento nas
+ * inscrições que já existem e atualiza a lista de presença. Pode rodar de novo.
+ */
+function atualizarPagamentoRemaNight() {
+  var ss = abrirPlanilha();
+  abaRemaNight(ss);
+  var entraram = sincronizarPresencaRemaNight(ss, false);
+  Logger.log('Rema Night → colunas de pagamento conferidas; ' + entraram + ' pessoa(s) nova(s) na presença.');
 }
 
 /**
@@ -570,7 +618,7 @@ function abaRemaNight(ss) {
  */
 function abaPresencaRemaNight(ss) {
   var sheet = ss.getSheetByName(ABA_PRESENCA_RN);
-  if (sheet) return sheet;
+  if (sheet) { garantirColunaPagoPresencaRn(sheet); return sheet; }
   sheet = ss.insertSheet(ABA_PRESENCA_RN, ss.getSheets().length);
   var cab = ['Presente', 'Nome', 'Telefone', 'Time(s)', 'Comprovante', 'Confirmou no WhatsApp'];
   sheet.getRange(1, 1, 1, cab.length).setValues([cab]).setFontWeight('bold').setHorizontalAlignment('center');
@@ -585,7 +633,35 @@ function abaPresencaRemaNight(ss) {
   sheet.setColumnWidth(4, 260);
   sheet.setColumnWidth(5, 110);
   sheet.setColumnWidth(6, 170);
+  garantirColunaPagoPresencaRn(sheet);
   return sheet;
+}
+
+/** Fórmula que traz o "Pago" da aba de inscrições pelo comprovante. */
+function formulaPagoRn(sep) {
+  var aba = "'" + ABA_REMA_NIGHT + "'!";
+  var achou = 'INDEX(' + aba + 'K:K' + sep + 'MATCH(INDIRECT("E"&ROW())' + sep + aba + 'F:F' + sep + '0))';
+  return '=IFERROR(IF(' + achou + sep + '"Sim"' + sep + '"Não")' + sep + '"")';
+}
+
+/** Coluna G "Pago" na presença (criada se faltar) e o total de pagos em G2. */
+function garantirColunaPagoPresencaRn(pres) {
+  if (String(pres.getRange(1, 7).getValue()).trim() === '') {
+    pres.getRange(1, 7).setValue('Pago').setFontWeight('bold').setHorizontalAlignment('center');
+    pres.setColumnWidth(7, 90);
+    escreverFormulaLocal(pres.getRange(2, 7), function (sep) { return '=COUNTIF(G3:G' + sep + '"Sim")&" pagos"'; });
+    pres.getRange(2, 7).setFontWeight('bold').setBackground('#EDEDED').setHorizontalAlignment('center');
+  }
+  var ultima = pres.getLastRow();
+  if (ultima < 3) return;
+  var atuais = pres.getRange(3, 7, ultima - 2, 1).getFormulas();
+  var sep = null;
+  for (var i = 0; i < atuais.length; i++) {
+    if (atuais[i][0]) continue;
+    if (!sep) { sep = escreverFormulaLocal(pres.getRange(3 + i, 7), formulaPagoRn) || ','; }
+    else pres.getRange(3 + i, 7).setFormula(formulaPagoRn(sep));
+    pres.getRange(3 + i, 7).setHorizontalAlignment('center');
+  }
 }
 
 /** Fórmula que traz o "Confirmou no WhatsApp" da aba de inscrições pelo comprovante. */
@@ -628,6 +704,7 @@ function sincronizarPresencaRemaNight(ss, ordenar) {
     for (var i = 1; i < novos.length; i++) pres.getRange(inicio + i, 6).setFormula(formulaConfirmouRn(sep));
     pres.getRange(inicio, 6, novos.length, 1).setHorizontalAlignment('center');
   }
+  garantirColunaPagoPresencaRn(pres);
   if (ordenar && pres.getLastRow() - 2 >= 2) {
     pres.getRange(3, 1, pres.getLastRow() - 2, Math.max(pres.getLastColumn(), 6)).sort({ column: 2, ascending: true });
   }
@@ -790,10 +867,18 @@ function doPost(e) {
         codigo,
         'Sim',
         false,
-        String(p.origem || 'site')
+        String(p.origem || 'site'),
+        VALOR_REMA_NIGHT,
+        false,
+        ''
       ]);
-      // caixinha para a equipe marcar quem já mandou o comprovante no WhatsApp
-      try { sn.getRange(sn.getLastRow(), COL_CONFIRMOU_RN).insertCheckboxes(); } catch (errCaixa) {}
+      // caixinhas para a equipe: comprovante no WhatsApp e pagamento conferido
+      try {
+        var lin = sn.getLastRow();
+        sn.getRange(lin, COL_CONFIRMOU_RN).insertCheckboxes();
+        sn.getRange(lin, COL_PAGO_RN).insertCheckboxes().setHorizontalAlignment('center');
+        sn.getRange(lin, COL_VALOR_RN).setNumberFormat('"R$" #,##0.00').setHorizontalAlignment('center');
+      } catch (errCaixa) {}
       // A lista de presença é um extra: se falhar, a inscrição já está gravada.
       try { sincronizarPresencaRemaNight(ss, false); } catch (errPresSn) {}
       return json({ ok: true, duplicado: false, codigo: codigo });
