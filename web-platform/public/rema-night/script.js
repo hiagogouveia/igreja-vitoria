@@ -12,6 +12,8 @@ var RN = {
   data: '05 de dezembro',       // dados do convite oficial
   horario: '20h',
   local: 'Igreja Vitória',
+  valor: 'R$ 35',                // ingresso por pessoa (vazio = some da página)
+  pixCnpj: '60.753.546/0001-45', // chave Pix: CNPJ da igreja (o botão copia só os números)
   traje: 'Gala',                // dress code (vazio = linha some)
 
   /* Times da igreja (lista oficial passada pela liderança). Para mudar, edite
@@ -67,6 +69,29 @@ var RN = {
       linhaData.textContent = pedacos.join(' · ');
       linhaData.hidden = !pedacos.length;
     }
+
+    /* ---------- Pix: mostrar a chave e copiar com um toque ---------- */
+    document.querySelectorAll('[data-pix-chave]').forEach(function (el) { el.textContent = RN.pixCnpj; });
+    document.querySelectorAll('[data-pix]').forEach(function (bt) {
+      bt.addEventListener('click', function () {
+        var chave = RN.pixCnpj.replace(/\D/g, '');
+        var rot = bt.querySelector('span') || bt;
+        var feito = function () {
+          rot.textContent = 'Chave copiada';
+          bt.classList.add('ok');
+          setTimeout(function () { rot.textContent = 'Copiar chave Pix'; bt.classList.remove('ok'); }, 2400);
+        };
+        var manual = function () {
+          var ta = document.createElement('textarea');
+          ta.value = chave; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); feito(); } catch (e) { rot.textContent = chave; }
+          ta.remove();
+        };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(chave).then(feito).catch(manual);
+        else manual();
+      });
+    });
 
     /* ---------- revelar ao rolar ---------- */
     var rvs = document.querySelectorAll('.rv');
@@ -191,10 +216,13 @@ var RN = {
         '• Nome: ' + dados.nome,
         '• Telefone: ' + dados.telefone,
         '• Time: ' + dados.times.join(', '),
-        '• Comprovante: ' + dados.codigo,
+        '• Comprovante da inscrição: ' + dados.codigo,
+        '• Ingresso: ' + RN.valor + ' pago via Pix (segue o comprovante do pagamento)',
         '• Evento: ' + [RN.data, RN.horario, RN.local].filter(Boolean).join(' · ') + (RN.traje ? ' · Dress code ' + RN.traje.toLowerCase() : ''),
         '',
-        'Quero confirmar minha presença.'
+        'Quero confirmar minha presença.',
+        '',
+        '(Anexe aqui o comprovante do Pix.)'
       ].join('\n');
     }
 
@@ -208,8 +236,8 @@ var RN = {
       dress.hidden = !RN.traje;
       if (RN.traje) { dress.textContent = 'Dress code'; var b = document.createElement('b'); b.textContent = RN.traje; dress.appendChild(b); }
       document.getElementById('cpFalta').innerHTML = opts.duplicado
-        ? '<strong>Sua inscrição já existia</strong> com esse telefone. Se ainda não enviou o comprovante, envie agora pelo WhatsApp: é isso que confirma sua presença.'
-        : '<strong>Falta um passo:</strong> envie o comprovante para o WhatsApp da igreja. Sua presença só é confirmada depois dessa mensagem.';
+        ? '<strong>Sua inscrição já existia</strong> com esse telefone. Se ainda não enviou, pague o ingresso de ' + RN.valor + ' pelo Pix e mande o comprovante no WhatsApp: é isso que confirma sua presença.'
+        : '<strong>Falta um passo:</strong> pague o ingresso de ' + RN.valor + ' pelo Pix e envie o <strong>comprovante do pagamento</strong> junto com esta inscrição no WhatsApp da igreja. Sua presença só é confirmada depois dessa mensagem.';
       document.getElementById('cpZap').href = 'https://wa.me/' + RN.whatsapp + '?text=' + encodeURIComponent(textoZap());
       document.getElementById('inscTitulo').innerHTML = 'Que alegria ter <em class="cromo">você.</em>';
       document.getElementById('inscSub').textContent = 'Agora é só enviar o comprovante para o WhatsApp da igreja.';
@@ -325,7 +353,8 @@ var RN = {
         x.fillStyle = '#F5F5F5'; x.font = '600 28px Manrope, sans-serif';
         espacado('COMPROVANTE ' + dados.codigo, W / 2, 1195, 6);
         x.fillStyle = 'rgba(245,245,245,.62)'; x.font = '400 22px Manrope, sans-serif';
-        x.fillText('Envie para o WhatsApp da igreja ' + RN.whatsappVisivel, W / 2, 1245);
+        x.fillText('Ingresso ' + RN.valor + ' · Pix CNPJ ' + RN.pixCnpj, W / 2, 1238);
+        x.fillText('Envie o comprovante do Pix no WhatsApp da igreja ' + RN.whatsappVisivel, W / 2, 1270);
         function espacado(t, cx, y, gap) {
           var larg = 0, i; for (i = 0; i < t.length; i++) larg += x.measureText(t[i]).width + gap;
           var cur = cx - (larg - gap) / 2; x.textAlign = 'left';

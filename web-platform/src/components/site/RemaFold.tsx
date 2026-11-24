@@ -22,7 +22,7 @@ export default function RemaFold() {
             <span className="rema-selo">Inscrições abertas</span>
             <strong id="rema-fold-titulo" className="rema-titulo">Uma noite para quem faz acontecer</strong>
             <span className="rema-info">05 de dezembro · 20h · Igreja Vitória</span>
-            <span className="rema-info rema-info-2">Para quem serve nos times · Dress code gala</span>
+            <span className="rema-info rema-info-2">Ingresso R$ 35 · Dress code gala</span>
             <span className="rema-botao">Faça sua inscrição <span aria-hidden="true">→</span></span>
           </span>
         </a>

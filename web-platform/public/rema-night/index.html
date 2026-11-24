@@ -60,6 +60,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <div><dt>Local</dt><dd data-cfg="local"></dd></div>
       <div data-cfg-linha="traje"><dt>Dress code</dt><dd data-cfg="traje"></dd></div>
     </dl>
+    <p class="hero-valor ent" style="--d:1.95s" data-cfg-linha="valor">Ingresso <b data-cfg="valor"></b> por pessoa</p>
     <a class="btn ent" style="--d:2.05s" href="#inscricao" data-cta><span>Garantir minha inscrição</span></a>
   </div>
   <a class="hero-desce" href="#manifesto" aria-label="Rolar para o manifesto"><span></span></a>
@@ -98,6 +99,7 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
         <div><dt>Horário</dt><dd data-cfg="horario"></dd></div>
         <div><dt>Local</dt><dd data-cfg="local"></dd></div>
         <div data-cfg-linha="traje"><dt>Dress code</dt><dd data-cfg="traje"></dd></div>
+        <div data-cfg-linha="valor"><dt>Ingresso</dt><dd><span data-cfg="valor"></span> por pessoa · Pix</dd></div>
         <div><dt>Para quem</dt><dd>Quem serve em algum time da Igreja Vitória</dd></div>
       </dl>
     </div>
@@ -113,7 +115,8 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
       <p class="insc-sub rv" id="inscSub">Confirme sua presença. Será uma alegria celebrar esse momento com você.</p>
       <ol class="passos rv" aria-label="Como confirmar">
         <li><b>1</b><span>Preencha a inscrição aqui.</span></li>
-        <li><b>2</b><span>Envie o comprovante para o WhatsApp da igreja. <strong>É isso que confirma a sua presença.</strong></span></li>
+        <li><b>2</b><span>Pague o ingresso de <span data-cfg="valor"></span> pelo Pix (chave: CNPJ da igreja).</span></li>
+        <li><b>3</b><span>Envie o comprovante do pagamento junto com a inscrição no WhatsApp da igreja. <strong>É isso que confirma a sua presença.</strong></span></li>
       </ol>
     </div>
 
@@ -134,6 +137,14 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
           <div class="chips" id="listaTimes"></div>
           <span class="erro" data-err></span>
         </fieldset>
+        <div class="campo campo-pix">
+          <div class="pix" role="group" aria-label="Pagamento do ingresso por Pix">
+          <div class="pix-topo"><span class="pix-rot">Ingresso</span><span class="pix-valor" data-cfg="valor"></span></div>
+          <p class="pix-lab">Chave Pix · CNPJ da Igreja Vitória</p>
+          <p class="pix-chave" data-pix-chave></p>
+          <button class="btn pix-btn" type="button" data-pix><span>Copiar chave Pix</span></button>
+        </div>
+        </div>
         <div class="campo campo-lgpd" id="fLgpdBox">
           <label class="lgpd"><input type="checkbox" id="fLgpd"><span>Autorizo a Igreja Vitória a usar meu nome, telefone e time apenas para organizar a Rema Night e falar comigo sobre ela, conforme a LGPD. Os dados não são compartilhados com terceiros.</span></label>
           <span class="erro" data-err></span>
@@ -154,7 +165,13 @@ src="https://www.facebook.com/tr?id=2266189376864307&ev=PageView&noscript=1"
         <p class="cp-quando" id="cpQuando"></p>
         <p class="cp-dress" id="cpDress"></p>
         <p class="cp-falta" id="cpFalta"><strong>Falta um passo:</strong> envie o comprovante para o WhatsApp da igreja. Sua presença só é confirmada depois dessa mensagem.</p>
-        <a class="btn btn-cheio" id="cpZap" href="#" target="_blank" rel="noreferrer"><span>Enviar comprovante no WhatsApp</span></a>
+        <div class="pix" role="group" aria-label="Pagamento do ingresso por Pix">
+          <div class="pix-topo"><span class="pix-rot">Ingresso</span><span class="pix-valor" data-cfg="valor"></span></div>
+          <p class="pix-lab">Chave Pix · CNPJ da Igreja Vitória</p>
+          <p class="pix-chave" data-pix-chave></p>
+          <button class="btn pix-btn" type="button" data-pix><span>Copiar chave Pix</span></button>
+        </div>
+        <a class="btn btn-cheio" id="cpZap" href="#" target="_blank" rel="noreferrer"><span>Enviar comprovantes no WhatsApp</span></a>
         <button class="btn btn-linha" type="button" id="cpImg"><span>Salvar meu convite (imagem)</span></button>
         <p class="cp-num">WhatsApp da igreja: <a href="https://wa.me/5567998318450" target="_blank" rel="noreferrer">(67) 99831-8450</a></p>
       </div>
