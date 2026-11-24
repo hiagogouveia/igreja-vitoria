@@ -58,6 +58,16 @@ var RN = {
       document.querySelector('.nome').setAttribute('aria-label', RN.nome);
     }
 
+    // lockup do encerramento (como "ROCKET Gala"): 1ª palavra em versal, o resto na caligrafia
+    var lkA = document.querySelector('[data-lk="a"]'), lkB = document.querySelector('[data-lk="b"]');
+    if (lkA && lkB) { lkA.textContent = partes[0] || ''; lkB.textContent = partes.slice(1).join(' '); }
+    var linhaData = document.querySelector('[data-cfg-data-longa]');
+    if (linhaData) {
+      var pedacos = [RN.data, RN.horario, RN.local].filter(function (x) { return String(x || '').trim(); });
+      linhaData.textContent = pedacos.join(' · ');
+      linhaData.hidden = !pedacos.length;
+    }
+
     /* ---------- revelar ao rolar ---------- */
     var rvs = document.querySelectorAll('.rv');
     if ('IntersectionObserver' in window && !reduz) {
