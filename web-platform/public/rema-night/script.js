@@ -192,6 +192,7 @@ var RN = {
         '• Telefone: ' + dados.telefone,
         '• Time: ' + dados.times.join(', '),
         '• Comprovante: ' + dados.codigo,
+        '• Evento: ' + [RN.data, RN.horario, RN.local].filter(Boolean).join(' · ') + (RN.traje ? ' · Dress code ' + RN.traje.toLowerCase() : ''),
         '',
         'Quero confirmar minha presença.'
       ].join('\n');
@@ -202,6 +203,10 @@ var RN = {
       document.getElementById('cpQuem').textContent = dados.nome;
       document.getElementById('cpTimes').textContent = dados.times.join(' · ');
       document.getElementById('cpCod').textContent = dados.codigo;
+      document.getElementById('cpQuando').textContent = [RN.data, RN.horario, RN.local].filter(Boolean).join(' · ');
+      var dress = document.getElementById('cpDress');
+      dress.hidden = !RN.traje;
+      if (RN.traje) { dress.textContent = 'Dress code'; var b = document.createElement('b'); b.textContent = RN.traje; dress.appendChild(b); }
       document.getElementById('cpFalta').innerHTML = opts.duplicado
         ? '<strong>Sua inscrição já existia</strong> com esse telefone. Se ainda não enviou o comprovante, envie agora pelo WhatsApp: é isso que confirma sua presença.'
         : '<strong>Falta um passo:</strong> envie o comprovante para o WhatsApp da igreja. Sua presença só é confirmada depois dessa mensagem.';
@@ -299,17 +304,28 @@ var RN = {
         x.fillStyle = '#C8C8C8'; x.font = '500 28px "Cormorant Garamond", serif';
         espacado('UMA NOITE PARA QUEM FAZ ACONTECER', W / 2, 745, 8);
         x.fillStyle = 'rgba(200,200,200,.3)'; x.fillRect(W / 2 - 200, 790, 400, 1);
+        x.fillStyle = '#F5F5F5'; x.font = '500 26px Manrope, sans-serif';
+        espacado([RN.data, RN.horario, RN.local].filter(Boolean).join('  ·  ').toUpperCase(), W / 2, 845, 6);
+        if (RN.traje) {
+          // selo do dress code: faixa clara com texto escuro, bem visível
+          var dc = 'DRESS CODE  ·  ' + RN.traje.toUpperCase();
+          x.font = '600 26px Manrope, sans-serif';
+          var lw = 0; for (var q = 0; q < dc.length; q++) lw += x.measureText(dc[q]).width + 7;
+          lw += 56;
+          x.fillStyle = '#E9E9E5'; x.fillRect(W / 2 - lw / 2, 880, lw, 58);
+          x.fillStyle = '#0B0B0B'; espacado(dc, W / 2, 918, 7);
+        }
         x.fillStyle = 'rgba(245,245,245,.62)'; x.font = '500 22px Manrope, sans-serif';
-        espacado('CONVITE DE', W / 2, 850, 8);
-        x.fillStyle = '#F5F5F5'; x.font = '500 64px "Cormorant Garamond", serif';
-        x.fillText(dados.nome, W / 2, 935, W - 200);
-        x.fillStyle = 'rgba(245,245,245,.7)'; x.font = '500 24px Manrope, sans-serif';
-        espacado(dados.times.join(' · ').toUpperCase(), W / 2, 995, 4);
-        x.fillStyle = 'rgba(200,200,200,.3)'; x.fillRect(W / 2 - 200, 1050, 400, 1);
-        x.fillStyle = '#F5F5F5'; x.font = '600 30px Manrope, sans-serif';
-        espacado('COMPROVANTE ' + dados.codigo, W / 2, 1120, 6);
-        x.fillStyle = 'rgba(245,245,245,.62)'; x.font = '400 24px Manrope, sans-serif';
-        x.fillText('Envie para o WhatsApp da igreja ' + RN.whatsappVisivel, W / 2, 1180);
+        espacado('CONVITE DE', W / 2, 1000, 8);
+        x.fillStyle = '#F5F5F5'; x.font = '500 60px "Cormorant Garamond", serif';
+        x.fillText(dados.nome, W / 2, 1070, W - 200);
+        x.fillStyle = 'rgba(245,245,245,.7)'; x.font = '500 22px Manrope, sans-serif';
+        espacado(dados.times.join(' · ').toUpperCase(), W / 2, 1115, 4);
+        x.fillStyle = 'rgba(200,200,200,.3)'; x.fillRect(W / 2 - 200, 1145, 400, 1);
+        x.fillStyle = '#F5F5F5'; x.font = '600 28px Manrope, sans-serif';
+        espacado('COMPROVANTE ' + dados.codigo, W / 2, 1195, 6);
+        x.fillStyle = 'rgba(245,245,245,.62)'; x.font = '400 22px Manrope, sans-serif';
+        x.fillText('Envie para o WhatsApp da igreja ' + RN.whatsappVisivel, W / 2, 1245);
         function espacado(t, cx, y, gap) {
           var larg = 0, i; for (i = 0; i < t.length; i++) larg += x.measureText(t[i]).width + gap;
           var cur = cx - (larg - gap) / 2; x.textAlign = 'left';

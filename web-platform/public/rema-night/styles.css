@@ -104,7 +104,7 @@ button,input{font-family:inherit}
 .hero-filete{display:flex;align-items:center;gap:16px;width:min(420px,78vw);margin:clamp(18px,3svh,34px) 0 clamp(16px,2.4svh,26px);color:var(--prata)}
 .hero-filete span{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--linha),transparent)}
 .hero-filete i{font-style:normal;font-size:10px;opacity:.8}
-.hero-quando{display:grid;grid-template-columns:repeat(3,auto);gap:clamp(18px,5vw,64px);margin-bottom:clamp(24px,4svh,42px)}
+.hero-quando{display:grid;grid-template-columns:repeat(2,auto);gap:18px clamp(28px,8vw,64px);margin-bottom:clamp(24px,4svh,42px)}
 .hero-quando dt{font-size:9.5px;font-weight:500;letter-spacing:.38em;text-transform:uppercase;color:var(--tenue);margin-bottom:6px}
 .hero-quando dd{font-family:var(--serifa);font-size:clamp(19px,2.6vw,26px);font-weight:500;letter-spacing:.04em}
 .hero-quando dd.pend{font-style:italic;font-weight:400;color:var(--prata)}
@@ -317,6 +317,11 @@ body,.inp,.titulo,.hero-quando dd,.convite-dl dd,.fecho-data,.cp-quem{font-varia
 .cp-falta strong{color:var(--tinta)}
 .cp-num{color:var(--tinta-2)}
 .cp-num a{color:var(--tinta);border-bottom-color:var(--risco)}
+
+@media(min-width:700px){.hero-quando{grid-template-columns:repeat(4,auto)}}
+.cp-quando{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--tinta-2);font-variant-numeric:lining-nums}
+.cp-dress{justify-self:center;font-size:11px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:var(--papel-2);background:var(--tinta);padding:10px 18px}
+.cp-dress b{font-family:var(--serifa);font-size:17px;letter-spacing:.2em;margin-left:.4em}
 
 /* ---------- V · encerramento: lockup REMA + Night ---------- */
 .fecho-lockup{display:flex;align-items:baseline;justify-content:center;gap:.08em;margin-top:clamp(34px,5vw,50px);line-height:1}
