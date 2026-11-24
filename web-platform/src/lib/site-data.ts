@@ -60,6 +60,12 @@ export function tlcEncerrado(agora: Date = new Date()): boolean {
   return agora.getTime() >= new Date(tlcEncerraEm).getTime();
 }
 
+/** Fim das inscrições do Rema Night: 04/12/2026 às 22h (UTC-4). Igual a RN.encerraEm e REMA_NIGHT_ENCERRA_EM. */
+export const remaNightEncerraEm = '2026-12-04T22:00:00-04:00';
+export function remaNightEncerrado(agora: Date = new Date()): boolean {
+  return agora.getTime() >= new Date(remaNightEncerraEm).getTime();
+}
+
 /** Eventos curados que ainda estão no ar (os que têm `ate` somem sozinhos depois da data). */
 export function eventosAtuais(agora: Date = new Date()): SiteEvent[] {
   return fallbackEvents

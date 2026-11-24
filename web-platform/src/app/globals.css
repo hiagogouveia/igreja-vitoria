@@ -333,3 +333,44 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .tlc-texto { justify-content: center; padding: 36px 40px 36px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .tlc-card, .tlc-card:hover { transition: none; transform: none; } }
+
+/* ---------- Destaque do Rema Night (home, acima do TLC) ----------
+   Identidade do evento: preto, prata, caligrafia, cantos retos. */
+.rema-fold { position: relative; z-index: 5; padding: 0 28px; background: var(--void); }
+.rema-fold-in { transform: translateY(-20px); margin-bottom: -4px; }
+/* com o Rema em cima, o card do TLC deixa de subir sobre a hero */
+.rema-fold + .tlc-fold .tlc-fold-in { transform: none; margin-bottom: 0; }
+.rema-card {
+  position: relative; display: grid; grid-template-columns: 1fr; align-items: center; gap: 4px; overflow: hidden;
+  text-decoration: none; color: #F5F5F5; border-radius: 0;
+  background:
+    radial-gradient(60% 80% at 28% 40%, rgba(255,255,255,.08), transparent 70%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.015) 0 2px, transparent 2px 4px),
+    #050505;
+  border: 1px solid rgba(200,200,200,.32); outline: 1px solid rgba(200,200,200,.1); outline-offset: -8px;
+  padding: 30px 22px 28px; box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  transition: transform .4s var(--ease), border-color .4s var(--ease);
+}
+.rema-card:hover { transform: translateY(-3px); border-color: rgba(230,230,230,.6); }
+.rema-card:focus-visible { outline: 2px solid #F5F5F5; outline-offset: 4px; }
+.rema-v { position: absolute; right: -40px; top: 50%; width: 260px; height: auto; transform: translateY(-50%); opacity: .05; filter: invert(1); pointer-events: none; }
+.rema-marca { position: relative; display: flex; justify-content: center; }
+.rema-marca img { width: min(100%, 300px); height: auto; filter: drop-shadow(0 2px 0 rgba(0,0,0,.8)); }
+.rema-texto { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+.rema-selo { font-family: var(--mono); font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: #F5F5F5; border: 1px solid rgba(200,200,200,.5); padding: 7px 14px; }
+.rema-titulo { font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-weight: 500; font-size: clamp(18px, 4.6vw, 26px); letter-spacing: .16em; text-transform: uppercase; line-height: 1.25; }
+.rema-info { font-size: 14px; color: #CFCFCF; letter-spacing: .04em; font-variant-numeric: lining-nums; }
+.rema-info-2 { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #9A9A9A; margin-top: -4px; }
+.rema-botao {
+  margin-top: 8px; display: inline-flex; align-items: center; gap: 12px; border-radius: 0;
+  font-family: var(--head); font-weight: 600; font-size: 13px; letter-spacing: .26em; text-transform: uppercase;
+  background: #F5F5F5; color: #050505; padding: 16px 26px; transition: background .3s;
+}
+.rema-card:hover .rema-botao { background: #C8C8C8; }
+@media (min-width: 820px) {
+  .rema-card { grid-template-columns: 1fr 1.05fr; gap: 24px; padding: 40px 48px; }
+  .rema-marca img { width: min(100%, 380px); }
+  .rema-texto { align-items: flex-start; text-align: left; }
+  .rema-v { right: auto; left: 22%; width: 340px; }
+}
+@media (prefers-reduced-motion: reduce) { .rema-card, .rema-card:hover { transition: none; transform: none; } }

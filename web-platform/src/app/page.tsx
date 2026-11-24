@@ -10,6 +10,7 @@ import RegisterModal from '@/components/site/RegisterModal';
 import MapEmbed from '@/components/site/MapEmbed';
 import CavFold from '@/components/site/CavFold';
 import TlcFold from '@/components/site/TlcFold';
+import RemaFold from '@/components/site/RemaFold';
 import EventArt from '@/components/site/EventArt';
 import { beliefs, eventosAtuais, site } from '@/lib/site-data';
 import { ultimosVideos, dataCurta } from '@/lib/youtube';
@@ -63,6 +64,8 @@ export default async function Home() {
 
       {/* ---------- TLC: inscrições abertas (a hero é mais baixa para este bloco
           já aparecer na primeira tela) ---------- */}
+      {/* Rema Night em cima do TLC; some sozinho quando as inscrições fecham */}
+      <RemaFold />
       <TlcFold />
 
       {/* ---------- CASA DE VITÓRIA ---------- */}
