@@ -7,6 +7,7 @@
  *   deep-interesse .. aba "Deep · Interessados" (lista de espera da próxima turma)
  *   tlc ............. aba "TLC" (Treinamento de Líderes de CAV)
  *   testemunho ...... aba "Testemunhos"
+ *   rema-night ..... aba "Rema Night" (noite de quem serve nos times)
  *
  * Destino ausente ou desconhecido é recusado (erro "destino-invalido"), para
  * nunca gravar na aba errada. As abas são criadas sozinhas no primeiro envio.
@@ -21,6 +22,14 @@
  *   caixinha por aula (12), o total de presenças e a frequência de cada um.
  *   Cada nova inscrição entra nela sozinha. Para criar a aba ou puxar quem
  *   falta, rode criarPresencaTlc pelo editor.
+ *
+ * REMA NIGHT
+ *   Inscrição com nome, telefone e time(s). Cada pessoa recebe um comprovante
+ *   (RN-001...) para enviar no WhatsApp da igreja; a coluna "Confirmou no
+ *   WhatsApp" é marcada pela equipe. Mesmo telefone não entra duas vezes.
+ *   Fecha sozinha em REMA_NIGHT_ENCERRA_EM (04/12/2026, 22h). PRESENÇA: a aba
+ *   "Rema Night · Presença" recebe cada inscrito na hora; para criar ou puxar
+ *   quem falta, rode criarPresencaRemaNight pelo editor.
  *
  * INTERESSADOS NO DEEP
  *   Com as inscrições encerradas, o site do Deep recolhe quem quer ser
@@ -91,6 +100,24 @@ function tlcAberto() { return new Date().getTime() < new Date(TLC_ENCERRA_EM).ge
    cabeçalho da aba "TLC · Presença" (o código nunca reescreve o cabeçalho). */
 var ABA_PRESENCA_TLC = 'TLC · Presença';
 var AULAS_TLC = ['19/11', '', '', '', '', '', '', '', '', '', '', ''];
+
+/* Rema Night: noite para quem serve nos times da igreja (destino=rema-night).
+   A pessoa recebe um número de comprovante (RN-001, RN-002...) e precisa enviar
+   esse comprovante pelo WhatsApp da igreja; a coluna "Confirmou no WhatsApp"
+   é uma caixinha para a equipe marcar quem já mandou. Mesmo telefone não entra
+   duas vezes. As inscrições fecham sozinhas em REMA_NIGHT_ENCERRA_EM
+   (04/12/2026 às 22h, UTC-4). Manter igual a RN.encerraEm em
+   public/rema-night/script.js. */
+var ABA_REMA_NIGHT = 'Rema Night';
+var ABA_PRESENCA_RN = 'Rema Night · Presença';
+var REMA_NIGHT_ENCERRA_EM = '2026-12-04T22:00:00-04:00';
+function remaNightAberto() { return new Date().getTime() < new Date(REMA_NIGHT_ENCERRA_EM).getTime(); }
+var COLUNAS_REMA_NIGHT = [
+  'Data/Hora', 'Nome', 'Telefone', 'Telefone (só dígitos)', 'Time(s)', 'Comprovante',
+  'Consentimento LGPD', 'Confirmou no WhatsApp', 'Origem'
+];
+var COL_CODIGO_RN = 6;
+var COL_CONFIRMOU_RN = 8;
 
 var ABA_TESTEMUNHOS = 'Testemunhos';
 var COLUNAS_TESTEMUNHO = [
@@ -522,6 +549,113 @@ function criarPresencaTlc() {
     (abaPresencaTlc(ss).getLastRow() - 2));
 }
 
+/** Aba das inscrições da Rema Night, criada no primeiro envio. */
+function abaRemaNight(ss) {
+  var sheet = ss.getSheetByName(ABA_REMA_NIGHT);
+  if (!sheet) {
+    sheet = ss.insertSheet(ABA_REMA_NIGHT, ss.getSheets().length);
+    sheet.setColumnWidth(2, 260);
+    sheet.setColumnWidth(5, 280);
+    sheet.setColumnWidth(COL_CONFIRMOU_RN, 150);
+  }
+  garantirCabecalho(sheet, COLUNAS_REMA_NIGHT);
+  return sheet;
+}
+
+/**
+ * Lista de presença da noite. Colunas: Presente (caixinha), Nome, Telefone,
+ * Time(s), Comprovante e "Confirmou no WhatsApp" (puxado ao vivo da aba de
+ * inscrições pela fórmula, então quando a equipe marca lá, aparece aqui).
+ * A linha 2 conta os presentes.
+ */
+function abaPresencaRemaNight(ss) {
+  var sheet = ss.getSheetByName(ABA_PRESENCA_RN);
+  if (sheet) return sheet;
+  sheet = ss.insertSheet(ABA_PRESENCA_RN, ss.getSheets().length);
+  var cab = ['Presente', 'Nome', 'Telefone', 'Time(s)', 'Comprovante', 'Confirmou no WhatsApp'];
+  sheet.getRange(1, 1, 1, cab.length).setValues([cab]).setFontWeight('bold').setHorizontalAlignment('center');
+  // separador de argumentos conforme o idioma da planilha (; em português)
+  escreverFormulaLocal(sheet.getRange(2, 1), function (sep) { return '=COUNTIF(A3:A' + sep + 'TRUE)'; });
+  sheet.getRange(2, 2).setValue('presentes');
+  sheet.getRange(2, 1, 1, cab.length).setFontWeight('bold').setBackground('#EDEDED');
+  sheet.setFrozenRows(2);
+  sheet.setColumnWidth(1, 80);
+  sheet.setColumnWidth(2, 260);
+  sheet.setColumnWidth(3, 140);
+  sheet.setColumnWidth(4, 260);
+  sheet.setColumnWidth(5, 110);
+  sheet.setColumnWidth(6, 170);
+  return sheet;
+}
+
+/** Fórmula que traz o "Confirmou no WhatsApp" da aba de inscrições pelo comprovante. */
+function formulaConfirmouRn(sep) {
+  var aba = "'" + ABA_REMA_NIGHT + "'!";
+  var achou = 'INDEX(' + aba + 'H:H' + sep + 'MATCH(INDIRECT("E"&ROW())' + sep + aba + 'F:F' + sep + '0))';
+  return '=IFERROR(IF(' + achou + sep + '"Sim"' + sep + '"Não")' + sep + '"")';
+}
+
+/**
+ * Acrescenta na lista quem se inscreveu e ainda não está nela, sem mexer nas
+ * presenças já marcadas. Compara pelo comprovante. Com `ordenar`, reordena por
+ * nome. Devolve quantas pessoas entraram.
+ */
+function sincronizarPresencaRemaNight(ss, ordenar) {
+  var insc = abaRemaNight(ss);
+  var pres = abaPresencaRemaNight(ss);
+  var ultima = insc.getLastRow();
+  if (ultima < 2) return 0;
+  var linhas = insc.getRange(2, 2, ultima - 1, 5).getValues(); // Nome, Telefone, dígitos, Times, Comprovante
+  var ja = {};
+  var ultimaPres = pres.getLastRow();
+  if (ultimaPres >= 3) {
+    pres.getRange(3, 5, ultimaPres - 2, 1).getValues().forEach(function (r) { ja[String(r[0])] = true; });
+  }
+  var novos = [];
+  linhas.forEach(function (r) {
+    var nome = String(r[0]).trim(), codigo = String(r[4]).trim();
+    if (!nome || !codigo || ja[codigo]) return;
+    if (nome.toUpperCase().indexOf('TESTE') === 0) return;
+    ja[codigo] = true;
+    novos.push([false, nomeBonito(nome), String(r[1]).trim(), String(r[3]).trim(), codigo]);
+  });
+  if (novos.length) {
+    var inicio = Math.max(ultimaPres, 2) + 1;
+    pres.getRange(inicio, 1, novos.length, 5).setValues(novos);
+    pres.getRange(inicio, 1, novos.length, 1).insertCheckboxes().setHorizontalAlignment('center');
+    pres.getRange(inicio, 5, novos.length, 1).setHorizontalAlignment('center');
+    var sep = escreverFormulaLocal(pres.getRange(inicio, 6), formulaConfirmouRn) || ',';
+    for (var i = 1; i < novos.length; i++) pres.getRange(inicio + i, 6).setFormula(formulaConfirmouRn(sep));
+    pres.getRange(inicio, 6, novos.length, 1).setHorizontalAlignment('center');
+  }
+  if (ordenar && pres.getLastRow() - 2 >= 2) {
+    pres.getRange(3, 1, pres.getLastRow() - 2, Math.max(pres.getLastColumn(), 6)).sort({ column: 2, ascending: true });
+  }
+  return novos.length;
+}
+
+/**
+ * Uso manual, pelo editor (Executar): cria a lista de presença da Rema Night
+ * ou puxa quem falta, em ordem alfabética. Pode rodar quantas vezes quiser.
+ */
+function criarPresencaRemaNight() {
+  var ss = abrirPlanilha();
+  var entraram = sincronizarPresencaRemaNight(ss, true);
+  Logger.log('Rema Night · Presença → ' + entraram + ' pessoa(s) acrescentada(s). Total na lista: ' +
+    (abaPresencaRemaNight(ss).getLastRow() - 2));
+}
+
+/** Comprovante da linha já gravada com esse telefone (ou '' se não houver). */
+function codigoRemaNight(sheet, digitos) {
+  var ultima = sheet.getLastRow();
+  if (ultima < 2) return '';
+  var linhas = sheet.getRange(2, COL_TELEFONE_DIGITOS, ultima - 1, COL_CODIGO_RN - COL_TELEFONE_DIGITOS + 1).getValues();
+  for (var i = 0; i < linhas.length; i++) {
+    if (String(linhas[i][0]).replace(/\D/g, '') === digitos) return String(linhas[i][COL_CODIGO_RN - COL_TELEFONE_DIGITOS]);
+  }
+  return '';
+}
+
 /** Aba dos testemunhos, criada no primeiro envio. */
 function abaTestemunhos(ss) {
   var sheet = ss.getSheetByName(ABA_TESTEMUNHOS);
@@ -632,6 +766,38 @@ function doPost(e) {
       try { sincronizarPresencaTlc(ss, false); } catch (errPresencaTlc) {}
       return json({ ok: true, duplicado: false });
     }
+    if (destino === 'rema-night') {
+      if (!remaNightAberto()) {
+        return json({ ok: false, erro: 'rema-night-encerrado' });
+      }
+      var times = String(p.times || '').trim();
+      if (!times || String(p.consentimento || '') !== 'Sim') {
+        return json({ ok: false, erro: 'dados incompletos' });
+      }
+      var sn = abaRemaNight(ss);
+      var jaTem = codigoRemaNight(sn, digitos);
+      if (jaTem) {
+        return json({ ok: true, duplicado: true, codigo: jaTem });
+      }
+      var numero = Math.max(sn.getLastRow(), 1); // linha 1 é o cabeçalho
+      var codigo = 'RN-' + ('00' + numero).slice(-3);
+      sn.appendRow([
+        new Date(),
+        nome,
+        telefone,
+        "'" + digitos,
+        times.slice(0, 300),
+        codigo,
+        'Sim',
+        false,
+        String(p.origem || 'site')
+      ]);
+      // caixinha para a equipe marcar quem já mandou o comprovante no WhatsApp
+      try { sn.getRange(sn.getLastRow(), COL_CONFIRMOU_RN).insertCheckboxes(); } catch (errCaixa) {}
+      // A lista de presença é um extra: se falhar, a inscrição já está gravada.
+      try { sincronizarPresencaRemaNight(ss, false); } catch (errPresSn) {}
+      return json({ ok: true, duplicado: false, codigo: codigo });
+    }
     // Só o Deep chega até aqui; qualquer outro destino é recusado, para nunca
     // gravar na aba errada.
     if (destino !== 'deep') {
@@ -734,6 +900,8 @@ function doGet(e) {
       aceitaSugestao: true,
       aceitaInteresseDeep: true,
       aceitaTlc: true,
+      aceitaRemaNight: true,
+      remaNightAberto: remaNightAberto(),
       tlcAberto: tlcAberto()
     };
     if (e && e.parameter && e.parameter.diag) {
@@ -750,6 +918,10 @@ function doGet(e) {
       var espera = ss.getSheetByName(ABA_INTERESSE_DEEP);
       resposta.deep.interessados = espera ? Math.max(espera.getLastRow() - 1, 0) : 0;
       var tlc = ss.getSheetByName(ABA_TLC);
+      var snAba = ss.getSheetByName(ABA_REMA_NIGHT);
+      var snPres = ss.getSheetByName(ABA_PRESENCA_RN);
+      resposta.remaNight = { aberto: remaNightAberto(), encerraEm: REMA_NIGHT_ENCERRA_EM, inscritos: snAba ? Math.max(snAba.getLastRow() - 1, 0) : 0,
+        abaPresencaExiste: !!snPres, naLista: snPres ? Math.max(snPres.getLastRow() - 2, 0) : 0 };
       var presTlc = ss.getSheetByName(ABA_PRESENCA_TLC);
       resposta.tlc = { aberto: tlcAberto(), encerraEm: TLC_ENCERRA_EM, inscritos: tlc ? Math.max(tlc.getLastRow() - 1, 0) : 0,
         abaPresencaExiste: !!presTlc, naChamada: presTlc ? Math.max(presTlc.getLastRow() - 2, 0) : 0 };
